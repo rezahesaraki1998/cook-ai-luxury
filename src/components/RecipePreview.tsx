@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Clock, Flame, Users, Heart, ShoppingCart } from "lucide-react";
+import { Clock, Flame, Users, Heart } from "lucide-react";
 
 const RecipePreview = () => {
   return (
@@ -97,10 +97,6 @@ const RecipePreview = () => {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button className="flex-1 gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition">
-                    <ShoppingCart className="w-4 h-4 ml-2" />
-                    خرید مواد اولیه
-                  </Button>
                   <Button variant="outline" className="border-primary/30 hover:bg-primary/10">
                     <Heart className="w-4 h-4" />
                   </Button>
@@ -113,15 +109,21 @@ const RecipePreview = () => {
               <h4 className="font-semibold text-lg mb-4">مراحل پخت:</h4>
               <div className="space-y-3">
                 {[
-                  "گوشت را با پیاز رنده شده تفت دهید تا طلایی شود",
-                  "سبزی‌ها را پس از شستن و خشک کردن در روغن تفت دهید",
-                  "لوبیا را پخته و به همراه گوشت و سبزی‌ها مخلوط کنید"
+                  "ابتدا لوبیا قرمز را شب قبل خیس کنید. صبح روز بعد آن را آبکش کرده و در قابلمه‌ای با آب و کمی نمک بگذارید تا نرم شود (حدود ۴۵ دقیقه).",
+                  "گوشت را به قطعات متوسط خرد کنید. پیازها را نیز رنده کرده یا نگینی خرد کنید.",
+                  "در قابلمه‌ای روغن را حرارت دهید و پیاز را تفت دهید تا طلایی و شفاف شود. سپس گوشت را اضافه کنید و هم بزنید تا رنگ آن تغییر کند.",
+                  "زردچوبه، نمک و فلفل را به گوشت اضافه کنید. کمی آب اضافه کرده و اجازه دهید گوشت برای ۴۵ دقیقه بپزد تا کاملاً نرم شود.",
+                  "سبزی قرمه را بعد از شستن و خشک کردن، ریز خرد کنید. در تابه‌ای جداگانه روغن را گرم کرده و سبزی‌ها را به مدت ۱۵-۲۰ دقیقه تفت دهید تا بوی خام آن‌ها از بین برود و رنگشان تیره شود.",
+                  "سبزی تفت داده شده را به گوشت اضافه کنید. لوبیای پخته شده را نیز اضافه کرده و مخلوط کنید.",
+                  "لیمو عمانی‌ها را سوراخ کنید و به خورش اضافه کنید. در صورت نیاز آب اضافه کنید تا غلظت مناسبی داشته باشد.",
+                  "حرارت را کم کنید و اجازه دهید خورش به مدت ۴۵ دقیقه دیگر با حرارت ملایم بپزد تا طعم‌ها به هم بخورد و قوام مناسب پیدا کند.",
+                  "در انتها طعم خورش را چک کنید و در صورت نیاز نمک و آب لیمو اضافه کنید. قرمه سبزی آماده است که با برنج سفید و ترشی سرو شود."
                 ].map((step, index) => (
                   <div key={index} className="flex gap-3">
                     <div className="w-8 h-8 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
                       <span className="text-sm font-bold text-primary-foreground">{index + 1}</span>
                     </div>
-                    <p className="text-foreground/90 pt-1">{step}</p>
+                    <p className="text-foreground/90 pt-1 text-sm leading-relaxed">{step}</p>
                   </div>
                 ))}
               </div>
