@@ -54,27 +54,43 @@ const RecipePreview = () => {
 
                 {/* Ingredients */}
                 <div className="glass-card p-4 rounded-xl border border-primary/10">
-                  <h4 className="font-semibold text-primary mb-3">مواد لازم:</h4>
-                  <ul className="space-y-2 text-sm text-foreground/90">
+                  <h4 className="font-semibold text-primary mb-3">مواد لازم (برای ۴ نفر):</h4>
+                  <ul className="space-y-2.5 text-sm text-foreground/90">
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
-                      <span>گوشت گوسفند یا گوساله - ۵۰۰ گرم</span>
+                      <span><strong>گوشت گوسفند یا گوساله:</strong> ۵۰۰ گرم (بدون استخوان، برای خورش)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
-                      <span>سبزی قرمه (جعفری، تره، گشنیز) - ۵۰۰ گرم</span>
+                      <span><strong>سبزی قرمه:</strong> ۵۰۰ گرم (شامل: جعفری ۲۰۰گ، تره ۲۰۰گ، گشنیز ۱۰۰گ) - تازه و شسته شده</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
-                      <span>لوبیا قرمز - ۱ پیمانه</span>
+                      <span><strong>لوبیا قرمز:</strong> ۱ پیمانه (۲۰۰ گرم) - یک شب خیس خورده</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
-                      <span>پیاز متوسط - ۲ عدد</span>
+                      <span><strong>پیاز متوسط:</strong> ۲ عدد (برای تفت دادن و پایه خورش)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-primary">•</span>
-                      <span>لیمو عمانی - ۳ عدد</span>
+                      <span><strong>لیمو عمانی:</strong> ۳ عدد (سوراخ شده برای طعم‌دهی)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>روغن مایع:</strong> ۱/۲ پیمانه (برای تفت گوشت و سبزی)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>زردچوبه:</strong> ۱ قاشق چایخوری</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>نمک و فلفل:</strong> به مقدار لازم</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      <span><strong>آب لیمو یا آب نارنج:</strong> ۲ قاشق غذاخوری (اختیاری برای طعم)</span>
                     </li>
                   </ul>
                 </div>
