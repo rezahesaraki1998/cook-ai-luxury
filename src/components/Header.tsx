@@ -1,7 +1,25 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu } from "lucide-react";
+import { ChefHat, Menu, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
       <div className="container mx-auto px-4 py-4">
@@ -26,12 +44,23 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" className="text-foreground hover:text-primary">
-              ورود
-            </Button>
-            <Button className="gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition hover:scale-105">
-              شروع آشپزی
-            </Button>
+            {user ? (
+              <Button
+                onClick={() => navigate("/profile")}
+                variant="outline"
+                className="border-primary/30 hover:bg-primary/10"
+              >
+                <User className="w-4 h-4 ml-2" />
+                پروفایل من
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate("/auth")}
+                className="gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition hover:scale-105"
+              >
+                ورود / ثبت‌نام
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}

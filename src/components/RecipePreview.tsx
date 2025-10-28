@@ -1,8 +1,120 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Clock, Flame, Users, Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const RecipePreview = () => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const recipeData = {
+    name: "قرمه سبزی",
+    time: "۲ ساعت",
+    servings: "۴ نفر",
+    difficulty: "متوسط",
+    ingredients: [
+      "گوشت گوسفند یا گوساله: ۵۰۰ گرم",
+      "سبزی قرمه: ۵۰۰ گرم",
+      "لوبیا قرمز: ۱ پیمانه",
+    ],
+    nutrition: {
+      calories: "۴۵۰",
+      protein: "۳۵گ",
+      carbs: "۴۰گ",
+    },
+  };
+
+  useEffect(() => {
+    checkUser();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkIfFavorite(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user ?? null);
+    if (session?.user) {
+      await checkIfFavorite(session.user.id);
+    }
+  };
+
+  const checkIfFavorite = async (userId: string) => {
+    const { data } = await supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("recipe_name", recipeData.name)
+      .maybeSingle();
+
+    setIsFavorite(!!data);
+  };
+
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      toast({
+        title: "نیاز به ورود",
+        description: "برای ذخیره دستور پخت، ابتدا وارد حساب خود شوید",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (isFavorite) {
+        const { error } = await supabase
+          .from("favorites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("recipe_name", recipeData.name);
+
+        if (error) throw error;
+
+        setIsFavorite(false);
+        toast({
+          title: "حذف شد",
+          description: "دستور پخت از علاقه‌مندی‌ها حذف شد",
+        });
+      } else {
+        const { error } = await supabase.from("favorites").insert({
+          user_id: user.id,
+          recipe_name: recipeData.name,
+          recipe_data: recipeData,
+        });
+
+        if (error) throw error;
+
+        setIsFavorite(true);
+        toast({
+          title: "ذخیره شد!",
+          description: "دستور پخت به علاقه‌مندی‌ها اضافه شد",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "خطا",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -113,8 +225,19 @@ const RecipePreview = () => {
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button variant="outline" className="border-primary/30 hover:bg-primary/10">
-                    <Heart className="w-4 h-4" />
+                  <Button
+                    onClick={handleToggleFavorite}
+                    disabled={loading}
+                    variant="outline"
+                    className={`border-primary/30 hover:bg-primary/10 smooth-transition ${
+                      isFavorite ? "bg-primary/10 border-primary" : ""
+                    }`}
+                  >
+                    <Heart
+                      className={`w-4 h-4 smooth-transition ${
+                        isFavorite ? "fill-primary text-primary" : ""
+                      }`}
+                    />
                   </Button>
                 </div>
               </div>
