@@ -39,7 +39,7 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">قوانین</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="text-muted-foreground hover:text-primary smooth-transition">حریم خصوصی</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary smooth-transition">شرایط استفاده</a></li>
+              <li><a href="/terms" className="text-muted-foreground hover:text-primary smooth-transition">شرایط استفاده</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary smooth-transition">تماس با ما</a></li>
             </ul>
           </div>
