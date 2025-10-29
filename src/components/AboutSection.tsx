@@ -5,67 +5,68 @@ const AboutSection = () => {
   return (
     <section id="about" className="py-20 relative">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
+        <div className="max-w-4xl mx-auto space-y-12">
           {/* Title */}
-          <div className="space-y-4">
+          <div className="space-y-6 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-gold">
-              با CookAI دیگه لازم نیست فکر کنی چی بپزی
+              چرا ما؟
             </h2>
-            <p className="text-xl text-muted-foreground">
-              فقط بگو، بقیه‌ش با ماست
-            </p>
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="glass-card p-6 border border-primary/20 space-y-4">
-              <div className="w-14 h-14 rounded-2xl gradient-gold flex items-center justify-center mx-auto">
-                <Brain className="w-7 h-7 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground">هوش مصنوعی قدرتمند</h3>
-              <p className="text-sm text-muted-foreground">
-                با استفاده از جدیدترین مدل‌های AI، بهترین دستورها رو برات پیدا می‌کنیم
+          {/* Questions Section */}
+          <Card className="glass-card p-8 border border-primary/20">
+            <div className="space-y-6 text-right">
+              <p className="text-lg text-foreground leading-relaxed">
+                تا حالا چند بار از خودت پرسیدی:
               </p>
-            </Card>
-
-            <Card className="glass-card p-6 border border-primary/20 space-y-4">
-              <div className="w-14 h-14 rounded-2xl gradient-warm flex items-center justify-center mx-auto">
-                <Sparkles className="w-7 h-7 text-secondary-foreground" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground">شخصی‌سازی هوشمند</h3>
-              <p className="text-sm text-muted-foreground">
-                دستورها رو بر اساس سلیقه، تعداد افراد و زمان موجودت تنظیم می‌کنه
-              </p>
-            </Card>
-
-            <Card className="glass-card p-6 border border-primary/20 space-y-4">
-              <div className="w-14 h-14 rounded-2xl gradient-gold flex items-center justify-center mx-auto">
-                <ChefHat className="w-7 h-7 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground">راهنمای گام‌به‌گام</h3>
-              <p className="text-sm text-muted-foreground">
-                از مواد اولیه تا آخرین مرحله، کنارت هستیم تا غذای عالی بپزی
-              </p>
-            </Card>
-          </div>
-
-          {/* Testimonial */}
-          <Card className="glass-card p-8 border border-primary/20 max-w-2xl mx-auto">
-            <div className="space-y-4">
-              <div className="flex justify-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-primary text-2xl">★</span>
-                ))}
-              </div>
-              <p className="text-lg text-foreground/90 leading-relaxed">
-                "قبلاً همیشه برای انتخاب غذا استرس داشتم، الان با CookAI تو چند ثانیه دستور پخت کامل و حرفه‌ای دارم. عالیه!"
-              </p>
-              <div className="pt-4">
-                <p className="font-semibold text-foreground">سارا احمدی</p>
-                <p className="text-sm text-muted-foreground">کاربر CookAI</p>
+              <div className="space-y-4 pr-4">
+                <p className="text-base text-foreground/90 leading-relaxed">
+                  🍲 «چی درست کنم؟»
+                </p>
+                <p className="text-base text-foreground/90 leading-relaxed">
+                  ⌛ «وقتم کمه، یه غذای سریع چی میشه پخت؟»
+                </p>
+                <p className="text-base text-foreground/90 leading-relaxed">
+                  🏋️‍♀️ «می‌خوام رژیمی بخورم، چی بخورم که هم خوشمزه باشه هم سالم؟»
+                </p>
+                <p className="text-base text-foreground/90 leading-relaxed">
+                  👩‍🍳 یا شاید گفتی: «خسته شدم از تکرار، یه غذای جدید یادم بده!»
+                </p>
               </div>
             </div>
           </Card>
+
+          {/* Main Content */}
+          <div className="space-y-6 text-center">
+            <p className="text-xl text-foreground font-semibold leading-relaxed">
+              اینجا جاییه که CookAI به کمکت میاد.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              ما با هوش مصنوعی طراحی شدیم تا بر اساس مواد اولیه‌ای که توی خونه داری، سلیقه‌ات، و حتی اهداف رژیمی‌ات، غذاهای دقیق و خوش‌طعم بهت پیشنهاد بدیم.
+            </p>
+          </div>
+
+          {/* Highlight Card */}
+          <Card className="glass-card p-8 border border-primary/20 bg-primary/5 max-w-3xl mx-auto">
+            <div className="space-y-4 text-center">
+              <p className="text-2xl font-bold text-gradient-gold leading-relaxed">
+                با ما دیگه هیچ‌وقت نمی‌گی «چی بپزم؟»
+              </p>
+              <p className="text-lg text-foreground/90 leading-relaxed">
+                فقط بگو چی داری، یا چه غذایی دلت می‌خواد، و در چند ثانیه دستور پخت اختصاصی‌ت آماده‌ست.
+              </p>
+            </div>
+          </Card>
+
+          {/* Closing Statement */}
+          <div className="text-center space-y-4 pt-6">
+            <p className="text-lg text-foreground/90 leading-relaxed italic max-w-3xl mx-auto">
+              در CookAI، آشپزی یه تجربه‌ی ساده، الهام‌بخش و کاملاً شخصی میشه —
+            </p>
+            <p className="text-base text-muted-foreground leading-relaxed">
+              برای کسانی که به کیفیت، زمان و طعم اهمیت می‌دن.
+            </p>
+          </div>
         </div>
       </div>
     </section>

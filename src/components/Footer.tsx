@@ -30,7 +30,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><a href="#home" className="text-muted-foreground hover:text-primary smooth-transition">خانه</a></li>
               <li><a href="#recipes" className="text-muted-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a></li>
-              <li><a href="#about" className="text-muted-foreground hover:text-primary smooth-transition">درباره ما</a></li>
+              <li><a href="#about" className="text-muted-foreground hover:text-primary smooth-transition">چرا ما</a></li>
             </ul>
           </div>
 
