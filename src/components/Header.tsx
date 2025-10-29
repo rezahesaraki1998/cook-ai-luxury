@@ -25,7 +25,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3 group cursor-pointer">
+          <a href="/" className="flex items-center gap-3 group cursor-pointer">
             <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center shadow-gold smooth-transition group-hover:scale-110">
               <ChefHat className="w-6 h-6 text-primary-foreground" />
             </div>
@@ -33,12 +33,12 @@ const Header = () => {
               <span className="text-xl font-bold text-gradient-gold">CookAI</span>
               <span className="text-xs text-muted-foreground">کوک‌اِی‌آی</span>
             </div>
-          </div>
+          </a>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#home" className="text-foreground hover:text-primary smooth-transition">خانه</a>
-            <a href="#recipes" className="text-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a>
+            <a href="/" className="text-foreground hover:text-primary smooth-transition">خانه</a>
+            <a href="/#recipes" className="text-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a>
             <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">چرا ما</a>
           </nav>
 

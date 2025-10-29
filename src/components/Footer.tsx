@@ -28,8 +28,8 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-foreground mb-4">دسترسی سریع</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#home" className="text-muted-foreground hover:text-primary smooth-transition">خانه</a></li>
-              <li><a href="#recipes" className="text-muted-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a></li>
+              <li><a href="/" className="text-muted-foreground hover:text-primary smooth-transition">خانه</a></li>
+              <li><a href="/#recipes" className="text-muted-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a></li>
             </ul>
           </div>
 
