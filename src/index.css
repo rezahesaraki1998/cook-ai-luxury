@@ -8,7 +8,61 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Luxury Dark Theme - CookAI Design System */
+    /* Light Mode - CookAI Design System */
+    --background: 0 0% 98%; /* Light background */
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --card-glass: 0 0% 95% / 0.5;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 43 79% 57%; /* #E4B73B golden */
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 43 79% 67%;
+
+    --secondary: 30 100% 71%; /* #FFB26B warm orange */
+    --secondary-foreground: 0 0% 10%;
+    --secondary-glow: 30 100% 81%;
+
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 43 79% 57%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
+    --ring: 43 79% 57%;
+
+    --radius: 1rem;
+
+    /* Custom luxury tokens - Light Mode */
+    --gradient-gold: linear-gradient(135deg, hsl(43 79% 57%), hsl(43 79% 67%));
+    --gradient-warm: linear-gradient(135deg, hsl(30 100% 71%), hsl(43 79% 57%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 95%));
+    
+    --shadow-gold: 0 10px 40px -10px hsl(43 79% 57% / 0.3);
+    --shadow-warm: 0 8px 30px -8px hsl(30 100% 71% / 0.25);
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    --shadow-elevation: 0 20px 60px -20px rgba(0, 0, 0, 0.2);
+    
+    --glow-gold: 0 0 30px hsl(43 79% 67% / 0.4);
+    --glow-warm: 0 0 25px hsl(30 100% 81% / 0.3);
+    
+    --blur-glass: blur(12px);
+    
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .dark {
+    /* Dark Mode - CookAI Design System */
     --background: 0 0% 6.7%; /* #111111 deep charcoal */
     --foreground: 0 0% 98%;
 
@@ -40,9 +94,7 @@ All colors MUST be HSL.
     --input: 0 0% 15%;
     --ring: 43 79% 57%;
 
-    --radius: 1rem;
-
-    /* Custom luxury tokens */
+    /* Custom luxury tokens - Dark Mode */
     --gradient-gold: linear-gradient(135deg, hsl(43 79% 57%), hsl(43 79% 67%));
     --gradient-warm: linear-gradient(135deg, hsl(30 100% 71%), hsl(43 79% 57%));
     --gradient-hero: linear-gradient(180deg, hsl(0 0% 6.7%), hsl(0 0% 10%));
@@ -54,11 +106,6 @@ All colors MUST be HSL.
     
     --glow-gold: 0 0 30px hsl(43 79% 67% / 0.5);
     --glow-warm: 0 0 25px hsl(30 100% 81% / 0.4);
-    
-    --blur-glass: blur(12px);
-    
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-spring: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 }
 

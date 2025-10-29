@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChefHat, Menu, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const [user, setUser] = useState<any>(null);
@@ -44,6 +45,7 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {user ? (
               <Button
                 onClick={() => navigate("/profile")}
