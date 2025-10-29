@@ -2,7 +2,6 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import RecipePreview from "@/components/RecipePreview";
 import SmartSuggestions from "@/components/SmartSuggestions";
-import AboutSection from "@/components/AboutSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -13,7 +12,6 @@ const Index = () => {
         <HeroSection />
         <RecipePreview />
         <SmartSuggestions />
-        <AboutSection />
       </main>
       <Footer />
     </div>

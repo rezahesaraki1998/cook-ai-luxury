@@ -39,7 +39,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-8">
             <a href="#home" className="text-foreground hover:text-primary smooth-transition">خانه</a>
             <a href="#recipes" className="text-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a>
-            <a href="#about" className="text-foreground hover:text-primary smooth-transition">چرا ما</a>
+            <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">چرا ما</a>
           </nav>
 
           {/* CTA Buttons */}
