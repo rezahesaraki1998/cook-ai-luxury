@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, User } from "lucide-react";
+import { ChefHat, Menu, User, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ThemeToggle from "./ThemeToggle";
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
 
 const Header = () => {
   const [user, setUser] = useState<any>(null);
+  const [openSearch, setOpenSearch] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +54,14 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpenSearch(true)}
+              className="w-10 h-10 hover:bg-primary/10 smooth-transition"
+            >
+              <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
+            </Button>
             <ThemeToggle />
             {user ? (
               <Button
@@ -71,6 +88,28 @@ const Header = () => {
           </Button>
         </div>
       </div>
+
+      {/* Search Dialog */}
+      <CommandDialog open={openSearch} onOpenChange={setOpenSearch}>
+        <CommandInput placeholder="جستجوی دستور غذا..." />
+        <CommandList>
+          <CommandEmpty>نتیجه‌ای یافت نشد.</CommandEmpty>
+          <CommandGroup heading="پیشنهادات">
+            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
+              غذای سریع برای دو نفر
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
+              خوراک رژیمی ایرانی
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
+              غذای مخصوص مهمان
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
+              دسر ساده با میوه
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </header>
   );
 };
