@@ -34,7 +34,7 @@ const HeroSection = () => {
 
           {/* Input Section */}
           <div className="max-w-2xl mx-auto space-y-4">
-            <div className="relative glass-card p-2 rounded-2xl border-2 border-primary/30 dark:border-primary/20 shadow-[0_8px_30px_rgba(228,183,59,0.25)] dark:shadow-gold bg-card/50 backdrop-blur-xl">
+            <div className="relative glass-card p-2 rounded-2xl border-2 border-border dark:border-primary/20 shadow-[0_12px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-gold bg-card backdrop-blur-xl">
               <div className="flex items-center gap-3">
                 <Input
                   placeholder="مثلاً: قرمه سبزی می‌خوام درست کنم..."
