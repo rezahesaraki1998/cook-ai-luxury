@@ -13,6 +13,11 @@ const RecipePreview = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const toPersianNumber = (num: number) => {
+    const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    return num.toString().split('').map(digit => persianDigits[parseInt(digit)]).join('');
+  };
+
   const recipeData = {
     name: "قرمه سبزی",
     time: "۲ ساعت",
@@ -260,7 +265,7 @@ const RecipePreview = () => {
                 ].map((step, index) => (
                   <div key={index} className="flex gap-3">
                     <div className="w-8 h-8 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-bold text-primary-foreground">{index + 1}</span>
+                      <span className="text-sm font-bold text-primary-foreground">{toPersianNumber(index + 1)}</span>
                     </div>
                     <p className="text-foreground/90 pt-1 text-sm leading-relaxed">{step}</p>
                   </div>
