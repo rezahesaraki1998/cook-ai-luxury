@@ -48,7 +48,7 @@ const SmartSuggestions = () => {
             {suggestions.map((suggestion, index) => (
               <Card 
                 key={index}
-                className="glass-card p-6 border border-primary/20 hover:border-primary/40 cursor-pointer group smooth-transition hover:scale-105 hover:shadow-gold"
+                className="glass-card p-6 border-2 border-black/15 hover:border-black/30 cursor-pointer group smooth-transition hover:scale-105 hover:shadow-gold"
               >
                 <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${suggestion.gradient} flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition`}>
                   <suggestion.icon className="w-8 h-8 text-primary" />
