@@ -65,7 +65,7 @@ const HeroSection = () => {
             {["قرمه سبزی", "کباب کوبیده", "فسنجان", "کوکو سبزی"].map((item) => (
               <button
                 key={item}
-                className="px-4 py-2 rounded-full border border-border/50 text-sm hover:border-primary/50 hover:bg-primary/5 smooth-transition"
+                className="px-4 py-2 rounded-full border-2 border-black/15 dark:border-border/50 text-sm hover:border-primary/50 hover:bg-primary/5 smooth-transition"
               >
                 {item}
               </button>
