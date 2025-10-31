@@ -1,8 +1,55 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Sparkles, ChefHat } from "lucide-react";
+import { Mic, Sparkles, ChefHat, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const HeroSection = () => {
+  const [prompt, setPrompt] = useState("");
+  const [recipe, setRecipe] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const { toast } = useToast();
+
+  const handleGenerateRecipe = async () => {
+    if (!prompt.trim()) {
+      toast({
+        title: "خطا",
+        description: "لطفاً نام غذا یا مواد مورد نیاز را وارد کنید",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('recipe-ai', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+
+      setRecipe(data.recipe);
+      setShowDialog(true);
+    } catch (error) {
+      console.error('Error generating recipe:', error);
+      toast({
+        title: "خطا",
+        description: "مشکلی در ایجاد دستور پخت پیش آمد. لطفاً دوباره تلاش کنید.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Animated Background Elements */}
@@ -39,11 +86,16 @@ const HeroSection = () => {
                 <Input
                   placeholder="مثلاً: قرمه سبزی می‌خوام درست کنم..."
                   className="flex-1 bg-transparent border-0 text-lg focus-visible:ring-0 placeholder:text-muted-foreground/60"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleGenerateRecipe()}
+                  disabled={isLoading}
                 />
                 <Button
                   size="icon"
                   variant="ghost"
                   className="w-12 h-12 rounded-xl hover:bg-primary/10 smooth-transition"
+                  disabled
                 >
                   <Mic className="w-5 h-5 text-primary" />
                 </Button>
@@ -53,9 +105,20 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="w-full md:w-auto gradient-gold text-primary-foreground text-lg px-8 py-6 shadow-gold hover:shadow-warm smooth-transition hover:scale-105 group"
+              onClick={handleGenerateRecipe}
+              disabled={isLoading}
             >
-              <ChefHat className="w-5 h-5 ml-2 group-hover:rotate-12 smooth-transition" />
-              دستور پخت منو بساز
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                  در حال ایجاد...
+                </>
+              ) : (
+                <>
+                  <ChefHat className="w-5 h-5 ml-2 group-hover:rotate-12 smooth-transition" />
+                  دستور پخت منو بساز
+                </>
+              )}
             </Button>
           </div>
 
@@ -66,6 +129,11 @@ const HeroSection = () => {
               <button
                 key={item}
                 className="px-4 py-2 rounded-full border-2 border-black/15 dark:border-border/50 text-sm hover:border-primary/50 hover:bg-primary/5 smooth-transition"
+                onClick={() => {
+                  setPrompt(item);
+                  handleGenerateRecipe();
+                }}
+                disabled={isLoading}
               >
                 {item}
               </button>
@@ -73,6 +141,20 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Recipe Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-gradient-gold">دستور پخت</DialogTitle>
+          </DialogHeader>
+          <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none">
+            <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+              {recipe}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
