@@ -13,44 +13,64 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    const apiKey = Deno.env.get('DEEPSEEK_API_KEY');
+    const apiKey = Deno.env.get('GOOGLE_API_KEY');
 
     if (!apiKey) {
-      throw new Error('DEEPSEEK_API_KEY is not configured');
+      throw new Error('GOOGLE_API_KEY is not configured');
     }
 
-    console.log('Calling DeepSeek API with prompt:', prompt);
+    console.log('Calling Google Gemini API with prompt:', prompt);
 
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'شما یک دستیار آشپزی هستید. وقتی کاربر نام یک غذا می‌گوید، دستور پخت را به این فرمت دقیق پاسخ دهید:\n\n## نام غذا\n[نام غذا]\n\n## مواد لازم\n- [ماده اول با مقدار]\n- [ماده دوم با مقدار]\n...\n\n## مراحل پخت\n1. [مرحله اول]\n2. [مرحله دوم]\n...\n\n## نکات مهم\n- [نکته اول]\n- [نکته دوم]\n...\n\nحتما از این فرمت دقیق استفاده کنید.' 
-          },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000,
+        contents: [{
+          parts: [{
+            text: `شما یک دستیار آشپزی هستید. وقتی کاربر نام یک غذا می‌گوید، دستور پخت را به این فرمت دقیق پاسخ دهید:
+
+## نام غذا
+[نام غذا]
+
+## مواد لازم
+- [ماده اول با مقدار]
+- [ماده دوم با مقدار]
+...
+
+## مراحل پخت
+1. [مرحله اول]
+2. [مرحله دوم]
+...
+
+## نکات مهم
+- [نکته اول]
+- [نکته دوم]
+...
+
+حتما از این فرمت دقیق استفاده کنید.
+
+درخواست کاربر: ${prompt}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2000,
+        }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('DeepSeek API error:', response.status, errorText);
-      throw new Error(`DeepSeek API error: ${response.status}`);
+      console.error('Google Gemini API error:', response.status, errorText);
+      throw new Error(`Google Gemini API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('DeepSeek API response received');
+    console.log('Google Gemini API response received');
     
-    const recipe = data.choices[0].message.content;
+    const recipe = data.candidates[0].content.parts[0].text;
 
     return new Response(JSON.stringify({ recipe }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
