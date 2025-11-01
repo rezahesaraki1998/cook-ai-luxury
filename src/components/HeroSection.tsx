@@ -146,12 +146,30 @@ const HeroSection = () => {
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-gradient-gold">دستور پخت</DialogTitle>
+            <DialogTitle className="text-2xl text-gradient-gold">
+              {recipe.split('\n')[0].replace('## ', '') || 'دستور پخت'}
+            </DialogTitle>
           </DialogHeader>
-          <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none">
-            <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-              {recipe}
-            </div>
+          <div className="space-y-6 text-foreground">
+            {recipe.split('## ').map((section, index) => {
+              if (index === 0 || !section.trim()) return null;
+              
+              const [title, ...content] = section.split('\n');
+              const sectionContent = content.join('\n').trim();
+              
+              if (!sectionContent) return null;
+              
+              return (
+                <div key={index} className="space-y-3">
+                  <h3 className="text-lg font-semibold text-primary">{title.trim()}</h3>
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <div className="whitespace-pre-wrap leading-relaxed">
+                      {sectionContent}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </DialogContent>
       </Dialog>
