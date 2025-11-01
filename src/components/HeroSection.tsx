@@ -4,18 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Mic, Sparkles, ChefHat, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 const HeroSection = () => {
   const [prompt, setPrompt] = useState("");
   const [recipe, setRecipe] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
   const { toast } = useToast();
 
   const handleGenerateRecipe = async () => {
@@ -37,7 +30,6 @@ const HeroSection = () => {
       if (error) throw error;
 
       setRecipe(data.recipe);
-      setShowDialog(true);
     } catch (error) {
       console.error('Error generating recipe:', error);
       toast({
@@ -139,73 +131,75 @@ const HeroSection = () => {
               </button>
             ))}
           </div>
+
+          {/* Recipe Results */}
+          {recipe && (
+            <div className="mt-12 animate-slide-up text-right">
+              <div className="glass-card rounded-2xl border-2 border-primary/20 shadow-gold p-8">
+                <div className="border-b border-primary/20 pb-6 mb-8">
+                  <h2 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                    <ChefHat className="w-8 h-8 text-primary" />
+                    {recipe.split('## ')[1]?.split('\n')[0] || 'دستور پخت'}
+                  </h2>
+                </div>
+                
+                <div className="space-y-8">
+                  {recipe.split('## ').slice(2).map((section, index) => {
+                    if (!section.trim()) return null;
+                    
+                    const [title, ...content] = section.split('\n');
+                    const sectionContent = content.filter(line => line.trim()).join('\n').trim();
+                    
+                    if (!sectionContent) return null;
+                    
+                    const sectionTitle = title.trim();
+                    
+                    return (
+                      <div key={index} className="space-y-4">
+                        <div className="flex items-center gap-2 border-b-2 border-primary/20 pb-3">
+                          <h3 className="text-2xl font-bold text-primary">{sectionTitle}</h3>
+                        </div>
+                        <div className="glass-card rounded-xl p-6 border border-primary/10">
+                          {sectionTitle === 'مواد لازم' ? (
+                            <ul className="space-y-3">
+                              {sectionContent.split('\n').map((item, i) => (
+                                <li key={i} className="flex items-start gap-3 text-foreground">
+                                  <span className="text-primary mt-1 text-lg">●</span>
+                                  <span className="leading-relaxed text-lg">{item.replace(/^-\s*/, '')}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : sectionTitle === 'مراحل پخت' ? (
+                            <ol className="space-y-4">
+                              {sectionContent.split('\n').filter(line => line.match(/^\d+\./)).map((step, i) => (
+                                <li key={i} className="flex items-start gap-4">
+                                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                                    {i + 1}
+                                  </span>
+                                  <span className="leading-relaxed text-foreground pt-1 text-lg">{step.replace(/^\d+\.\s*/, '')}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          ) : (
+                            <ul className="space-y-3">
+                              {sectionContent.split('\n').map((item, i) => (
+                                <li key={i} className="flex items-start gap-3 text-foreground">
+                                  <span className="text-primary mt-1 text-lg">✓</span>
+                                  <span className="leading-relaxed text-lg">{item.replace(/^-\s*/, '')}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Recipe Dialog */}
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader className="border-b pb-4">
-            <DialogTitle className="text-3xl font-bold text-gradient-gold flex items-center gap-2">
-              <ChefHat className="w-8 h-8" />
-              {recipe.split('## ')[1]?.split('\n')[0] || 'دستور پخت'}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 py-4">
-            {recipe.split('## ').slice(2).map((section, index) => {
-              if (!section.trim()) return null;
-              
-              const [title, ...content] = section.split('\n');
-              const sectionContent = content.filter(line => line.trim()).join('\n').trim();
-              
-              if (!sectionContent) return null;
-              
-              const sectionTitle = title.trim();
-              
-              return (
-                <div key={index} className="space-y-3">
-                  <div className="flex items-center gap-2 border-b-2 border-primary/20 pb-2">
-                    <h3 className="text-xl font-bold text-primary">{sectionTitle}</h3>
-                  </div>
-                  <div className="glass-card rounded-xl p-5 border border-primary/10">
-                    {sectionTitle === 'مواد لازم' ? (
-                      <ul className="space-y-2">
-                        {sectionContent.split('\n').map((item, i) => (
-                          <li key={i} className="flex items-start gap-3 text-foreground">
-                            <span className="text-primary mt-1">●</span>
-                            <span className="leading-relaxed">{item.replace(/^-\s*/, '')}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : sectionTitle === 'مراحل پخت' ? (
-                      <ol className="space-y-3">
-                        {sectionContent.split('\n').filter(line => line.match(/^\d+\./)).map((step, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
-                              {i + 1}
-                            </span>
-                            <span className="leading-relaxed text-foreground pt-1">{step.replace(/^\d+\.\s*/, '')}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    ) : (
-                      <ul className="space-y-2">
-                        {sectionContent.split('\n').map((item, i) => (
-                          <li key={i} className="flex items-start gap-3 text-foreground">
-                            <span className="text-primary mt-1">✓</span>
-                            <span className="leading-relaxed">{item.replace(/^-\s*/, '')}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };
