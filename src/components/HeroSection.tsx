@@ -1,17 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mic, Sparkles, ChefHat, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { User } from "@supabase/supabase-js";
 
 const HeroSection = () => {
   const [prompt, setPrompt] = useState("");
   const [recipe, setRecipe] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleGenerateRecipe = async () => {
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: "ورود لازم است",
+        description: "برای جستجوی دستور پخت، ابتدا باید وارد شوید یا ثبت‌نام کنید",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
     if (!prompt.trim()) {
       toast({
         title: "خطا",
