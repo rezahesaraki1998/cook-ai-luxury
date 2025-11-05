@@ -12,6 +12,10 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,6 +39,37 @@ const Auth = () => {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation for signup
+    if (!isLogin) {
+      if (password !== confirmPassword) {
+        toast({
+          title: "خطا",
+          description: "رمز عبور و تکرار آن یکسان نیستند",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!firstName.trim() || !lastName.trim()) {
+        toast({
+          title: "خطا",
+          description: "لطفاً نام و نام خانوادگی را وارد کنید",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!phone.trim()) {
+        toast({
+          title: "خطا",
+          description: "لطفاً شماره موبایل را وارد کنید",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {
@@ -56,6 +91,11 @@ const Auth = () => {
           password,
           options: {
             emailRedirectTo: redirectUrl,
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+              phone: phone,
+            }
           },
         });
         if (error) throw error;
@@ -97,6 +137,53 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
+          {!isLogin && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-foreground">
+                  نام
+                </Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  placeholder="نام خود را وارد کنید"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-foreground">
+                  نام خانوادگی
+                </Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  placeholder="نام خانوادگی خود را وارد کنید"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-foreground">
+                  شماره موبایل
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  placeholder="09123456789"
+                  dir="ltr"
+                />
+              </div>
+            </>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="email" className="text-foreground">
               ایمیل
@@ -135,6 +222,28 @@ const Auth = () => {
               />
             </div>
           </div>
+
+          {!isLogin && (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-foreground">
+                تکرار رمز عبور
+              </Label>
+              <div className="relative">
+                <Lock className="absolute right-3 top-3 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="pr-10"
+                  placeholder="••••••••"
+                  dir="ltr"
+                  minLength={6}
+                />
+              </div>
+            </div>
+          )}
 
           <Button
             type="submit"
