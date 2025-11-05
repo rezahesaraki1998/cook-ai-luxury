@@ -10,6 +10,7 @@ import { ChefHat, Mail, Lock, Loader2 } from "lucide-react";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,6 +37,44 @@ const Auth = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast({
+        title: "خطا",
+        description: "لطفاً ایمیل خود را وارد کنید",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const redirectUrl = `${window.location.origin}/auth`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "ایمیل ارسال شد",
+        description: "لینک بازیابی رمز عبور به ایمیل شما ارسال شد",
+      });
+      
+      setIsForgotPassword(false);
+    } catch (error: any) {
+      toast({
+        title: "خطا",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,16 +166,65 @@ const Auth = () => {
             <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی</h1>
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isLogin ? "ورود به حساب" : "ثبت‌نام"}
+            {isForgotPassword ? "بازیابی رمز عبور" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
           </h2>
           <p className="text-muted-foreground">
-            {isLogin
+            {isForgotPassword
+              ? "ایمیل خود را وارد کنید تا لینک بازیابی برایتان ارسال شود"
+              : isLogin
               ? "برای دسترسی به علاقه‌مندی‌ها وارد شوید"
               : "برای شروع یک حساب بسازید"}
           </p>
         </div>
 
-        <form onSubmit={handleAuth} className="space-y-4">
+        {isForgotPassword ? (
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-foreground">
+                ایمیل
+              </Label>
+              <div className="relative">
+                <Mail className="absolute right-3 top-3 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="pr-10"
+                  placeholder="your@email.com"
+                  dir="ltr"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  در حال ارسال...
+                </>
+              ) : (
+                "ارسال لینک بازیابی"
+              )}
+            </Button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsForgotPassword(false)}
+                className="text-sm text-muted-foreground hover:text-primary smooth-transition"
+              >
+                بازگشت به ورود
+              </button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={handleAuth} className="space-y-4">
           {!isLogin && (
             <>
               <div className="space-y-2">
@@ -261,26 +349,42 @@ const Auth = () => {
               "ثبت‌نام"
             )}
           </Button>
-        </form>
 
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-muted-foreground hover:text-primary smooth-transition"
-          >
-            {isLogin ? (
-              <>
-                حساب کاربری ندارید؟{" "}
-                <span className="text-primary font-semibold">ثبت‌نام کنید</span>
-              </>
-            ) : (
-              <>
-                قبلاً ثبت‌نام کرده‌اید؟{" "}
-                <span className="text-primary font-semibold">وارد شوید</span>
-              </>
-            )}
-          </button>
-        </div>
+          {isLogin && (
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsForgotPassword(true)}
+                className="text-sm text-muted-foreground hover:text-primary smooth-transition"
+              >
+                رمز عبور را فراموش کرده‌اید؟
+              </button>
+            </div>
+          )}
+        </form>
+        )}
+
+        {!isForgotPassword && (
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="text-sm text-muted-foreground hover:text-primary smooth-transition"
+            >
+              {isLogin ? (
+                <>
+                  حساب کاربری ندارید؟{" "}
+                  <span className="text-primary font-semibold">ثبت‌نام کنید</span>
+                </>
+              ) : (
+                <>
+                  قبلاً ثبت‌نام کرده‌اید؟{" "}
+                  <span className="text-primary font-semibold">وارد شوید</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </Card>
     </div>
   );
