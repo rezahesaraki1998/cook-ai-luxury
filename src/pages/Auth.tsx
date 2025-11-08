@@ -145,9 +145,22 @@ const Auth = () => {
         });
       }
     } catch (error: any) {
+      let errorMessage = error.message;
+      
+      // Handle duplicate email
+      if (error.message?.includes("User already registered") || 
+          error.message?.includes("user_already_exists")) {
+        errorMessage = "این ایمیل قبلاً در سیستم ثبت شده است";
+      }
+      
+      // Handle duplicate phone number
+      if (error.message?.includes("profiles_phone_unique")) {
+        errorMessage = "این شماره موبایل قبلاً در سیستم ثبت شده است";
+      }
+      
       toast({
         title: "خطا",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
