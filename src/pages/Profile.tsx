@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { User, Heart, LogOut, ArrowRight, Trash2 } from "lucide-react";
+import { User, Heart, LogOut, ArrowRight, Trash2, Camera } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -19,6 +20,9 @@ const Profile = () => {
   const [user, setUser] = useState<any>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -44,8 +48,23 @@ const Profile = () => {
     } else {
       setUser(session.user);
       await loadFavorites(session.user.id);
+      await loadProfile(session.user.id);
     }
     setLoading(false);
+  };
+
+  const loadProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error loading profile:", error);
+    } else if (data) {
+      setAvatarUrl(data.avatar_url);
+    }
   };
 
   const loadFavorites = async (userId: string) => {
@@ -96,6 +115,88 @@ const Profile = () => {
     }
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "خطا",
+        description: "لطفاً یک فایل تصویری انتخاب کنید",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "خطا",
+        description: "حجم فایل نباید بیشتر از 2 مگابایت باشد",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      // Delete old avatar if exists
+      if (avatarUrl) {
+        const oldPath = avatarUrl.split("/").pop();
+        if (oldPath) {
+          await supabase.storage
+            .from("avatars")
+            .remove([`${user.id}/${oldPath}`]);
+        }
+      }
+
+      // Upload new avatar
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("id", user.id);
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
+      toast({
+        title: "موفق",
+        description: "عکس پروفایل با موفقیت به‌روزرسانی شد",
+      });
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      toast({
+        title: "خطا",
+        description: "مشکل در آپلود عکس پروفایل",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -113,8 +214,29 @@ const Profile = () => {
           {/* Profile Header */}
           <Card className="glass-card p-6 md:p-8 border border-primary/20 mb-8">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-              <div className="w-20 h-20 rounded-full gradient-gold flex items-center justify-center">
-                <User className="w-10 h-10 text-primary-foreground" />
+              <div className="relative">
+                <Avatar className="w-20 h-20 cursor-pointer" onClick={handleAvatarClick}>
+                  <AvatarImage src={avatarUrl || undefined} alt="Profile" />
+                  <AvatarFallback className="gradient-gold">
+                    <User className="w-10 h-10 text-primary-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-primary/30 bg-background"
+                  onClick={handleAvatarClick}
+                  disabled={uploading}
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </div>
               <div className="flex-1 text-center md:text-right">
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
