@@ -13,23 +13,28 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    const apiKey = Deno.env.get('GOOGLE_API_KEY');
+    const apiKey = Deno.env.get('OPENROUTER_API_KEY');
 
     if (!apiKey) {
-      throw new Error('GOOGLE_API_KEY is not configured');
+      throw new Error('OPENROUTER_API_KEY is not configured');
     }
 
-    console.log('Calling Google Gemini API with prompt:', prompt);
+    console.log('Calling OpenRouter API with prompt:', prompt);
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://lovable.dev',
+        'X-Title': 'Recipe AI'
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `شما یک دستیار آشپزی هستید. وقتی کاربر نام یک غذا می‌گوید، دستور پخت را به این فرمت دقیق پاسخ دهید:
+        model: 'google/gemini-2.0-flash-exp',
+        messages: [
+          {
+            role: 'system',
+            content: `شما یک دستیار آشپزی هستید. وقتی کاربر نام یک غذا می‌گوید، دستور پخت را به این فرمت دقیق پاسخ دهید:
 
 ## نام غذا
 [نام غذا]
@@ -49,28 +54,28 @@ serve(async (req) => {
 - [نکته دوم]
 ...
 
-حتما از این فرمت دقیق استفاده کنید.
-
-درخواست کاربر: ${prompt}`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2000,
-        }
+حتما از این فرمت دقیق استفاده کنید.`
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Google Gemini API error:', response.status, errorText);
-      throw new Error(`Google Gemini API error: ${response.status}`);
+      console.error('OpenRouter API error:', response.status, errorText);
+      throw new Error(`OpenRouter API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('Google Gemini API response received');
+    console.log('OpenRouter API response received');
     
-    const recipe = data.candidates[0].content.parts[0].text;
+    const recipe = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ recipe }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
