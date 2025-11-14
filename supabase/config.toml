@@ -1,4 +1,4 @@
 project_id = "fuglusoqvocitypaemky"
 
 [functions.recipe-ai]
-verify_jwt = false
+verify_jwt = true

@@ -13,13 +13,29 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
+    
+    // Input validation
+    if (!prompt || typeof prompt !== 'string') {
+      throw new Error('Invalid prompt');
+    }
+    
+    const cleanPrompt = prompt.trim();
+    
+    if (cleanPrompt.length === 0) {
+      throw new Error('Prompt cannot be empty');
+    }
+    
+    if (cleanPrompt.length > 500) {
+      throw new Error('Prompt is too long. Maximum 500 characters allowed.');
+    }
+    
     const apiKey = Deno.env.get('OPENROUTER_API_KEY');
 
     if (!apiKey) {
       throw new Error('OPENROUTER_API_KEY is not configured');
     }
 
-    console.log('Calling OpenRouter API with prompt:', prompt);
+    console.log('Calling OpenRouter API with validated prompt');
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -58,7 +74,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: prompt
+            content: cleanPrompt
           }
         ],
         temperature: 0.7,
