@@ -11,12 +11,14 @@ import { ChefHat, Mail, Lock, Loader2 } from "lucide-react";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -69,6 +71,46 @@ const Auth = () => {
       toast({
         title: "خطا",
         description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!verificationCode.trim() || verificationCode.length !== 6) {
+      toast({
+        title: "خطا",
+        description: "لطفاً کد تأیید 6 رقمی را وارد کنید",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: verificationCode,
+        type: 'email',
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "تأیید موفق!",
+        description: "ایمیل شما تأیید شد و وارد شدید",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "خطا",
+        description: "کد تأیید نامعتبر یا منقضی شده است",
         variant: "destructive",
       });
     } finally {
@@ -140,9 +182,11 @@ const Auth = () => {
         if (error) throw error;
 
         toast({
-          title: "ثبت‌نام موفق!",
-          description: "حساب کاربری شما ایجاد شد",
+          title: "کد تأیید ارسال شد!",
+          description: "لطفاً کد 6 رقمی ارسال شده به ایمیلتان را وارد کنید",
         });
+        
+        setIsVerifying(true);
       }
     } catch (error: any) {
       let errorMessage = error.message;
@@ -179,11 +223,13 @@ const Auth = () => {
             <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی</h1>
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isForgotPassword ? "بازیابی رمز عبور" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
+            {isForgotPassword ? "بازیابی رمز عبور" : isVerifying ? "تأیید ایمیل" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
           </h2>
           <p className="text-muted-foreground">
             {isForgotPassword
               ? "ایمیل خود را وارد کنید تا لینک بازیابی برایتان ارسال شود"
+              : isVerifying
+              ? "کد تأیید ارسال شده به ایمیلتان را وارد کنید"
               : isLogin
               ? "برای دسترسی به علاقه‌مندی‌ها وارد شوید"
               : "برای شروع یک حساب بسازید"}
@@ -233,6 +279,56 @@ const Auth = () => {
                 className="text-sm text-muted-foreground hover:text-primary smooth-transition"
               >
                 بازگشت به ورود
+              </button>
+            </div>
+          </form>
+        ) : isVerifying ? (
+          <form onSubmit={handleVerifyEmail} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="verificationCode" className="text-foreground">
+                کد تأیید
+              </Label>
+              <Input
+                id="verificationCode"
+                type="text"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                required
+                placeholder="123456"
+                dir="ltr"
+                maxLength={6}
+                className="text-center text-2xl tracking-widest font-mono"
+              />
+              <p className="text-sm text-muted-foreground text-center">
+                کد 6 رقمی ارسال شده به {email} را وارد کنید
+              </p>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  در حال تأیید...
+                </>
+              ) : (
+                "تأیید کد"
+              )}
+            </Button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsVerifying(false);
+                  setVerificationCode("");
+                }}
+                className="text-sm text-muted-foreground hover:text-primary smooth-transition"
+              >
+                بازگشت
               </button>
             </div>
           </form>
@@ -377,7 +473,7 @@ const Auth = () => {
         </form>
         )}
 
-        {!isForgotPassword && (
+        {!isForgotPassword && !isVerifying && (
           <div className="mt-6 text-center">
             <button
               type="button"
