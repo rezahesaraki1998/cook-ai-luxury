@@ -78,7 +78,7 @@ const Auth = () => {
     }
   };
 
-  const handleVerifyEmail = async (e: React.FormEvent) => {
+  const handleVerifySmsOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!verificationCode.trim() || verificationCode.length !== 6) {
@@ -93,24 +93,42 @@ const Auth = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: verificationCode,
-        type: 'email',
+      const { data, error } = await supabase.functions.invoke('verify-sms-otp', {
+        body: {
+          phone: phone,
+          code: verificationCode,
+        }
       });
       
       if (error) throw error;
       
+      // Now sign up the user with Supabase Auth
+      const redirectUrl = `${window.location.origin}/`;
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+          }
+        },
+      });
+      
+      if (signUpError) throw signUpError;
+      
       toast({
         title: "تأیید موفق!",
-        description: "ایمیل شما تأیید شد و وارد شدید",
+        description: "شماره موبایل شما تأیید شد و ثبت نام انجام شد",
       });
       
       navigate("/");
     } catch (error: any) {
       toast({
         title: "خطا",
-        description: "کد تأیید نامعتبر یا منقضی شده است",
+        description: error.message || "کد تأیید نامعتبر یا منقضی شده است",
         variant: "destructive",
       });
     } finally {
@@ -166,24 +184,18 @@ const Auth = () => {
           description: "با موفقیت وارد شدید",
         });
       } else {
-        const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl,
-            data: {
-              first_name: firstName,
-              last_name: lastName,
-              phone: phone,
-            }
-          },
+        // Send SMS OTP via edge function
+        const { data, error: smsError } = await supabase.functions.invoke('send-sms-otp', {
+          body: {
+            phone: phone,
+          }
         });
-        if (error) throw error;
+        
+        if (smsError) throw smsError;
 
         toast({
           title: "کد تأیید ارسال شد!",
-          description: "لطفاً کد 6 رقمی ارسال شده به ایمیلتان را وارد کنید",
+          description: "لطفاً کد 6 رقمی ارسال شده به شماره موبایل خود را وارد کنید",
         });
         
         setIsVerifying(true);
@@ -223,13 +235,13 @@ const Auth = () => {
             <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی</h1>
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isForgotPassword ? "بازیابی رمز عبور" : isVerifying ? "تأیید ایمیل" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
+            {isForgotPassword ? "بازیابی رمز عبور" : isVerifying ? "تأیید شماره موبایل" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
           </h2>
           <p className="text-muted-foreground">
             {isForgotPassword
               ? "ایمیل خود را وارد کنید تا لینک بازیابی برایتان ارسال شود"
               : isVerifying
-              ? "کد تأیید ارسال شده به ایمیلتان را وارد کنید"
+              ? "کد تأیید ارسال شده به شماره موبایل خود را وارد کنید"
               : isLogin
               ? "برای دسترسی به علاقه‌مندی‌ها وارد شوید"
               : "برای شروع یک حساب بسازید"}
@@ -283,7 +295,7 @@ const Auth = () => {
             </div>
           </form>
         ) : isVerifying ? (
-          <form onSubmit={handleVerifyEmail} className="space-y-4">
+          <form onSubmit={handleVerifySmsOtp} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="verificationCode" className="text-foreground">
                 کد تأیید
@@ -300,7 +312,7 @@ const Auth = () => {
                 className="text-center text-2xl tracking-widest font-mono"
               />
               <p className="text-sm text-muted-foreground text-center">
-                کد 6 رقمی ارسال شده به {email} را وارد کنید
+                کد 6 رقمی ارسال شده به {phone} را وارد کنید
               </p>
             </div>
 
