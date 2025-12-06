@@ -57,30 +57,38 @@ serve(async (req) => {
       );
     }
 
-    // Send SMS via Kavenegar
-    const kavenegarApiKey = Deno.env.get('KAVENEGAR_API_KEY');
-    const kavenegarUrl = `https://api.kavenegar.com/v1/${kavenegarApiKey}/verify/lookup.json`;
+    // Send SMS via sms.ir
+    const smsirApiKey = Deno.env.get('SMSIR_API_KEY');
+    const smsirTemplateId = Deno.env.get('SMSIR_TEMPLATE_ID');
     
-    const formData = new URLSearchParams();
-    formData.append('receptor', phone);
-    formData.append('token', code);
-    formData.append('template', 'verify'); // Default template name in Kavenegar
+    console.log('Using sms.ir API with template ID:', smsirTemplateId);
 
-    const smsResponse = await fetch(kavenegarUrl, {
+    const smsResponse = await fetch('https://api.sms.ir/v1/send/verify', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-api-key': smsirApiKey!,
       },
-      body: formData.toString(),
+      body: JSON.stringify({
+        mobile: phone,
+        templateId: parseInt(smsirTemplateId!, 10),
+        parameters: [
+          {
+            name: "CODE",
+            value: code
+          }
+        ]
+      }),
     });
 
     const smsResult = await smsResponse.json();
-    console.log('Kavenegar response:', smsResult);
+    console.log('sms.ir response:', smsResult);
 
-    if (smsResult.return?.status !== 200) {
+    if (smsResult.status !== 1) {
       console.error('SMS sending failed:', smsResult);
       return new Response(
-        JSON.stringify({ error: 'خطا در ارسال پیامک' }),
+        JSON.stringify({ error: smsResult.message || 'خطا در ارسال پیامک' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
