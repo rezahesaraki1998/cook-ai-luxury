@@ -12,7 +12,12 @@ serve(async (req) => {
   }
 
   try {
-    const { phone, code } = await req.json();
+    let { phone, code } = await req.json();
+    
+    // Normalize phone number - convert +98 to 0
+    if (phone && phone.startsWith('+98')) {
+      phone = '0' + phone.slice(3);
+    }
     
     console.log('Verifying SMS OTP for phone:', phone);
 

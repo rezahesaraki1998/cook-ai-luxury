@@ -12,11 +12,18 @@ serve(async (req) => {
   }
 
   try {
-    const { phone } = await req.json();
+    let { phone } = await req.json();
     
-    console.log('Sending SMS OTP to:', phone);
+    console.log('Received phone:', phone);
 
-    // Validate phone number
+    // Normalize phone number - convert +98 to 0
+    if (phone && phone.startsWith('+98')) {
+      phone = '0' + phone.slice(3);
+    }
+    
+    console.log('Normalized phone:', phone);
+
+    // Validate phone number (must be 09xxxxxxxxx format after normalization)
     if (!phone || !/^09\d{9}$/.test(phone)) {
       return new Response(
         JSON.stringify({ error: 'شماره موبایل معتبر نیست' }),
