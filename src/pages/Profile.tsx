@@ -209,26 +209,26 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 py-16 md:py-20">
         <div className="max-w-4xl mx-auto">
           {/* Profile Header */}
-          <Card className="glass-card p-6 md:p-8 border border-primary/20 mb-8">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <Card className="glass-card p-4 md:p-6 lg:p-8 border border-primary/20 mb-6 md:mb-8">
+            <div className="flex flex-col items-center gap-4 md:gap-6 md:flex-row md:items-start">
               <div className="relative">
-                <Avatar className="w-20 h-20 cursor-pointer" onClick={handleAvatarClick}>
+                <Avatar className="w-16 h-16 md:w-20 md:h-20 cursor-pointer" onClick={handleAvatarClick}>
                   <AvatarImage src={avatarUrl || undefined} alt="Profile" />
                   <AvatarFallback className="gradient-gold">
-                    <User className="w-10 h-10 text-primary-foreground" />
+                    <User className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground" />
                   </AvatarFallback>
                 </Avatar>
                 <Button
                   size="icon"
                   variant="outline"
-                  className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full border-primary/30 bg-background"
+                  className="absolute -bottom-1 -right-1 h-7 w-7 md:h-8 md:w-8 rounded-full border-primary/30 bg-background"
                   onClick={handleAvatarClick}
                   disabled={uploading}
                 >
-                  <Camera className="w-4 h-4" />
+                  <Camera className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 </Button>
                 <input
                   ref={fileInputRef}
@@ -239,29 +239,31 @@ const Profile = () => {
                 />
               </div>
               <div className="flex-1 text-center md:text-right">
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-1 md:mb-2">
                   پروفایل من
                 </h1>
-                <p className="text-muted-foreground mb-1">{user?.email}</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm md:text-base mb-0.5 md:mb-1 truncate max-w-[200px] md:max-w-none mx-auto md:mx-0">{user?.email}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   {favorites.length} دستور پخت در علاقه‌مندی‌ها
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2 md:gap-3 w-full md:w-auto">
                 <Button
                   onClick={() => navigate("/")}
                   variant="outline"
-                  className="border-primary/30"
+                  className="flex-1 md:flex-none border-primary/30 text-sm"
+                  size="sm"
                 >
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
                   بازگشت
                 </Button>
                 <Button
                   onClick={handleLogout}
                   variant="outline"
-                  className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                  size="sm"
+                  className="flex-1 md:flex-none border-destructive/50 text-destructive hover:bg-destructive/10 text-sm"
                 >
-                  <LogOut className="w-4 h-4 ml-2" />
+                  <LogOut className="w-4 h-4 ml-1 md:ml-2" />
                   خروج
                 </Button>
               </div>
@@ -269,21 +271,21 @@ const Profile = () => {
           </Card>
 
           {/* Favorites Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-6">
-              <Heart className="w-6 h-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">
+          <div className="space-y-3 md:space-y-4">
+            <div className="flex items-center gap-2 mb-4 md:mb-6">
+              <Heart className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <h2 className="text-lg md:text-2xl font-bold text-foreground">
                 دستورهای مورد علاقه من
               </h2>
             </div>
 
             {favorites.length === 0 ? (
-              <Card className="glass-card p-12 border border-primary/20 text-center">
-                <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">
+              <Card className="glass-card p-8 md:p-12 border border-primary/20 text-center">
+                <Heart className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground mx-auto mb-3 md:mb-4 opacity-50" />
+                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                   هنوز دستوری اضافه نکردید
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
                   با کلیک روی دکمه قلب، دستورهای مورد علاقه خود را ذخیره کنید
                 </p>
                 <Button
@@ -294,18 +296,18 @@ const Profile = () => {
                 </Button>
               </Card>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid gap-3 md:gap-4">
                 {favorites.map((favorite) => (
                   <Card
                     key={favorite.id}
-                    className="glass-card p-6 border border-primary/20 hover:border-primary/40 smooth-transition"
+                    className="glass-card p-4 md:p-6 border border-primary/20 hover:border-primary/40 smooth-transition"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-foreground mb-2">
+                    <div className="flex items-start justify-between gap-3 md:gap-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-1 md:mb-2 truncate">
                           {favorite.recipe_name}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs md:text-sm text-muted-foreground">
                           افزوده شده در:{" "}
                           {new Date(favorite.created_at).toLocaleDateString("fa-IR")}
                         </p>
@@ -314,9 +316,9 @@ const Profile = () => {
                         onClick={() => handleDeleteFavorite(favorite.id)}
                         variant="outline"
                         size="icon"
-                        className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                        className="border-destructive/50 text-destructive hover:bg-destructive/10 flex-shrink-0 w-8 h-8 md:w-10 md:h-10"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                       </Button>
                     </div>
                   </Card>
