@@ -11,6 +11,12 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // SMS OTP temporarily disabled for security review
+  return new Response(
+    JSON.stringify({ error: 'سرویس پیامک موقتاً غیرفعال است' }),
+    { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+  );
+
   try {
     let { phone, code } = await req.json();
     
