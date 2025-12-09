@@ -248,83 +248,87 @@ const RecipePreview = () => {
   };
 
   return (
-    <section className="py-20 relative">
+    <section className="py-12 md:py-20 relative">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           {/* Section Title */}
-          <div className="text-center mb-12 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold">
+          <div className="text-center mb-8 md:mb-12 space-y-2 md:space-y-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
               <span className="text-gradient-gold">نمونه‌ای از نتیجه</span>
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-sm md:text-lg px-4">
               همین الان ببین چطور کوک‌اِی‌آی برات دستور پخت می‌سازه
             </p>
           </div>
 
           {/* Recipe Card */}
-          <Card className="glass-card p-6 md:p-8 border border-primary/20 shadow-elevation overflow-hidden">
-            <div className="grid md:grid-cols-2 gap-8">
+          <Card className="glass-card p-4 md:p-6 lg:p-8 border border-primary/20 shadow-elevation overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-8">
               {/* Recipe Image */}
-              <div className="relative rounded-2xl overflow-hidden aspect-square bg-gradient-to-br from-primary/20 to-secondary/20">
+              <div className="relative rounded-xl md:rounded-2xl overflow-hidden aspect-video md:aspect-square bg-gradient-to-br from-primary/20 to-secondary/20">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <div className="w-20 h-20 rounded-full gradient-gold mx-auto flex items-center justify-center animate-glow-pulse">
-                      <Flame className="w-10 h-10 text-primary-foreground" />
+                  <div className="text-center space-y-2 md:space-y-4">
+                    <div className="w-14 h-14 md:w-20 md:h-20 rounded-full gradient-gold mx-auto flex items-center justify-center animate-glow-pulse">
+                      <Flame className="w-7 h-7 md:w-10 md:h-10 text-primary-foreground" />
                     </div>
-                    <p className="text-muted-foreground">تصویر غذا با هوش مصنوعی</p>
+                    <p className="text-xs md:text-base text-muted-foreground">تصویر غذا با هوش مصنوعی</p>
                   </div>
                 </div>
               </div>
 
               {/* Recipe Details */}
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 <div>
-                  <h3 className="text-3xl font-bold text-foreground mb-3">{recipeData.name}</h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-primary" />
+                  <h3 className="text-xl md:text-3xl font-bold text-foreground mb-2 md:mb-3">{recipeData.name}</h3>
+                  <div className="flex flex-wrap gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
                       <span>{recipeData.time}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-primary" />
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
                       <span>{recipeData.servings}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Flame className="w-4 h-4 text-primary" />
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <Flame className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
                       <span>{recipeData.difficulty}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Ingredients */}
-                <div className="glass-card p-4 rounded-xl border border-primary/10">
-                  <h4 className="font-semibold text-primary mb-3">مواد لازم (برای {recipeData.servings}):</h4>
-                  <ul className="space-y-2.5 text-sm text-foreground/90">
-                    {recipeData.ingredients.map((ingredient, index) => (
-                      <li key={index} className="flex items-start gap-2">
+                <div className="glass-card p-3 md:p-4 rounded-lg md:rounded-xl border border-primary/10">
+                  <h4 className="font-semibold text-primary mb-2 md:mb-3 text-sm md:text-base">مواد لازم (برای {recipeData.servings}):</h4>
+                  <ul className="space-y-1.5 md:space-y-2.5 text-xs md:text-sm text-foreground/90">
+                    {recipeData.ingredients.slice(0, 5).map((ingredient, index) => (
+                      <li key={index} className="flex items-start gap-1.5 md:gap-2">
                         <span className="text-primary">•</span>
                         <span>
                           <strong>{ingredient.name}:</strong> {ingredient.amount}
-                          {ingredient.note && ` (${ingredient.note})`}
                         </span>
                       </li>
                     ))}
+                    {recipeData.ingredients.length > 5 && (
+                      <li className="text-primary text-xs md:text-sm">
+                        و {recipeData.ingredients.length - 5} ماده دیگر...
+                      </li>
+                    )}
                   </ul>
                 </div>
 
                 {/* Nutrition Info */}
-                <div className="flex gap-4">
-                  <div className="flex-1 glass-card p-3 rounded-xl text-center border border-border/50">
-                    <div className="text-2xl font-bold text-primary">{recipeData.nutrition.calories}</div>
-                    <div className="text-xs text-muted-foreground">کالری</div>
+                <div className="flex gap-2 md:gap-4">
+                  <div className="flex-1 glass-card p-2 md:p-3 rounded-lg md:rounded-xl text-center border border-border/50">
+                    <div className="text-lg md:text-2xl font-bold text-primary">{recipeData.nutrition.calories}</div>
+                    <div className="text-[10px] md:text-xs text-muted-foreground">کالری</div>
                   </div>
-                  <div className="flex-1 glass-card p-3 rounded-xl text-center border border-border/50">
-                    <div className="text-2xl font-bold text-primary">{recipeData.nutrition.protein}</div>
-                    <div className="text-xs text-muted-foreground">پروتئین</div>
+                  <div className="flex-1 glass-card p-2 md:p-3 rounded-lg md:rounded-xl text-center border border-border/50">
+                    <div className="text-lg md:text-2xl font-bold text-primary">{recipeData.nutrition.protein}</div>
+                    <div className="text-[10px] md:text-xs text-muted-foreground">پروتئین</div>
                   </div>
-                  <div className="flex-1 glass-card p-3 rounded-xl text-center border border-border/50">
-                    <div className="text-2xl font-bold text-primary">{recipeData.nutrition.carbs}</div>
-                    <div className="text-xs text-muted-foreground">کربوهیدرات</div>
+                  <div className="flex-1 glass-card p-2 md:p-3 rounded-lg md:rounded-xl text-center border border-border/50">
+                    <div className="text-lg md:text-2xl font-bold text-primary">{recipeData.nutrition.carbs}</div>
+                    <div className="text-[10px] md:text-xs text-muted-foreground">کربوهیدرات</div>
                   </div>
                 </div>
 
@@ -349,15 +353,15 @@ const RecipePreview = () => {
             </div>
 
             {/* Steps Preview */}
-            <div className="mt-8 pt-8 border-t border-border/50">
-              <h4 className="font-semibold text-lg mb-4">مراحل پخت:</h4>
-              <div className="space-y-3">
+            <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-border/50">
+              <h4 className="font-semibold text-base md:text-lg mb-3 md:mb-4">مراحل پخت:</h4>
+              <div className="space-y-2 md:space-y-3">
                 {recipeData.steps.map((step, index) => (
-                  <div key={index} className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-bold text-primary-foreground">{toPersianNumber(index + 1)}</span>
+                  <div key={index} className="flex gap-2 md:gap-3">
+                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs md:text-sm font-bold text-primary-foreground">{toPersianNumber(index + 1)}</span>
                     </div>
-                    <p className="text-foreground/90 pt-1 text-sm leading-relaxed">{step}</p>
+                    <p className="text-foreground/90 pt-0.5 md:pt-1 text-xs md:text-sm leading-relaxed">{step}</p>
                   </div>
                 ))}
               </div>
