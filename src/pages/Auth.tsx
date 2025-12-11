@@ -7,6 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ChefHat, Mail, Lock, Loader2 } from "lucide-react";
+import { z } from "zod";
+
+// Validation schemas
+const emailSchema = z.string().trim().email("ایمیل معتبر نیست").max(255, "ایمیل بیش از حد طولانی است");
+const passwordSchema = z.string().min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد").max(72, "رمز عبور بیش از حد طولانی است");
+const phoneSchema = z.string().regex(/^09\d{9}$/, "شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود");
+const nameSchema = z.string().trim().min(1, "این فیلد الزامی است").max(50, "نام بیش از حد طولانی است");
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +25,7 @@ const Auth = () => {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -76,37 +84,75 @@ const Auth = () => {
     }
   };
 
+  const validateField = (field: string, value: string): string | null => {
+    try {
+      switch (field) {
+        case 'email':
+          emailSchema.parse(value);
+          break;
+        case 'password':
+          passwordSchema.parse(value);
+          break;
+        case 'phone':
+          phoneSchema.parse(value);
+          break;
+        case 'firstName':
+        case 'lastName':
+          nameSchema.parse(value);
+          break;
+      }
+      return null;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return error.errors[0]?.message || "مقدار نامعتبر";
+      }
+      return "مقدار نامعتبر";
+    }
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
+    const newErrors: Record<string, string> = {};
+    
+    // Validate email
+    const emailError = validateField('email', email);
+    if (emailError) newErrors.email = emailError;
+    
+    // Validate password
+    const passwordError = validateField('password', password);
+    if (passwordError) newErrors.password = passwordError;
     
     // Validation for signup
     if (!isLogin) {
+      // Validate confirm password
       if (password !== confirmPassword) {
-        toast({
-          title: "خطا",
-          description: "رمز عبور و تکرار آن یکسان نیستند",
-          variant: "destructive",
-        });
-        return;
+        newErrors.confirmPassword = "رمز عبور و تکرار آن یکسان نیستند";
       }
       
-      if (!firstName.trim() || !lastName.trim()) {
-        toast({
-          title: "خطا",
-          description: "لطفاً نام و نام خانوادگی را وارد کنید",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Validate first name
+      const firstNameError = validateField('firstName', firstName);
+      if (firstNameError) newErrors.firstName = firstNameError;
       
-      if (!phone.trim()) {
-        toast({
-          title: "خطا",
-          description: "لطفاً شماره موبایل را وارد کنید",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Validate last name
+      const lastNameError = validateField('lastName', lastName);
+      if (lastNameError) newErrors.lastName = lastNameError;
+      
+      // Validate phone
+      const phoneError = validateField('phone', phone);
+      if (phoneError) newErrors.phone = phoneError;
+    }
+    
+    // If there are validation errors, show them and return
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast({
+        title: "خطای اعتبارسنجی",
+        description: "لطفاً خطاهای فرم را برطرف کنید",
+        variant: "destructive",
+      });
+      return;
     }
     
     setLoading(true);
@@ -250,10 +296,17 @@ const Auth = () => {
                   id="firstName"
                   type="text"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                    if (errors.firstName) setErrors(prev => ({ ...prev, firstName: '' }));
+                  }}
                   required
                   placeholder="نام خود را وارد کنید"
+                  className={errors.firstName ? "border-destructive" : ""}
                 />
+                {errors.firstName && (
+                  <p className="text-sm text-destructive">{errors.firstName}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -264,10 +317,17 @@ const Auth = () => {
                   id="lastName"
                   type="text"
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                    if (errors.lastName) setErrors(prev => ({ ...prev, lastName: '' }));
+                  }}
                   required
                   placeholder="نام خانوادگی خود را وارد کنید"
+                  className={errors.lastName ? "border-destructive" : ""}
                 />
+                {errors.lastName && (
+                  <p className="text-sm text-destructive">{errors.lastName}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -278,11 +338,18 @@ const Auth = () => {
                   id="phone"
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
+                  }}
                   required
                   placeholder="09123456789"
                   dir="ltr"
+                  className={errors.phone ? "border-destructive" : ""}
                 />
+                {errors.phone && (
+                  <p className="text-sm text-destructive">{errors.phone}</p>
+                )}
               </div>
             </>
           )}
@@ -297,13 +364,19 @@ const Auth = () => {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                }}
                 required
-                className="pr-10"
+                className={`pr-10 ${errors.email ? "border-destructive" : ""}`}
                 placeholder="your@email.com"
                 dir="ltr"
               />
             </div>
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -316,14 +389,20 @@ const Auth = () => {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                }}
                 required
-                className="pr-10"
+                className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
                 placeholder="••••••••"
                 dir="ltr"
-                minLength={6}
+                minLength={8}
               />
             </div>
+            {errors.password && (
+              <p className="text-sm text-destructive">{errors.password}</p>
+            )}
           </div>
 
           {!isLogin && (
@@ -337,14 +416,20 @@ const Auth = () => {
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (errors.confirmPassword) setErrors(prev => ({ ...prev, confirmPassword: '' }));
+                  }}
                   required
-                  className="pr-10"
+                  className={`pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
                   placeholder="••••••••"
                   dir="ltr"
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
+              {errors.confirmPassword && (
+                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+              )}
             </div>
           )}
 
