@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn } from "lucide-react";
+import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn, ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
@@ -18,6 +18,8 @@ const HeroSection = () => {
   const [freeRecipesUsed, setFreeRecipesUsed] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [foodImage, setFoodImage] = useState<string | null>(null);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -65,21 +67,36 @@ const HeroSection = () => {
     }
 
     setIsLoading(true);
+    setFoodImage(null);
+    setIsImageLoading(true);
+    
     try {
-      const { data, error } = await supabase.functions.invoke('recipe-ai', {
-        body: { prompt }
-      });
+      // Start both requests in parallel
+      const [recipeResponse, imageResponse] = await Promise.allSettled([
+        supabase.functions.invoke('recipe-ai', { body: { prompt } }),
+        supabase.functions.invoke('generate-food-image', { body: { foodName: prompt } })
+      ]);
 
-      if (error) throw error;
+      // Handle recipe response
+      if (recipeResponse.status === 'fulfilled' && !recipeResponse.value.error) {
+        setRecipe(recipeResponse.value.data.recipe);
+        setIsSaved(false);
+        
+        // Increment free recipe count for non-logged-in users
+        if (!user) {
+          const newCount = freeRecipesUsed + 1;
+          setFreeRecipesUsed(newCount);
+          localStorage.setItem(STORAGE_KEY, newCount.toString());
+        }
+      } else {
+        throw new Error('Failed to generate recipe');
+      }
 
-      setRecipe(data.recipe);
-      setIsSaved(false); // Reset saved state for new recipe
-      
-      // Increment free recipe count for non-logged-in users
-      if (!user) {
-        const newCount = freeRecipesUsed + 1;
-        setFreeRecipesUsed(newCount);
-        localStorage.setItem(STORAGE_KEY, newCount.toString());
+      // Handle image response
+      if (imageResponse.status === 'fulfilled' && !imageResponse.value.error && imageResponse.value.data?.imageUrl) {
+        setFoodImage(imageResponse.value.data.imageUrl);
+      } else {
+        console.log('Image generation failed or returned no image');
       }
     } catch (error) {
       console.error('Error generating recipe:', error);
@@ -90,6 +107,7 @@ const HeroSection = () => {
       });
     } finally {
       setIsLoading(false);
+      setIsImageLoading(false);
     }
   };
 
@@ -242,29 +260,58 @@ const HeroSection = () => {
           {recipe && (
             <div className="mt-8 md:mt-12 animate-slide-up text-right">
               <div className="glass-card rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-gold p-4 md:p-8">
-                <div className="border-b border-primary/20 pb-4 md:pb-6 mb-6 md:mb-8 flex items-center justify-between">
-                  <h2 className="text-xl md:text-3xl font-bold text-foreground flex items-center gap-2 md:gap-3">
-                    <ChefHat className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-                    {recipe.split('## ')[1]?.split('\n')[0] || 'دستور پخت'}
-                  </h2>
-                  <Button
-                    variant={isSaved ? "default" : "outline"}
-                    size="lg"
-                    onClick={handleSaveRecipe}
-                    disabled={isSaving || isSaved}
-                    className={`gap-2 ${isSaved ? 'gradient-gold text-primary-foreground' : 'border-primary/30 hover:bg-primary/10'}`}
-                  >
-                    {isSaving ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : isSaved ? (
-                      <Heart className="w-5 h-5 fill-current" />
-                    ) : user ? (
-                      <Heart className="w-5 h-5" />
+                {/* Header with Image */}
+                <div className="flex flex-col md:flex-row gap-6 md:gap-8 mb-6 md:mb-8 border-b border-primary/20 pb-6 md:pb-8">
+                  {/* Food Image */}
+                  <div className="w-full md:w-80 h-48 md:h-64 rounded-xl overflow-hidden bg-muted/30 flex-shrink-0">
+                    {isImageLoading ? (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                        <div className="text-center space-y-3">
+                          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+                          <p className="text-sm text-muted-foreground">در حال ساخت تصویر...</p>
+                        </div>
+                      </div>
+                    ) : foodImage ? (
+                      <img 
+                        src={foodImage} 
+                        alt={recipe.split('## ')[1]?.split('\n')[0] || 'تصویر غذا'} 
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      <LogIn className="w-5 h-5" />
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                        <div className="text-center space-y-2">
+                          <ImageIcon className="w-12 h-12 text-muted-foreground/50 mx-auto" />
+                          <p className="text-sm text-muted-foreground">تصویر موجود نیست</p>
+                        </div>
+                      </div>
                     )}
-                    {isSaving ? 'در حال ذخیره...' : isSaved ? 'ذخیره شد' : user ? 'ذخیره در علاقه‌مندی‌ها' : 'ورود و ذخیره'}
-                  </Button>
+                  </div>
+                  
+                  {/* Title and Save Button */}
+                  <div className="flex-1 flex flex-col justify-between">
+                    <h2 className="text-xl md:text-3xl font-bold text-foreground flex items-center gap-2 md:gap-3">
+                      <ChefHat className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                      {recipe.split('## ')[1]?.split('\n')[0] || 'دستور پخت'}
+                    </h2>
+                    <Button
+                      variant={isSaved ? "default" : "outline"}
+                      size="lg"
+                      onClick={handleSaveRecipe}
+                      disabled={isSaving || isSaved}
+                      className={`gap-2 mt-4 w-full md:w-auto ${isSaved ? 'gradient-gold text-primary-foreground' : 'border-primary/30 hover:bg-primary/10'}`}
+                    >
+                      {isSaving ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : isSaved ? (
+                        <Heart className="w-5 h-5 fill-current" />
+                      ) : user ? (
+                        <Heart className="w-5 h-5" />
+                      ) : (
+                        <LogIn className="w-5 h-5" />
+                      )}
+                      {isSaving ? 'در حال ذخیره...' : isSaved ? 'ذخیره شد' : user ? 'ذخیره در علاقه‌مندی‌ها' : 'ورود و ذخیره'}
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="space-y-6 md:space-y-8">
