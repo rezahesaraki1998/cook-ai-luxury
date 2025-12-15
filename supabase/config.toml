@@ -1,7 +1,7 @@
 project_id = "fuglusoqvocitypaemky"
 
 [functions.recipe-ai]
-verify_jwt = true
+verify_jwt = false
 
 # SMS OTP functions disabled for security review
 # [functions.send-sms-otp]
