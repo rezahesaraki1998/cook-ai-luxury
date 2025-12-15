@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Sparkles, ChefHat, Loader2 } from "lucide-react";
+import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
@@ -16,6 +16,8 @@ const HeroSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [freeRecipesUsed, setFreeRecipesUsed] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -71,6 +73,7 @@ const HeroSection = () => {
       if (error) throw error;
 
       setRecipe(data.recipe);
+      setIsSaved(false); // Reset saved state for new recipe
       
       // Increment free recipe count for non-logged-in users
       if (!user) {
@@ -87,6 +90,46 @@ const HeroSection = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveRecipe = async () => {
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: "ورود لازم است",
+        description: "برای ذخیره دستور پخت، ابتدا باید وارد شوید یا ثبت‌نام کنید",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const recipeName = recipe.split('## ')[1]?.split('\n')[0] || prompt;
+      
+      const { error } = await supabase.from('favorites').insert({
+        user_id: user.id,
+        recipe_name: recipeName,
+        recipe_data: { content: recipe, prompt }
+      });
+
+      if (error) throw error;
+
+      setIsSaved(true);
+      toast({
+        title: "ذخیره شد",
+        description: "دستور پخت به علاقه‌مندی‌های شما اضافه شد",
+      });
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+      toast({
+        title: "خطا",
+        description: "مشکلی در ذخیره دستور پخت پیش آمد",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -199,11 +242,29 @@ const HeroSection = () => {
           {recipe && (
             <div className="mt-8 md:mt-12 animate-slide-up text-right">
               <div className="glass-card rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-gold p-4 md:p-8">
-                <div className="border-b border-primary/20 pb-4 md:pb-6 mb-6 md:mb-8">
+                <div className="border-b border-primary/20 pb-4 md:pb-6 mb-6 md:mb-8 flex items-center justify-between">
                   <h2 className="text-xl md:text-3xl font-bold text-foreground flex items-center gap-2 md:gap-3">
                     <ChefHat className="w-6 h-6 md:w-8 md:h-8 text-primary" />
                     {recipe.split('## ')[1]?.split('\n')[0] || 'دستور پخت'}
                   </h2>
+                  <Button
+                    variant={isSaved ? "default" : "outline"}
+                    size="lg"
+                    onClick={handleSaveRecipe}
+                    disabled={isSaving || isSaved}
+                    className={`gap-2 ${isSaved ? 'gradient-gold text-primary-foreground' : 'border-primary/30 hover:bg-primary/10'}`}
+                  >
+                    {isSaving ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : isSaved ? (
+                      <Heart className="w-5 h-5 fill-current" />
+                    ) : user ? (
+                      <Heart className="w-5 h-5" />
+                    ) : (
+                      <LogIn className="w-5 h-5" />
+                    )}
+                    {isSaving ? 'در حال ذخیره...' : isSaved ? 'ذخیره شد' : user ? 'ذخیره در علاقه‌مندی‌ها' : 'ورود و ذخیره'}
+                  </Button>
                 </div>
                 
                 <div className="space-y-6 md:space-y-8">
