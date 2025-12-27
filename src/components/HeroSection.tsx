@@ -20,6 +20,7 @@ const HeroSection = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [foodImage, setFoodImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -33,21 +34,47 @@ const HeroSection = () => {
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => checkAdminStatus(session.user.id), 0);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!data);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    }
+  };
+
   const remainingFreeRecipes = FREE_RECIPE_LIMIT - freeRecipesUsed;
 
+  const hasUnlimitedAccess = user && isAdmin;
+
   const handleGenerateRecipe = async () => {
-    // Check if user has free recipes left or is logged in
-    if (!user && freeRecipesUsed >= FREE_RECIPE_LIMIT) {
+    // Check if user has free recipes left, is logged in, or has unlimited access
+    if (!hasUnlimitedAccess && !user && freeRecipesUsed >= FREE_RECIPE_LIMIT) {
       toast({
         title: "محدودیت رایگان",
         description: "شما ۷ دستور پخت رایگان خود را استفاده کرده‌اید. برای ادامه وارد شوید یا ثبت‌نام کنید.",
@@ -180,8 +207,8 @@ const HeroSection = () => {
             هوش مصنوعی در لحظه دستور پخت، مواد لازم و مراحل دقیق آشپزی رو برات آماده می‌کنه
           </p>
 
-          {/* Free Recipe Counter - Only show for non-logged-in users */}
-          {!user && (
+          {/* Free Recipe Counter - Only show for non-admin users */}
+          {!hasUnlimitedAccess && !user && (
             <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-primary/30 bg-primary/5">
               <span className="text-sm text-muted-foreground">
                 {remainingFreeRecipes > 0 ? (
@@ -191,6 +218,16 @@ const HeroSection = () => {
                 ) : (
                   <span className="text-destructive">محدودیت رایگان تمام شد - برای ادامه وارد شوید</span>
                 )}
+              </span>
+            </div>
+          )}
+
+          {/* Unlimited Badge - Show for admin users */}
+          {hasUnlimitedAccess && (
+            <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10">
+              <Sparkles className="w-4 h-4 text-green-500" />
+              <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                حساب نامحدود - دسترسی کامل
               </span>
             </div>
           )}
