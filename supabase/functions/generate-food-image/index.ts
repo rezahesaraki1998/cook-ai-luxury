@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { HfInference } from 'https://esm.sh/@huggingface/inference@2.3.2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,57 +18,28 @@ serve(async (req) => {
       throw new Error('Invalid food name');
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const HUGGING_FACE_ACCESS_TOKEN = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN');
+    if (!HUGGING_FACE_ACCESS_TOKEN) {
+      throw new Error('HUGGING_FACE_ACCESS_TOKEN is not configured');
     }
 
     console.log('Generating food image for:', foodName);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: `Generate a professional, appetizing food photography image of "${foodName}" - a Persian/Iranian dish. The image should be high quality, well-lit, showing the dish beautifully plated on a nice table setting with traditional Persian elements. Make it look delicious and inviting. Ultra high resolution.`
-          }
-        ],
-        modalities: ['image', 'text']
-      }),
+    const hf = new HfInference(HUGGING_FACE_ACCESS_TOKEN);
+
+    const prompt = `Professional food photography of "${foodName}", a Persian/Iranian dish. Beautifully plated on elegant table setting with traditional Persian elements. Appetizing, well-lit, high quality, delicious looking, inviting presentation.`;
+
+    const image = await hf.textToImage({
+      inputs: prompt,
+      model: 'black-forest-labs/FLUX.1-schnell',
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: 'Rate limit exceeded, please try again later.' }), {
-          status: 429,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: 'Payment required, please add credits.' }), {
-          status: 402,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      const errorText = await response.text();
-      console.error('Lovable AI error:', response.status, errorText);
-      throw new Error(`Image generation failed: ${response.status}`);
-    }
+    // Convert the blob to a base64 string
+    const arrayBuffer = await image.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    const imageUrl = `data:image/png;base64,${base64}`;
 
-    const data = await response.json();
-    console.log('Image generation response received');
-
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-    if (!imageUrl) {
-      throw new Error('No image generated');
-    }
+    console.log('Image generation successful');
 
     return new Response(JSON.stringify({ imageUrl }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
