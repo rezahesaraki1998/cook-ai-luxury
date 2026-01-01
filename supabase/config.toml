@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.recipe-ai]
 verify_jwt = false
+
+[functions.get-nutrition-info]
+verify_jwt = false
