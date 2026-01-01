@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { HfInference } from 'https://esm.sh/@huggingface/inference@2.3.2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,17 +24,29 @@ serve(async (req) => {
 
     console.log('Generating food image for:', foodName);
 
-    const hf = new HfInference(HUGGING_FACE_ACCESS_TOKEN);
-
     const prompt = `Professional food photography of "${foodName}", a Persian/Iranian dish. Beautifully plated on elegant table setting with traditional Persian elements. Appetizing, well-lit, high quality, delicious looking, inviting presentation.`;
 
-    const image = await hf.textToImage({
-      inputs: prompt,
-      model: 'black-forest-labs/FLUX.1-schnell',
-    });
+    // Use the new Hugging Face router endpoint
+    const response = await fetch(
+      'https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${HUGGING_FACE_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inputs: prompt }),
+      }
+    );
 
-    // Convert the blob to a base64 string
-    const arrayBuffer = await image.arrayBuffer();
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Hugging Face API error:', response.status, errorText);
+      throw new Error(`Image generation failed: ${response.status}`);
+    }
+
+    // The response is a binary image
+    const arrayBuffer = await response.arrayBuffer();
     const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
     const imageUrl = `data:image/png;base64,${base64}`;
 
