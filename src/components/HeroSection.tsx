@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn, ImageIcon } from "lucide-react";
+import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn, ImageIcon, Flame, Beef, Wheat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
@@ -21,6 +21,7 @@ const HeroSection = () => {
   const [foodImage, setFoodImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [nutritionInfo, setNutritionInfo] = useState<{calories: number; protein: number; carbs: number} | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -96,6 +97,7 @@ const HeroSection = () => {
     setIsLoading(true);
     setFoodImage(null);
     setIsImageLoading(true);
+    setNutritionInfo(null);
     
     try {
       // Get session for auth token
@@ -104,13 +106,14 @@ const HeroSection = () => {
         ? { Authorization: `Bearer ${session.access_token}` } 
         : {};
 
-      // Start both requests in parallel
-      const [recipeResponse, imageResponse] = await Promise.allSettled([
+      // Start all requests in parallel
+      const [recipeResponse, imageResponse, nutritionResponse] = await Promise.allSettled([
         supabase.functions.invoke('recipe-ai', { 
           body: { prompt },
           headers: authHeaders
         }),
-        supabase.functions.invoke('generate-food-image', { body: { foodName: prompt } })
+        supabase.functions.invoke('generate-food-image', { body: { foodName: prompt } }),
+        supabase.functions.invoke('get-nutrition-info', { body: { foodName: prompt } })
       ]);
 
       // Handle recipe response
@@ -133,6 +136,13 @@ const HeroSection = () => {
         setFoodImage(imageResponse.value.data.imageUrl);
       } else {
         console.log('Image generation failed or returned no image');
+      }
+
+      // Handle nutrition response
+      if (nutritionResponse.status === 'fulfilled' && !nutritionResponse.value.error && nutritionResponse.value.data) {
+        setNutritionInfo(nutritionResponse.value.data);
+      } else {
+        console.log('Nutrition info failed or returned no data');
       }
     } catch (error) {
       console.error('Error generating recipe:', error);
@@ -308,26 +318,49 @@ const HeroSection = () => {
               <div className="glass-card rounded-xl md:rounded-2xl border-2 border-primary/20 shadow-gold p-4 md:p-8">
                 {/* Header with Image */}
                 <div className="flex flex-col md:flex-row gap-6 md:gap-8 mb-6 md:mb-8 border-b border-primary/20 pb-6 md:pb-8">
-                  {/* Food Image */}
-                  <div className="w-full md:w-80 h-48 md:h-64 rounded-xl overflow-hidden bg-muted/30 flex-shrink-0">
-                    {isImageLoading ? (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                        <div className="text-center space-y-3">
-                          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
-                          <p className="text-sm text-muted-foreground">در حال ساخت تصویر...</p>
+                  {/* Food Image with Nutrition Info */}
+                  <div className="w-full md:w-80 flex-shrink-0 space-y-4">
+                    <div className="h-48 md:h-64 rounded-xl overflow-hidden bg-muted/30">
+                      {isImageLoading ? (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                          <div className="text-center space-y-3">
+                            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+                            <p className="text-sm text-muted-foreground">در حال ساخت تصویر...</p>
+                          </div>
                         </div>
-                      </div>
-                    ) : foodImage ? (
-                      <img 
-                        src={foodImage} 
-                        alt={recipe.split('## ')[1]?.split('\n')[0] || 'تصویر غذا'} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-                        <div className="text-center space-y-2">
-                          <ImageIcon className="w-12 h-12 text-muted-foreground/50 mx-auto" />
-                          <p className="text-sm text-muted-foreground">تصویر موجود نیست</p>
+                      ) : foodImage ? (
+                        <img 
+                          src={foodImage} 
+                          alt={recipe.split('## ')[1]?.split('\n')[0] || 'تصویر غذا'} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                          <div className="text-center space-y-2">
+                            <ImageIcon className="w-12 h-12 text-muted-foreground/50 mx-auto" />
+                            <p className="text-sm text-muted-foreground">تصویر موجود نیست</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Nutrition Info */}
+                    {nutritionInfo && (
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="glass-card rounded-lg p-3 text-center border border-orange-500/20 bg-orange-500/5">
+                          <Flame className="w-5 h-5 text-orange-500 mx-auto mb-1" />
+                          <p className="text-lg font-bold text-foreground">{nutritionInfo.calories}</p>
+                          <p className="text-xs text-muted-foreground">کالری</p>
+                        </div>
+                        <div className="glass-card rounded-lg p-3 text-center border border-red-500/20 bg-red-500/5">
+                          <Beef className="w-5 h-5 text-red-500 mx-auto mb-1" />
+                          <p className="text-lg font-bold text-foreground">{nutritionInfo.protein}g</p>
+                          <p className="text-xs text-muted-foreground">پروتئین</p>
+                        </div>
+                        <div className="glass-card rounded-lg p-3 text-center border border-amber-500/20 bg-amber-500/5">
+                          <Wheat className="w-5 h-5 text-amber-500 mx-auto mb-1" />
+                          <p className="text-lg font-bold text-foreground">{nutritionInfo.carbs}g</p>
+                          <p className="text-xs text-muted-foreground">کربوهیدرات</p>
                         </div>
                       </div>
                     )}
