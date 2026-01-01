@@ -5,10 +5,3 @@ verify_jwt = false
 
 [functions.recipe-ai]
 verify_jwt = false
-
-# SMS OTP functions disabled for security review
-# [functions.send-sms-otp]
-# verify_jwt = false
-
-# [functions.verify-sms-otp]
-# verify_jwt = false

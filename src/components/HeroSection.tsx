@@ -98,9 +98,18 @@ const HeroSection = () => {
     setIsImageLoading(true);
     
     try {
+      // Get session for auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      const authHeaders = session?.access_token 
+        ? { Authorization: `Bearer ${session.access_token}` } 
+        : {};
+
       // Start both requests in parallel
       const [recipeResponse, imageResponse] = await Promise.allSettled([
-        supabase.functions.invoke('recipe-ai', { body: { prompt } }),
+        supabase.functions.invoke('recipe-ai', { 
+          body: { prompt },
+          headers: authHeaders
+        }),
         supabase.functions.invoke('generate-food-image', { body: { foodName: prompt } })
       ]);
 
