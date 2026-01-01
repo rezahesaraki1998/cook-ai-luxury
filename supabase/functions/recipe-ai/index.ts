@@ -1,10 +1,16 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Rate limit settings
+const ANONYMOUS_LIMIT = 7; // Total requests for anonymous users
+const AUTHENTICATED_LIMIT = 50; // Requests per hour for authenticated users
+const ADMIN_UNLIMITED = true; // Admins have unlimited access
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,6 +18,112 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Get authorization header
+    const authHeader = req.headers.get('authorization');
+    let userId: string | null = null;
+    let isAdmin = false;
+    let isAuthenticated = false;
+
+    // Check if user is authenticated
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      
+      if (!authError && user) {
+        userId = user.id;
+        isAuthenticated = true;
+        
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('role', 'admin')
+          .single();
+        
+        isAdmin = !!roleData;
+        console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
+      }
+    }
+
+    // Get client IP for anonymous rate limiting
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     req.headers.get('x-real-ip') || 
+                     'unknown';
+
+    const identifier = isAuthenticated ? userId! : `ip:${clientIP}`;
+    const endpoint = 'recipe-ai';
+
+    // Skip rate limiting for admins
+    if (!isAdmin) {
+      // Check rate limits
+      const now = new Date();
+      const hourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+
+      if (isAuthenticated) {
+        // For authenticated users: check requests in the last hour
+        const { data: rateLimitData, error: rlError } = await supabase
+          .from('rate_limits')
+          .select('request_count')
+          .eq('identifier', identifier)
+          .eq('endpoint', endpoint)
+          .gte('window_start', hourAgo.toISOString())
+          .order('window_start', { ascending: false })
+          .limit(1)
+          .single();
+
+        const currentCount = rateLimitData?.request_count || 0;
+
+        if (currentCount >= AUTHENTICATED_LIMIT) {
+          console.log(`Rate limit exceeded for authenticated user: ${identifier}`);
+          return new Response(
+            JSON.stringify({ error: 'محدودیت درخواست: لطفاً یک ساعت دیگر امتحان کنید.' }),
+            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Update or insert rate limit record
+        if (rateLimitData) {
+          await supabase
+            .from('rate_limits')
+            .update({ request_count: currentCount + 1 })
+            .eq('identifier', identifier)
+            .eq('endpoint', endpoint)
+            .gte('window_start', hourAgo.toISOString());
+        } else {
+          await supabase
+            .from('rate_limits')
+            .insert({ identifier, endpoint, request_count: 1, window_start: now.toISOString() });
+        }
+      } else {
+        // For anonymous users: check total requests ever (lifetime limit)
+        const { data: rateLimitData } = await supabase
+          .from('rate_limits')
+          .select('request_count')
+          .eq('identifier', identifier)
+          .eq('endpoint', endpoint);
+
+        const totalCount = rateLimitData?.reduce((sum, r) => sum + r.request_count, 0) || 0;
+
+        if (totalCount >= ANONYMOUS_LIMIT) {
+          console.log(`Rate limit exceeded for anonymous user: ${identifier}`);
+          return new Response(
+            JSON.stringify({ error: 'محدودیت رایگان: لطفاً برای ادامه ثبت‌نام کنید.' }),
+            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Insert new rate limit record
+        await supabase
+          .from('rate_limits')
+          .insert({ identifier, endpoint, request_count: 1, window_start: now.toISOString() });
+      }
+    }
+
     const { prompt } = await req.json();
     
     // Input validation
@@ -35,7 +147,7 @@ serve(async (req) => {
       throw new Error('OPENROUTER_API_KEY is not configured');
     }
 
-    console.log('Calling OpenRouter API with validated prompt');
+    console.log(`Calling OpenRouter API for ${isAuthenticated ? 'authenticated' : 'anonymous'} user`);
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
