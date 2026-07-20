@@ -74,16 +74,7 @@ const HeroSection = () => {
   const hasUnlimitedAccess = user && isAdmin;
 
   const handleGenerateRecipe = async () => {
-    // Check if user has free recipes left, is logged in, or has unlimited access
-    if (!hasUnlimitedAccess && !user && freeRecipesUsed >= FREE_RECIPE_LIMIT) {
-      toast({
-        title: "محدودیت رایگان",
-        description: "شما ۷ دستور پخت رایگان خود را استفاده کرده‌اید. برای ادامه وارد شوید یا ثبت‌نام کنید.",
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
+    // Auth disabled: allow unlimited access
 
     if (!prompt.trim()) {
       toast({
@@ -158,13 +149,11 @@ const HeroSection = () => {
   };
 
   const handleSaveRecipe = async () => {
-    // Check if user is logged in
     if (!user) {
       toast({
-        title: "ورود لازم است",
-        description: "برای ذخیره دستور پخت، ابتدا باید وارد شوید یا ثبت‌نام کنید",
+        title: "غیرفعال",
+        description: "ذخیره دستور پخت فعلاً غیرفعال است",
       });
-      navigate("/auth");
       return;
     }
 
