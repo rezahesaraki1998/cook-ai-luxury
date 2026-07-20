@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, User, Search, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { ChefHat, Menu, Search } from "lucide-react";
+
 import ThemeToggle from "./ThemeToggle";
 import {
   CommandDialog,
@@ -21,22 +21,9 @@ import {
 } from "@/components/ui/sheet";
 
 const Header = () => {
-  const [user, setUser] = useState<any>(null);
   const [openSearch, setOpenSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -48,7 +35,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 md:gap-3 group cursor-pointer">
+          <Link to="/" className="flex items-center gap-2 md:gap-3 group cursor-pointer">
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl gradient-gold flex items-center justify-center shadow-gold smooth-transition group-hover:scale-110">
               <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
             </div>
@@ -56,7 +43,7 @@ const Header = () => {
               <span className="text-lg md:text-xl font-bold text-gradient-gold">CookAI</span>
               <span className="text-[10px] md:text-xs text-muted-foreground">کوک‌اِی‌آی</span>
             </div>
-          </a>
+          </Link>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
@@ -76,23 +63,6 @@ const Header = () => {
               <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
             </Button>
             <ThemeToggle />
-            {user ? (
-              <Button
-                onClick={() => navigate("/profile")}
-                variant="outline"
-                className="border-primary/30 hover:bg-primary/10"
-              >
-                <User className="w-4 h-4 ml-2" />
-                پروفایل من
-              </Button>
-            ) : (
-              <Button
-                onClick={() => navigate("/auth")}
-                className="gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition hover:scale-105"
-              >
-                ورود / ثبت‌نام
-              </Button>
-            )}
           </div>
 
           {/* Mobile Buttons */}
@@ -136,25 +106,7 @@ const Header = () => {
                     چرا ما
                   </button>
                   
-                  <div className="pt-4 space-y-3">
-                    {user ? (
-                      <Button
-                        onClick={() => handleNavigation("/profile")}
-                        variant="outline"
-                        className="w-full border-primary/30 hover:bg-primary/10"
-                      >
-                        <User className="w-4 h-4 ml-2" />
-                        پروفایل من
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => handleNavigation("/auth")}
-                        className="w-full gradient-gold text-primary-foreground shadow-gold"
-                      >
-                        ورود / ثبت‌نام
-                      </Button>
-                    )}
-                  </div>
+                  <div className="pt-4 space-y-3" />
                 </nav>
               </SheetContent>
             </Sheet>
