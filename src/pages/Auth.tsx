@@ -219,7 +219,17 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
-      <Card className="w-full max-w-md glass-card p-8 border border-primary/20">
+      <Card className="w-full max-w-md glass-card p-8 border border-primary/20 relative">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="absolute top-4 right-4 flex items-center gap-1 text-muted-foreground hover:text-foreground"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowRight className="w-4 h-4" />
+          برگشت
+        </Button>
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-12 h-12 rounded-full gradient-gold flex items-center justify-center">
