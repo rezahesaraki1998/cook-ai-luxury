@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Rate limit settings
-const ANONYMOUS_LIMIT = 7; // Total requests for anonymous users
+const ANONYMOUS_LIMIT = 2; // Total requests for anonymous users
 const AUTHENTICATED_LIMIT = 50; // Requests per hour for authenticated users
 const ADMIN_UNLIMITED = true; // Admins have unlimited access
 
