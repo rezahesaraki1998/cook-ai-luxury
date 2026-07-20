@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
 
-const FREE_RECIPE_LIMIT = 7;
+const FREE_RECIPE_LIMIT = 2;
 const STORAGE_KEY = 'free_recipe_count';
 
 const HeroSection = () => {

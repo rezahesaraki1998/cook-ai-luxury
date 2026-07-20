@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ChefHat, Mail, Lock, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { lovable } from "@/integrations/lovable";
 
 // Validation schemas
 const emailSchema = z.string().trim().email("ایمیل معتبر نیست").max(255, "ایمیل بیش از حد طولانی است");
