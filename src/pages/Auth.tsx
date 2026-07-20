@@ -225,7 +225,7 @@ const Auth = () => {
           variant="ghost"
           size="sm"
           className="absolute top-4 right-4 flex items-center gap-1 text-muted-foreground hover:text-foreground"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
         >
           <ArrowRight className="w-4 h-4" />
           برگشت
