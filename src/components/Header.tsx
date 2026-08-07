@@ -59,9 +59,11 @@ const Header = () => {
               size="icon"
               onClick={() => setOpenSearch(true)}
               className="w-10 h-10 hover:bg-primary/10 smooth-transition"
+              aria-label="جستجو"
             >
               <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
             </Button>
+
             <ThemeToggle />
           </div>
 
@@ -72,15 +74,18 @@ const Header = () => {
               size="icon"
               onClick={() => setOpenSearch(true)}
               className="w-9 h-9 hover:bg-primary/10"
+              aria-label="جستجو"
             >
               <Search className="w-5 h-5" />
             </Button>
+
             <ThemeToggle />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-9 h-9">
+                <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="منو">
                   <Menu className="w-5 h-5" />
                 </Button>
+
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] glass-card border-r border-primary/20">
                 <SheetHeader className="text-right mb-6">

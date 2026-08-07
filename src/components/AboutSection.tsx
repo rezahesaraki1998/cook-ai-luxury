@@ -8,9 +8,10 @@ const AboutSection = () => {
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Title */}
           <div className="space-y-6 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-gradient-gold">
+            <h1 className="text-4xl md:text-5xl font-bold text-gradient-gold">
               چرا ما؟
-            </h2>
+            </h1>
+
           </div>
 
           {/* Questions Section */}
