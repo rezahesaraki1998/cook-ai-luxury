@@ -1,10 +1,10 @@
 project_id = "fuglusoqvocitypaemky"
 
 [functions.generate-food-image]
-verify_jwt = false
+verify_jwt = true
 
 [functions.recipe-ai]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-nutrition-info]
 verify_jwt = false
