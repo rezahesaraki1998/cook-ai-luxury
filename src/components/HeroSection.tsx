@@ -114,8 +114,9 @@ const HeroSection = () => {
           body: { prompt },
           headers: authHeaders
         }),
-        supabase.functions.invoke('generate-food-image', { body: { foodName: prompt } }),
-        supabase.functions.invoke('get-nutrition-info', { body: { foodName: prompt } })
+        supabase.functions.invoke('generate-food-image', { body: { foodName: prompt }, headers: authHeaders }),
+        supabase.functions.invoke('get-nutrition-info', { body: { foodName: prompt }, headers: authHeaders })
+
       ]);
 
       // Handle recipe response
