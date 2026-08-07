@@ -74,8 +74,6 @@ const HeroSection = () => {
   const hasUnlimitedAccess = user && isAdmin;
 
   const handleGenerateRecipe = async () => {
-    // Auth disabled: allow unlimited access
-
     if (!prompt.trim()) {
       toast({
         title: "خطا",
@@ -84,6 +82,19 @@ const HeroSection = () => {
       });
       return;
     }
+
+    // Recipe generation requires an authenticated account
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (!currentSession) {
+      toast({
+        title: "ورود لازم است",
+        description: "برای دریافت دستور پخت ابتدا وارد حساب کاربری خود شوید",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
 
     setIsLoading(true);
     setFoodImage(null);
