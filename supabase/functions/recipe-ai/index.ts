@@ -22,33 +22,45 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get authorization header
+    // Require an authenticated user (verify_jwt is also enabled for this function)
     const authHeader = req.headers.get('authorization');
     let userId: string | null = null;
     let isAdmin = false;
     let isAuthenticated = false;
 
-    // Check if user is authenticated
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    {
       const token = authHeader.replace('Bearer ', '');
       const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-      
-      if (!authError && user) {
-        userId = user.id;
-        isAuthenticated = true;
-        
-        // Check if user is admin
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', userId)
-          .eq('role', 'admin')
-          .single();
-        
-        isAdmin = !!roleData;
-        console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
+
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
+
+      userId = user.id;
+      isAuthenticated = true;
+
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      isAdmin = !!roleData;
+      console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
     }
+
 
     // Get client IP for anonymous rate limiting
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
