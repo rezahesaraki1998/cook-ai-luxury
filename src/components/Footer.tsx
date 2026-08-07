@@ -52,22 +52,26 @@ const Footer = () => {
             <div className="flex gap-2 md:gap-3">
               <a 
                 href="#" 
+                aria-label="اینستاگرام کوک‌اِی‌آی"
                 className="w-9 h-9 md:w-10 md:h-10 rounded-xl glass-card border border-primary/20 flex items-center justify-center hover:border-primary/40 hover:bg-primary/10 smooth-transition group"
               >
                 <Instagram className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-primary smooth-transition" />
               </a>
               <a 
                 href="#" 
+                aria-label="تلگرام کوک‌اِی‌آی"
                 className="w-9 h-9 md:w-10 md:h-10 rounded-xl glass-card border border-primary/20 flex items-center justify-center hover:border-primary/40 hover:bg-primary/10 smooth-transition group"
               >
                 <Send className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-primary smooth-transition" />
               </a>
               <a 
                 href="#" 
+                aria-label="یوتیوب کوک‌اِی‌آی"
                 className="w-9 h-9 md:w-10 md:h-10 rounded-xl glass-card border border-primary/20 flex items-center justify-center hover:border-primary/40 hover:bg-primary/10 smooth-transition group"
               >
                 <Youtube className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-primary smooth-transition" />
               </a>
+
             </div>
           </div>
         </div>

@@ -269,9 +269,11 @@ const HeroSection = () => {
                   variant="ghost"
                   className="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl hover:bg-primary/10 smooth-transition"
                   disabled
+                  aria-label="جستجوی صوتی"
                 >
                   <Mic className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                 </Button>
+
               </div>
             </div>
 

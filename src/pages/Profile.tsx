@@ -227,9 +227,11 @@ const Profile = () => {
                   className="absolute -bottom-1 -right-1 h-7 w-7 md:h-8 md:w-8 rounded-full border-primary/30 bg-background"
                   onClick={handleAvatarClick}
                   disabled={uploading}
+                  aria-label="تغییر عکس پروفایل"
                 >
                   <Camera className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 </Button>
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -317,9 +319,11 @@ const Profile = () => {
                         variant="outline"
                         size="icon"
                         className="border-destructive/50 text-destructive hover:bg-destructive/10 flex-shrink-0 w-8 h-8 md:w-10 md:h-10"
+                        aria-label="حذف از علاقه‌مندی‌ها"
                       >
                         <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                       </Button>
+
                     </div>
                   </Card>
                 ))}

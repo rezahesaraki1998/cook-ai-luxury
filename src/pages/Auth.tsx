@@ -235,7 +235,7 @@ const Auth = () => {
             <div className="w-12 h-12 rounded-full gradient-gold flex items-center justify-center">
               <ChefHat className="w-6 h-6 text-primary-foreground" />
             </div>
-            <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی</h1>
+            <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی — ورود و ثبت‌نام</h1>
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             {isForgotPassword ? "بازیابی رمز عبور" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
