@@ -22,7 +22,7 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemap location
-Sitemap: https://cookai.ir/sitemap.xml
+Sitemap: https://cook-ai-luxury.lovable.app/sitemap.xml
 
 # Disallow admin/private paths
 Disallow: /api/
