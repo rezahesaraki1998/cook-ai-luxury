@@ -40,9 +40,10 @@ const Footer = () => {
               <li><a href="/why-us" className="text-muted-foreground hover:text-primary smooth-transition">چرا ما</a></li>
               <li><a href="/privacy" className="text-muted-foreground hover:text-primary smooth-transition">حریم خصوصی</a></li>
               <li><a href="/terms" className="text-muted-foreground hover:text-primary smooth-transition">شرایط استفاده</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary smooth-transition">تماس با ما</a></li>
+              <li><a href="/contact" className="text-muted-foreground hover:text-primary smooth-transition">تماس با ما</a></li>
             </ul>
           </div>
+
 
 
           {/* Social */}
