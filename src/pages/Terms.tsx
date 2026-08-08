@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 const Terms = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="قوانین و شرایط استفاده | کوک‌اِی‌آی" description="قوانین و شرایط استفاده از سرویس دستور پخت هوشمند کوک‌اِی‌آی را پیش از استفاده مطالعه کنید." path="/terms" />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <Button
           variant="ghost"
@@ -116,6 +119,7 @@ const Terms = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

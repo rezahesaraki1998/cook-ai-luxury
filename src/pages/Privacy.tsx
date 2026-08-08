@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 const Privacy = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="حریم خصوصی | کوک‌اِی‌آی" description="سیاست حریم خصوصی کوک‌اِی‌آی: چه داده‌هایی جمع‌آوری می‌شود، چگونه نگهداری و محافظت می‌شود." path="/privacy" />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <Button
           variant="ghost"
@@ -61,6 +64,7 @@ const Privacy = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

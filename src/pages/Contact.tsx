@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Mail, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 const Contact = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="تماس با ما | کوک‌اِی‌آی" description="راه‌های ارتباط با تیم کوک‌اِی‌آی: واتساپ و ایمیل پشتیبانی برای پرسش، پیشنهاد و گزارش مشکل." path="/contact" />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <Button
           variant="ghost"
@@ -68,6 +71,7 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

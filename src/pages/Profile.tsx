@@ -8,6 +8,7 @@ import { User, Heart, LogOut, ArrowRight, Trash2, Camera } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 interface Favorite {
   id: string;
@@ -206,7 +207,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="پروفایل من | کوک‌اِی‌آی" description="مدیریت حساب کاربری، عکس پروفایل و دستورهای پخت ذخیره‌شده در کوک‌اِی‌آی." path="/profile" noindex />
+      <div className="min-h-screen bg-background">
       <Header />
       
       <main className="container mx-auto px-4 py-16 md:py-20">
@@ -335,6 +338,7 @@ const Profile = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
