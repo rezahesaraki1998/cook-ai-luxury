@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ChefHat, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import { z } from "zod";
 import { lovable } from "@/integrations/lovable";
+import SEO from "@/components/SEO";
 
 // Validation schemas
 const emailSchema = z.string().trim().email("ایمیل معتبر نیست").max(255, "ایمیل بیش از حد طولانی است");
