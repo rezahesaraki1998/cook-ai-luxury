@@ -219,7 +219,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
+    <>
+      <SEO title="ورود و ثبت‌نام | کوک‌اِی‌آی" description="به حساب کاربری کوک‌اِی‌آی وارد شوید یا ثبت‌نام کنید تا دستورهای پخت مورد علاقه‌تان را ذخیره کنید." path="/auth" noindex />
+      <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
       <Card className="w-full max-w-md glass-card p-8 border border-primary/20 relative">
         <Button
           type="button"
@@ -540,7 +542,8 @@ const Auth = () => {
           </div>
         )}
       </Card>
-    </div>
+      </div>
+    </>
   );
 };
 

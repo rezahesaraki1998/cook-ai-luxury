@@ -14,6 +14,7 @@ const WhyUs = () => {
       </main>
       <Footer />
     </div>
+    </>
   );
 };
 
