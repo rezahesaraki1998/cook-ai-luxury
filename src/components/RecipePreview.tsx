@@ -338,6 +338,8 @@ const RecipePreview = () => {
                     onClick={handleToggleFavorite}
                     disabled={loading}
                     variant="outline"
+                    aria-label={isFavorite ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
+                    aria-pressed={isFavorite}
                     className={`border-primary/30 hover:bg-primary/10 smooth-transition ${
                       isFavorite ? "bg-primary/10 border-primary" : ""
                     }`}
