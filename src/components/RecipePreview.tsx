@@ -267,7 +267,7 @@ const RecipePreview = () => {
               {/* Recipe Image */}
               <div
                 role="img"
-                aria-label={`تصویر نمونه غذای ${recipeData.title}`}
+                aria-label={`تصویر نمونه غذای ${recipeData.name}`}
                 className="relative rounded-xl md:rounded-2xl overflow-hidden aspect-video md:aspect-square bg-gradient-to-br from-primary/20 to-secondary/20"
               >
                 <div className="absolute inset-0 flex items-center justify-center">
