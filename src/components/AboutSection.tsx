@@ -17,6 +17,7 @@ const AboutSection = () => {
           {/* Questions Section */}
           <Card className="glass-card p-8 border border-primary/20">
             <div className="space-y-6 text-right">
+              <h2 className="text-2xl font-bold text-foreground">سوال‌های همیشگی آشپزی</h2>
               <p className="text-lg text-foreground leading-relaxed">
                 تا حالا چند بار از خودت پرسیدی:
               </p>
@@ -39,6 +40,7 @@ const AboutSection = () => {
 
           {/* Main Content */}
           <div className="space-y-6 text-center">
+            <h2 className="text-2xl font-bold text-foreground">CookAI چطور کمک می‌کند؟</h2>
             <p className="text-xl text-foreground font-semibold leading-relaxed">
               اینجا جاییه که CookAI به کمکت میاد.
             </p>

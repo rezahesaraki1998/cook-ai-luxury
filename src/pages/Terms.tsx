@@ -112,7 +112,7 @@ const Terms = () => {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">۱۰. تماس و پشتیبانی</h2>
               <p className="text-muted-foreground leading-relaxed">
-                در صورت پرسش یا نیاز به پشتیبانی لطفاً از طریق صفحه تماس با ما یا آدرس ایمیل <a href="mailto:support@cookai.example" className="text-primary hover:underline">support@cookai.example</a> با ما در تماس باشید.
+                در صورت پرسش یا نیاز به پشتیبانی لطفاً از طریق صفحه تماس با ما یا آدرس ایمیل <a href="mailto:rezahesaraki1998@gmail.com" className="text-primary hover:underline">rezahesaraki1998@gmail.com</a> با ما در تماس باشید.
               </p>
             </section>
           </div>

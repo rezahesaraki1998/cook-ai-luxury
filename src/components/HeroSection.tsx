@@ -334,7 +334,7 @@ const HeroSection = () => {
                       ) : foodImage ? (
                         <img 
                           src={foodImage} 
-                          alt={`تصویر ${recipe.split('## ')[1]?.split('\n')[0]?.trim() || query.trim() || 'غذا'} — دستور پخت ساخته‌شده با هوش مصنوعی`} 
+                          alt={`تصویر ${recipe.split('## ')[1]?.split('\n')[0]?.trim() || prompt.trim() || 'غذا'} — دستور پخت ساخته‌شده با هوش مصنوعی`} 
                           className="w-full h-full object-cover"
                         />
                       ) : (
