@@ -27,12 +27,14 @@ const Contact = () => {
 
           <div className="prose prose-invert max-w-none space-y-8">
             <section className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">درباره پاسخگویی ما</h2>
               <p className="text-muted-foreground leading-relaxed">
                 ما همیشه آماده پاسخگویی به سوالات، پیشنهادها و نظرات شما هستیم. برای ارتباط سریع‌تر می‌توانید از طریق واتساپ یا ایمیل با ما در تماس باشید.
               </p>
             </section>
 
             <section className="space-y-6">
+              <h2 className="text-2xl font-bold text-foreground">راه‌های ارتباطی</h2>
               <a
                 href="https://wa.me/989101563977"
                 target="_blank"

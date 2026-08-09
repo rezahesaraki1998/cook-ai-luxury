@@ -57,7 +57,7 @@ const Privacy = () => {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">۵. تماس با ما</h2>
               <p className="text-muted-foreground leading-relaxed">
-                در صورت داشتن هرگونه سوال دربارهٔ حریم خصوصی و نحوهٔ مدیریت اطلاعات، می‌توانید از طریق صفحه تماس با ما یا آدرس ایمیل <a href="mailto:support@cookai.example" className="text-primary hover:underline">support@cookai.example</a> با ما در ارتباط باشید.
+                در صورت داشتن هرگونه سوال دربارهٔ حریم خصوصی و نحوهٔ مدیریت اطلاعات، می‌توانید از طریق صفحه تماس با ما یا آدرس ایمیل <a href="mailto:rezahesaraki1998@gmail.com" className="text-primary hover:underline">rezahesaraki1998@gmail.com</a> با ما در ارتباط باشید.
               </p>
             </section>
           </div>
