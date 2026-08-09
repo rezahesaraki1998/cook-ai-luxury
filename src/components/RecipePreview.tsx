@@ -265,7 +265,11 @@ const RecipePreview = () => {
           <Card className="glass-card p-4 md:p-6 lg:p-8 border border-primary/20 shadow-elevation overflow-hidden">
             <div className="grid md:grid-cols-2 gap-4 md:gap-8">
               {/* Recipe Image */}
-              <div className="relative rounded-xl md:rounded-2xl overflow-hidden aspect-video md:aspect-square bg-gradient-to-br from-primary/20 to-secondary/20">
+              <div
+                role="img"
+                aria-label={`تصویر نمونه غذای ${recipeData.title}`}
+                className="relative rounded-xl md:rounded-2xl overflow-hidden aspect-video md:aspect-square bg-gradient-to-br from-primary/20 to-secondary/20"
+              >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center space-y-2 md:space-y-4">
                     <div className="w-14 h-14 md:w-20 md:h-20 rounded-full gradient-gold mx-auto flex items-center justify-center animate-glow-pulse">

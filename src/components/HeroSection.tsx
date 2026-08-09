@@ -83,12 +83,12 @@ const HeroSection = () => {
       return;
     }
 
-    // Recipe generation requires an authenticated account
+    // Guests can generate while they still have free recipes left
     const { data: { session: currentSession } } = await supabase.auth.getSession();
-    if (!currentSession) {
+    if (!currentSession && remainingFreeRecipes <= 0) {
       toast({
         title: "ورود لازم است",
-        description: "برای دریافت دستور پخت ابتدا وارد حساب کاربری خود شوید",
+        description: "دستورهای رایگان شما به پایان رسید. برای ادامه وارد حساب کاربری خود شوید",
         variant: "destructive",
       });
       navigate("/auth");
@@ -258,6 +258,7 @@ const HeroSection = () => {
               <div className="flex items-center gap-2 md:gap-3">
                 <Input
                   placeholder="مثلاً: قرمه سبزی می‌خوام درست کنم..."
+                  aria-label="جستجوی نام غذا یا مواد اولیه برای دریافت دستور پخت"
                   className="flex-1 bg-transparent border-0 text-sm md:text-lg focus-visible:ring-0 placeholder:text-muted-foreground/60"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
