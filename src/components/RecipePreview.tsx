@@ -88,7 +88,7 @@ const RecipePreview = () => {
         const { error } = await supabase.from("favorites").insert({
           user_id: user.id,
           recipe_name: recipeData.name,
-          recipe_data: recipeData,
+          recipe_data: recipeData as unknown as Record<string, unknown>,
         });
 
         if (error) throw error;
