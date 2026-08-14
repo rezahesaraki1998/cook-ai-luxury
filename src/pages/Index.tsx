@@ -4,8 +4,11 @@ import RecipePreview from "@/components/RecipePreview";
 import SmartSuggestions from "@/components/SmartSuggestions";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Index = () => {
+  const { t } = useLanguage();
+
   return (
     <>
       <SEO />
@@ -13,10 +16,10 @@ const Index = () => {
         <Header />
         <main>
           <HeroSection />
-          <section aria-label="نمونه دستور پخت">
+          <section aria-label={t("seo.samplePreview")}>
             <RecipePreview />
           </section>
-          <section aria-label="پیشنهادات هوشمند">
+          <section aria-label={t("seo.smartSuggestions")}>
             <SmartSuggestions />
           </section>
         </main>

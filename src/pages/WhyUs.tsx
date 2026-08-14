@@ -2,11 +2,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AboutSection from "@/components/AboutSection";
 import SEO from "@/components/SEO";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const WhyUs = () => {
+  const { t } = useLanguage();
+
   return (
     <>
-      <SEO title="چرا کوک‌اِی‌آی؟ | مزیت‌های دستیار آشپزی هوشمند" description="با کوک‌اِی‌آی در چند ثانیه دستور پخت شخصی‌سازی‌شده، مواد لازم و مراحل دقیق آشپزی را دریافت کنید." path="/why-us" />
+      <SEO title={t("seo.whyUsTitle")} description={t("seo.whyUsDesc")} path="/why-us" />
       <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-20">
