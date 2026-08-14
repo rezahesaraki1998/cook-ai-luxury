@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ChefHat, Menu, Search } from "lucide-react";
 
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 import {
   CommandDialog,
   CommandInput,
@@ -24,6 +26,7 @@ const Header = () => {
   const [openSearch, setOpenSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { t, tr, isRTL } = useLanguage();
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -40,16 +43,16 @@ const Header = () => {
               <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold text-gradient-gold">CookAI</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground">کوک‌اِی‌آی</span>
+              <span className="text-lg md:text-xl font-bold text-gradient-gold">{t("common.brandName")}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground">{t("common.brandSub")}</span>
             </div>
           </Link>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-foreground hover:text-primary smooth-transition">خانه</a>
-            <a href="/#recipes" className="text-foreground hover:text-primary smooth-transition">محبوب‌ترین دستورها</a>
-            <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">چرا ما</a>
+            <a href="/" className="text-foreground hover:text-primary smooth-transition">{t("nav.home")}</a>
+            <a href="/#recipes" className="text-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a>
+            <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">{t("nav.whyUs")}</a>
           </nav>
 
           {/* CTA Buttons - Desktop */}
@@ -59,11 +62,12 @@ const Header = () => {
               size="icon"
               onClick={() => setOpenSearch(true)}
               className="w-10 h-10 hover:bg-primary/10 smooth-transition"
-              aria-label="جستجو"
+              aria-label={t("nav.search")}
             >
               <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
             </Button>
 
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
 
@@ -74,43 +78,47 @@ const Header = () => {
               size="icon"
               onClick={() => setOpenSearch(true)}
               className="w-9 h-9 hover:bg-primary/10"
-              aria-label="جستجو"
+              aria-label={t("nav.search")}
             >
               <Search className="w-5 h-5" />
             </Button>
 
+            <LanguageSwitcher />
             <ThemeToggle />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="منو">
+                <Button variant="ghost" size="icon" className="w-9 h-9" aria-label={t("nav.menu")}>
                   <Menu className="w-5 h-5" />
                 </Button>
 
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] glass-card border-r border-primary/20">
-                <SheetHeader className="text-right mb-6">
-                  <SheetTitle className="text-gradient-gold text-xl">منو</SheetTitle>
+              <SheetContent
+                side={isRTL ? "right" : "left"}
+                className="w-[280px] glass-card border-primary/20"
+              >
+                <SheetHeader className="text-start mb-6">
+                  <SheetTitle className="text-gradient-gold text-xl">{t("nav.menu")}</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4">
                   <button
                     onClick={() => handleNavigation("/")}
-                    className="text-right text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
                   >
-                    خانه
+                    {t("nav.home")}
                   </button>
                   <button
                     onClick={() => handleNavigation("/#recipes")}
-                    className="text-right text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
                   >
-                    محبوب‌ترین دستورها
+                    {t("nav.recipes")}
                   </button>
                   <button
                     onClick={() => handleNavigation("/why-us")}
-                    className="text-right text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
                   >
-                    چرا ما
+                    {t("nav.whyUs")}
                   </button>
-                  
+
                   <div className="pt-4 space-y-3" />
                 </nav>
               </SheetContent>
@@ -121,22 +129,18 @@ const Header = () => {
 
       {/* Search Dialog */}
       <CommandDialog open={openSearch} onOpenChange={setOpenSearch}>
-        <CommandInput placeholder="جستجوی دستور غذا..." />
+        <CommandInput placeholder={t("nav.searchPlaceholder")} />
         <CommandList>
-          <CommandEmpty>نتیجه‌ای یافت نشد.</CommandEmpty>
-          <CommandGroup heading="پیشنهادات">
-            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
-              غذای سریع برای دو نفر
-            </CommandItem>
-            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
-              خوراک رژیمی ایرانی
-            </CommandItem>
-            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
-              غذای مخصوص مهمان
-            </CommandItem>
-            <CommandItem onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}>
-              دسر ساده با میوه
-            </CommandItem>
+          <CommandEmpty>{t("nav.noResults")}</CommandEmpty>
+          <CommandGroup heading={t("nav.suggestions")}>
+            {tr.suggestions.items.map((item) => (
+              <CommandItem
+                key={item.title}
+                onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}
+              >
+                {item.title}
+              </CommandItem>
+            ))}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
