@@ -1,7 +1,9 @@
 import { Card } from "@/components/ui/card";
-import { Brain, Sparkles, ChefHat } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const AboutSection = () => {
+  const { t } = useLanguage();
+
   return (
     <section id="about" className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -9,43 +11,35 @@ const AboutSection = () => {
           {/* Title */}
           <div className="space-y-6 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-gold">
-              چرا ما؟
+              {t("about.title")}
             </h1>
 
           </div>
 
           {/* Questions Section */}
           <Card className="glass-card p-8 border border-primary/20">
-            <div className="space-y-6 text-right">
-              <h2 className="text-2xl font-bold text-foreground">سوال‌های همیشگی آشپزی</h2>
+            <div className="space-y-6 text-start">
+              <h2 className="text-2xl font-bold text-foreground">{t("about.questionsTitle")}</h2>
               <p className="text-lg text-foreground leading-relaxed">
-                تا حالا چند بار از خودت پرسیدی:
+                {t("about.questionsLead")}
               </p>
-              <div className="space-y-4 pr-4">
-                <p className="text-base text-foreground/90 leading-relaxed">
-                  🍲 «چی درست کنم؟»
-                </p>
-                <p className="text-base text-foreground/90 leading-relaxed">
-                  ⌛ «وقتم کمه، یه غذای سریع چی میشه پخت؟»
-                </p>
-                <p className="text-base text-foreground/90 leading-relaxed">
-                  🏋️‍♀️ «می‌خوام رژیمی بخورم، چی بخورم که هم خوشمزه باشه هم سالم؟»
-                </p>
-                <p className="text-base text-foreground/90 leading-relaxed">
-                  👩‍🍳 یا شاید گفتی: «خسته شدم از تکرار، یه غذای جدید یادم بده!»
-                </p>
+              <div className="space-y-4 ps-4">
+                <p className="text-base text-foreground/90 leading-relaxed">{t("about.q1")}</p>
+                <p className="text-base text-foreground/90 leading-relaxed">{t("about.q2")}</p>
+                <p className="text-base text-foreground/90 leading-relaxed">{t("about.q3")}</p>
+                <p className="text-base text-foreground/90 leading-relaxed">{t("about.q4")}</p>
               </div>
             </div>
           </Card>
 
           {/* Main Content */}
           <div className="space-y-6 text-center">
-            <h2 className="text-2xl font-bold text-foreground">CookAI چطور کمک می‌کند؟</h2>
+            <h2 className="text-2xl font-bold text-foreground">{t("about.howTitle")}</h2>
             <p className="text-xl text-foreground font-semibold leading-relaxed">
-              اینجا جاییه که CookAI به کمکت میاد.
+              {t("about.howLead")}
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              ما با هوش مصنوعی طراحی شدیم تا بر اساس مواد اولیه‌ای که توی خونه داری، سلیقه‌ات، و حتی اهداف رژیمی‌ات، غذاهای دقیق و خوش‌طعم بهت پیشنهاد بدیم.
+              {t("about.howBody")}
             </p>
           </div>
 
@@ -53,10 +47,10 @@ const AboutSection = () => {
           <Card className="glass-card p-8 border border-primary/20 bg-primary/5 max-w-3xl mx-auto">
             <div className="space-y-4 text-center">
               <p className="text-2xl font-bold text-gradient-gold leading-relaxed">
-                با ما دیگه هیچ‌وقت نمی‌گی «چی بپزم؟»
+                {t("about.highlightTitle")}
               </p>
               <p className="text-lg text-foreground/90 leading-relaxed">
-                فقط بگو چی داری، یا چه غذایی دلت می‌خواد، و در چند ثانیه دستور پخت اختصاصی‌ت آماده‌ست.
+                {t("about.highlightBody")}
               </p>
             </div>
           </Card>
@@ -64,10 +58,10 @@ const AboutSection = () => {
           {/* Closing Statement */}
           <div className="text-center space-y-4 pt-6">
             <p className="text-lg text-foreground/90 leading-relaxed italic max-w-3xl mx-auto">
-              در CookAI، آشپزی یه تجربه‌ی ساده، الهام‌بخش و کاملاً شخصی میشه —
+              {t("about.closing1")}
             </p>
             <p className="text-base text-muted-foreground leading-relaxed">
-              برای کسانی که به کیفیت، زمان و طعم اهمیت می‌دن.
+              {t("about.closing2")}
             </p>
           </div>
         </div>

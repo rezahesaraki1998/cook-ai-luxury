@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export const SITE_URL = "https://cook-ai-luxury.lovable.app";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -16,22 +17,29 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = "کوک‌اِی‌آی | دستور پخت فوری با هوش مصنوعی",
-  description = "فقط بگو چی می‌خوای بپزی! کوک‌اِی‌آی در لحظه مواد لازم و مراحل پخت غذاهای ایرانی و بین‌المللی را برایت آماده می‌کند.",
-  keywords = "دستور پخت, آشپزی, هوش مصنوعی, غذای ایرانی, دستور غذا, آشپزی آنلاین, قرمه سبزی, کباب کوبیده, فسنجان, کوکو سبزی, آشپز هوشمند",
+  title,
+  description,
+  keywords,
   image = DEFAULT_OG_IMAGE,
   path = "/",
   type = "website",
   noindex = false,
   jsonLd,
 }: SEOProps) => {
+  const { t, locale, dir } = useLanguage();
   const url = `${SITE_URL}${path === "/" ? "/" : path}`;
+
+  const resolvedTitle = title ?? t("seo.homeTitle");
+  const resolvedDescription = description ?? t("seo.homeDesc");
+  const resolvedKeywords = keywords ?? t("seo.keywords");
+  const htmlLang = locale === "fa" ? "fa-IR" : "en-US";
+  const ogLocale = locale === "fa" ? "fa_IR" : "en_US";
 
   const defaultJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "CookAI - کوک‌اِی‌آی",
-    "description": description,
+    "name": "CookAI",
+    "description": resolvedDescription,
     "url": url,
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web",
@@ -44,34 +52,35 @@ const SEO = ({
       "@type": "Organization",
       "name": "CookAI"
     },
-    "inLanguage": "fa-IR"
+    "inLanguage": htmlLang
   };
 
   return (
     <Helmet>
+      <html lang={locale} dir={dir} />
       {/* Basic Meta Tags */}
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
+      <title>{resolvedTitle}</title>
+      <meta name="description" content={resolvedDescription} />
+      <meta name="keywords" content={resolvedKeywords} />
       <meta name="author" content="CookAI" />
       <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-      <meta name="language" content="Persian" />
+      <meta name="language" content={locale === "fa" ? "Persian" : "English"} />
       <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
+      <meta property="og:title" content={resolvedTitle} />
+      <meta property="og:description" content={resolvedDescription} />
       <meta property="og:image" content={image} />
-      <meta property="og:locale" content="fa_IR" />
-      <meta property="og:site_name" content="CookAI - کوک‌اِی‌آی" />
+      <meta property="og:locale" content={ogLocale} />
+      <meta property="og:site_name" content="CookAI" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={url} />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
+      <meta name="twitter:title" content={resolvedTitle} />
+      <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:image" content={image} />
 
       {/* JSON-LD Structured Data */}
