@@ -79,7 +79,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       if (typeof value !== "string") return path;
       if (!vars) return value;
       return Object.entries(vars).reduce(
-        (acc, [key, val]) => acc.replaceAll(`{${key}}`, String(val)),
+        (acc, [key, val]) => acc.split(`{${key}}`).join(String(val)),
         value,
       );
     },
