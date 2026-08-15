@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light Mode - CookAI Design System */
+    /* Light Mode - cookluxury Design System */
     --background: 0 0% 98%; /* Light background */
     --foreground: 0 0% 10%;
 
@@ -62,7 +62,7 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark Mode - CookAI Design System */
+    /* Dark Mode - cookluxury Design System */
     --background: 0 0% 6.7%; /* #111111 deep charcoal */
     --foreground: 0 0% 98%;
 

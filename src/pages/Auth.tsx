@@ -220,7 +220,7 @@ const Auth = () => {
 
   return (
     <>
-      <SEO title="ورود و ثبت‌نام | کوک‌اِی‌آی" description="به حساب کاربری کوک‌اِی‌آی وارد شوید یا ثبت‌نام کنید تا دستورهای پخت مورد علاقه‌تان را ذخیره کنید." path="/auth" noindex />
+      <SEO title="ورود و ثبت‌نام | کوک‌لاکچری" description="به حساب کاربری کوک‌لاکچری وارد شوید یا ثبت‌نام کنید تا دستورهای پخت مورد علاقه‌تان را ذخیره کنید." path="/auth" noindex />
       <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
       <Card className="w-full max-w-md glass-card p-8 border border-primary/20 relative">
         <Button
@@ -238,7 +238,7 @@ const Auth = () => {
             <div className="w-12 h-12 rounded-full gradient-gold flex items-center justify-center">
               <ChefHat className="w-6 h-6 text-primary-foreground" />
             </div>
-            <h1 className="text-3xl font-bold text-gradient-gold">کوک‌اِی‌آی — ورود و ثبت‌نام</h1>
+            <h1 className="text-3xl font-bold text-gradient-gold">کوک‌لاکچری — ورود و ثبت‌نام</h1>
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             {isForgotPassword ? "بازیابی رمز عبور" : isLogin ? "ورود به حساب" : "ثبت‌نام"}
