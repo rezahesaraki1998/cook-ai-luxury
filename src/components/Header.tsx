@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, Search } from "lucide-react";
+import { ChefHat, Menu, Search, User, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
+
 import {
   CommandDialog,
   CommandInput,
@@ -25,13 +27,23 @@ import {
 const Header = () => {
   const [openSearch, setOpenSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
   const navigate = useNavigate();
   const { t, tr, isRTL } = useLanguage();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => setIsAuthed(!!session));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setMobileMenuOpen(false);
   };
+
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
@@ -69,7 +81,29 @@ const Header = () => {
 
             <LanguageSwitcher />
             <ThemeToggle />
+
+            {isAuthed ? (
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => navigate("/profile")}
+                aria-label={t("profile.title")}
+              >
+                <User className="w-4 h-4" />
+                {t("profile.title")}
+              </Button>
+            ) : (
+              <Button
+                className="gap-2 gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
+                onClick={() => navigate("/auth")}
+                aria-label={t("auth.login")}
+              >
+                <LogIn className="w-4 h-4" />
+                {t("auth.login")}
+              </Button>
+            )}
           </div>
+
 
           {/* Mobile Buttons */}
           <div className="flex md:hidden items-center gap-2">
@@ -119,8 +153,37 @@ const Header = () => {
                     {t("nav.whyUs")}
                   </button>
 
-                  <div className="pt-4 space-y-3" />
+                  <div className="pt-4 space-y-3">
+                    {isAuthed ? (
+                      <Button
+                        variant="outline"
+                        className="w-full gap-2"
+                        onClick={() => handleNavigation("/profile")}
+                      >
+                        <User className="w-4 h-4" />
+                        {t("profile.title")}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          className="w-full gap-2 gradient-gold text-primary-foreground shadow-gold"
+                          onClick={() => handleNavigation("/auth")}
+                        >
+                          <LogIn className="w-4 h-4" />
+                          {t("auth.login")}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => handleNavigation("/auth")}
+                        >
+                          {t("auth.signup")}
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </nav>
+
               </SheetContent>
             </Sheet>
           </div>
