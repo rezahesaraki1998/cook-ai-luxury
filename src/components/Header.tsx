@@ -27,13 +27,23 @@ import {
 const Header = () => {
   const [openSearch, setOpenSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
   const navigate = useNavigate();
   const { t, tr, isRTL } = useLanguage();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthed(!!session);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => setIsAuthed(!!session));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setMobileMenuOpen(false);
   };
+
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
