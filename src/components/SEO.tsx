@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-export const SITE_URL = "https://cook-ai-luxury.lovable.app";
+export const SITE_URL = "https://cookluxury.lovable.app";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 interface SEOProps {
@@ -38,7 +38,7 @@ const SEO = ({
   const defaultJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "CookAI",
+    "name": "cookluxury",
     "description": resolvedDescription,
     "url": url,
     "applicationCategory": "LifestyleApplication",
@@ -50,7 +50,7 @@ const SEO = ({
     },
     "author": {
       "@type": "Organization",
-      "name": "CookAI"
+      "name": "cookluxury"
     },
     "inLanguage": htmlLang
   };
@@ -62,7 +62,7 @@ const SEO = ({
       <title>{resolvedTitle}</title>
       <meta name="description" content={resolvedDescription} />
       <meta name="keywords" content={resolvedKeywords} />
-      <meta name="author" content="CookAI" />
+      <meta name="author" content="cookluxury" />
       <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
       <meta name="language" content={locale === "fa" ? "Persian" : "English"} />
       <link rel="canonical" href={url} />
@@ -74,7 +74,7 @@ const SEO = ({
       <meta property="og:description" content={resolvedDescription} />
       <meta property="og:image" content={image} />
       <meta property="og:locale" content={ogLocale} />
-      <meta property="og:site_name" content="CookAI" />
+      <meta property="og:site_name" content="cookluxury" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

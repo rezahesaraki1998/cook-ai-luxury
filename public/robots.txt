@@ -1,4 +1,4 @@
-# CookAI Robots.txt
+# cookluxury Robots.txt
 
 User-agent: Googlebot
 Allow: /
@@ -22,7 +22,7 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemap location
-Sitemap: https://cook-ai-luxury.lovable.app/sitemap.xml
+Sitemap: https://cookluxury.lovable.app/sitemap.xml
 
 # Disallow admin/private paths
 Disallow: /api/
