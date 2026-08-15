@@ -81,7 +81,29 @@ const Header = () => {
 
             <LanguageSwitcher />
             <ThemeToggle />
+
+            {isAuthed ? (
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => navigate("/profile")}
+                aria-label={t("profile.title")}
+              >
+                <User className="w-4 h-4" />
+                {t("profile.title")}
+              </Button>
+            ) : (
+              <Button
+                className="gap-2 gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
+                onClick={() => navigate("/auth")}
+                aria-label={t("auth.login")}
+              >
+                <LogIn className="w-4 h-4" />
+                {t("auth.login")}
+              </Button>
+            )}
           </div>
+
 
           {/* Mobile Buttons */}
           <div className="flex md:hidden items-center gap-2">
