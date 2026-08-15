@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, Search } from "lucide-react";
+import { ChefHat, Menu, Search, User, LogIn } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
+
 import {
   CommandDialog,
   CommandInput,
