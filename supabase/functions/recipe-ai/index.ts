@@ -22,44 +22,35 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Require an authenticated user (verify_jwt is also enabled for this function)
+    // Optional auth: guests get a small free lifetime quota, users get hourly limits
     const authHeader = req.headers.get('authorization');
     let userId: string | null = null;
     let isAdmin = false;
     let isAuthenticated = false;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    {
+    if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      const { data: { user } } = await supabase.auth.getUser(token);
 
-      if (authError || !user) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+      if (user) {
+        userId = user.id;
+        isAuthenticated = true;
+
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        isAdmin = !!roleData;
+        console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
+      } else {
+        console.log('Guest request (no user session)');
       }
-
-      userId = user.id;
-      isAuthenticated = true;
-
-      // Check if user is admin
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      isAdmin = !!roleData;
-      console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
     }
+
 
 
     // Get client IP for anonymous rate limiting
