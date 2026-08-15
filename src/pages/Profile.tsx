@@ -208,7 +208,7 @@ const Profile = () => {
 
   return (
     <>
-      <SEO title="پروفایل من | کوک‌اِی‌آی" description="مدیریت حساب کاربری، عکس پروفایل و دستورهای پخت ذخیره‌شده در کوک‌اِی‌آی." path="/profile" noindex />
+      <SEO title="پروفایل من | کوک‌لاکچری" description="مدیریت حساب کاربری، عکس پروفایل و دستورهای پخت ذخیره‌شده در کوک‌لاکچری." path="/profile" noindex />
       <div className="min-h-screen bg-background">
       <Header />
       

@@ -1,6 +1,6 @@
-# cook-ai-luxury
+# cookluxury
 
-Design a premium, Persian-language website called "CookAI" (کوک‌اِی‌آی) — an intelligent AI-powered recipe generator for Persian users.
+Design a premium, Persian-language website called "cookluxury" (کوک‌لاکچری) — an intelligent AI-powered recipe generator for Persian users.
 
 🌑 Theme:
 Use an elegant, dark-mode design with luxurious aesthetics. Combine deep charcoal backgrounds (#111111), golden highlights (#E4B73B), and warm accent tones like soft orange (#FFB26B). The design should feel modern, clean, and sophisticated — like a fusion of ChatGPT and HelloFresh with a luxury twist.
@@ -8,7 +8,7 @@ Use an elegant, dark-mode design with luxurious aesthetics. Combine deep charcoa
 ---
 
 🧠 Concept:
-CookAI lets users simply type or say what they want to cook, and instantly the AI generates:
+cookluxury lets users simply type or say what they want to cook, and instantly the AI generates:
 - Full ingredient list (in Persian)
 - Step-by-step cooking instructions
 - Estimated time and difficulty
@@ -37,7 +37,7 @@ Modern Persian-speaking users (Iranian and Middle Eastern), especially food love
 📄 Landing Page Structure:
 
 **1️⃣ Header**
-- Logo: “CookAI” in gold, modern Persian font.
+- Logo: “cookluxury” in gold, modern Persian font.
 - Navigation: خانه | محبوب‌ترین دستورها | درباره ما | ورود / ثبت‌نام
 - “شروع آشپزی” button (highlighted gold)
 
@@ -66,12 +66,12 @@ Modern Persian-speaking users (Iranian and Middle Eastern), especially food love
   - دسر ساده با میوه
 
 **5️⃣ Testimonials / About**
-- Short section introducing CookAI:
-  “با CookAI دیگه لازم نیست فکر کنی چی بپزی — فقط بگو، بقیه‌ش با ماست.”
+- Short section introducing cookluxury:
+  “با cookluxury دیگه لازم نیست فکر کنی چی بپزی — فقط بگو، بقیه‌ش با ماست.”
 - Optional mini testimonials from users.
 
 **6️⃣ Footer**
-- Links: درباره ما | تماس | حریم خصوصی | © 2025 CookAI
+- Links: درباره ما | تماس | حریم خصوصی | © 2025 cookluxury
 - Social icons (Instagram, Telegram, YouTube)
 - Subtle golden gradient line on top of footer.
 
@@ -92,7 +92,7 @@ Make users feel they’re talking to a luxurious AI chef assistant — intellige
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://cook-ai-luxury.lovable.app
+**Live app**: https://cookluxury.lovable.app
 
 ## Build with Lovable
 

@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
-        name: "CookAI - دستیار هوشمند آشپزی",
-        short_name: "CookAI",
+        name: "cookluxury - دستیار هوشمند آشپزی",
+        short_name: "cookluxury",
         description: "دستیار هوشمند آشپزی با هوش مصنوعی - دستور پخت غذاهای ایرانی و بین‌المللی",
         theme_color: "#f59e0b",
         background_color: "#1a1a2e",

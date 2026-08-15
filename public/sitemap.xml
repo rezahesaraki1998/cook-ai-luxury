@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/</loc>
+    <loc>https://cookluxury.lovable.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/why-us</loc>
+    <loc>https://cookluxury.lovable.app/why-us</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/privacy</loc>
+    <loc>https://cookluxury.lovable.app/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/terms</loc>
+    <loc>https://cookluxury.lovable.app/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/contact</loc>
+    <loc>https://cookluxury.lovable.app/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://cook-ai-luxury.lovable.app/auth</loc>
+    <loc>https://cookluxury.lovable.app/auth</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
