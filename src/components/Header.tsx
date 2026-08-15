@@ -153,8 +153,37 @@ const Header = () => {
                     {t("nav.whyUs")}
                   </button>
 
-                  <div className="pt-4 space-y-3" />
+                  <div className="pt-4 space-y-3">
+                    {isAuthed ? (
+                      <Button
+                        variant="outline"
+                        className="w-full gap-2"
+                        onClick={() => handleNavigation("/profile")}
+                      >
+                        <User className="w-4 h-4" />
+                        {t("profile.title")}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          className="w-full gap-2 gradient-gold text-primary-foreground shadow-gold"
+                          onClick={() => handleNavigation("/auth")}
+                        >
+                          <LogIn className="w-4 h-4" />
+                          {t("auth.login")}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => handleNavigation("/auth")}
+                        >
+                          {t("auth.signup")}
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </nav>
+
               </SheetContent>
             </Sheet>
           </div>
