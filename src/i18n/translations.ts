@@ -1,6 +1,11 @@
 export type Locale = "fa" | "en";
 
-export const LOCALES: { code: Locale; label: string; dir: "rtl" | "ltr"; htmlLang: string }[] = [
+export const LOCALES: {
+  code: Locale;
+  label: string;
+  dir: "rtl" | "ltr";
+  htmlLang: string;
+}[] = [
   { code: "fa", label: "FA", dir: "rtl", htmlLang: "fa" },
   { code: "en", label: "EN", dir: "ltr", htmlLang: "en" },
 ];
@@ -14,6 +19,7 @@ const fa = {
     brandName: "cookluxury",
     brandSub: "کوک‌لاکچری",
   },
+
   nav: {
     home: "خانه",
     recipes: "محبوب‌ترین دستورها",
@@ -28,11 +34,13 @@ const fa = {
     language: "زبان",
     changeLanguage: "تغییر زبان",
   },
+
   hero: {
     badge: "دستیار هوشمند آشپزی با هوش مصنوعی",
     titleLine1: "فقط بگو",
     titleLine2: "چی می‌خوای بپزی!",
-    subtitle: "هوش مصنوعی در لحظه دستور پخت، مواد لازم و مراحل دقیق آشپزی رو برات آماده می‌کنه",
+    subtitle:
+      "هوش مصنوعی در لحظه دستور پخت، مواد لازم و مراحل دقیق آشپزی رو برات آماده می‌کنه",
     freeLeftSuffix: "دستور پخت رایگان باقی‌مانده",
     freeOver: "محدودیت رایگان تمام شد - برای ادامه وارد شوید",
     unlimited: "حساب نامحدود - دسترسی کامل",
@@ -60,24 +68,40 @@ const fa = {
     toastEmptyTitle: "خطا",
     toastEmptyDesc: "لطفاً نام غذا یا مواد مورد نیاز را وارد کنید",
     toastLoginTitle: "ورود لازم است",
-    toastLoginDesc: "دستورهای رایگان شما به پایان رسید. برای ادامه وارد حساب کاربری خود شوید",
-    toastGenerateError: "مشکلی در ایجاد دستور پخت پیش آمد. لطفاً دوباره تلاش کنید.",
+    toastLoginDesc:
+      "دستورهای رایگان شما به پایان رسید. برای ادامه وارد حساب کاربری خود شوید",
+    toastGenerateError:
+      "مشکلی در ایجاد دستور پخت پیش آمد. لطفاً دوباره تلاش کنید.",
     toastSaveDisabledTitle: "غیرفعال",
     toastSaveDisabledDesc: "ذخیره دستور پخت فعلاً غیرفعال است",
     toastSavedTitle: "ذخیره شد",
     toastSavedDesc: "دستور پخت به علاقه‌مندی‌های شما اضافه شد",
     toastSaveErrorDesc: "مشکلی در ذخیره دستور پخت پیش آمد",
   },
+
   suggestions: {
     title: "الهام از هوش آشپز",
     subtitle: "نمی‌دونی چی بپزی؟ از پیشنهادهای هوشمند ما استفاده کن",
     items: [
-      { title: "غذای سریع برای دو نفر", description: "دستور پخت‌های کمتر از ۳۰ دقیقه" },
-      { title: "خوراک رژیمی ایرانی", description: "غذاهای سالم و کم کالری" },
-      { title: "غذای مخصوص مهمان", description: "دستورهای فاخر و خاص" },
-      { title: "دسر ساده با میوه", description: "شیرینی‌های خوشمزه و آسان" },
+      {
+        title: "غذای سریع برای دو نفر",
+        description: "دستور پخت‌های کمتر از ۳۰ دقیقه",
+      },
+      {
+        title: "خوراک رژیمی ایرانی",
+        description: "غذاهای سالم و کم کالری",
+      },
+      {
+        title: "غذای مخصوص مهمان",
+        description: "دستورهای فاخر و خاص",
+      },
+      {
+        title: "دسر ساده با میوه",
+        description: "شیرینی‌های خوشمزه و آسان",
+      },
     ],
   },
+
   preview: {
     title: "نمونه‌ای از نتیجه",
     subtitle: "همین الان ببین چطور کوک‌لاکچری برات دستور پخت می‌سازه",
@@ -98,6 +122,7 @@ const fa = {
     toastSavedTitle: "ذخیره شد!",
     toastSavedDesc: "دستور پخت به علاقه‌مندی‌ها اضافه شد",
   },
+
   about: {
     title: "چرا ما؟",
     questionsTitle: "سوال‌های همیشگی آشپزی",
@@ -111,12 +136,17 @@ const fa = {
     howBody:
       "ما با هوش مصنوعی طراحی شدیم تا بر اساس مواد اولیه‌ای که توی خونه داری، سلیقه‌ات، و حتی اهداف رژیمی‌ات، غذاهای دقیق و خوش‌طعم بهت پیشنهاد بدیم.",
     highlightTitle: "با ما دیگه هیچ‌وقت نمی‌گی «چی بپزم؟»",
-    highlightBody: "فقط بگو چی داری، یا چه غذایی دلت می‌خواد، و در چند ثانیه دستور پخت اختصاصی‌ت آماده‌ست.",
-    closing1: "در cookluxury، آشپزی یه تجربه‌ی ساده، الهام‌بخش و کاملاً شخصی میشه —",
-    closing2: "برای کسانی که به کیفیت، زمان و طعم اهمیت می‌دن.",
+    highlightBody:
+      "فقط بگو چی داری، یا چه غذایی دلت می‌خواد، و در چند ثانیه دستور پخت اختصاصی‌ت آماده‌ست.",
+    closing1:
+      "در cookluxury، آشپزی یه تجربه‌ی ساده، الهام‌بخش و کاملاً شخصی میشه —",
+    closing2:
+      "برای کسانی که به کیفیت، زمان و طعم اهمیت می‌دن.",
   },
+
   footer: {
-    tagline: "دستیار هوشمند آشپزی که با قدرت هوش مصنوعی، آشپزی رو برات آسون می‌کنه",
+    tagline:
+      "دستیار هوشمند آشپزی که با قدرت هوش مصنوعی، آشپزی رو برات آسون می‌کنه",
     quickLinks: "دسترسی سریع",
     legal: "قوانین",
     privacy: "حریم خصوصی",
@@ -128,12 +158,14 @@ const fa = {
     youtube: "یوتیوب کوک‌لاکچری",
     rights: "© 2025 cookluxury. تمامی حقوق محفوظ است.",
   },
+
   auth: {
     pageTitle: "کوک‌لاکچری — ورود و ثبت‌نام",
     login: "ورود به حساب",
     signup: "ثبت‌نام",
     forgot: "بازیابی رمز عبور",
-    forgotHint: "ایمیل خود را وارد کنید تا لینک بازیابی برایتان ارسال شود",
+    forgotHint:
+      "ایمیل خود را وارد کنید تا لینک بازیابی برایتان ارسال شود",
     loginHint: "برای دسترسی به علاقه‌مندی‌ها وارد شوید",
     signupHint: "برای شروع یک حساب بسازید",
     firstName: "نام",
@@ -179,8 +211,10 @@ const fa = {
     passwordMismatch: "رمز عبور و تکرار آن یکسان نیستند",
     invalidValue: "مقدار نامعتبر",
     seoTitle: "ورود و ثبت‌نام | کوک‌لاکچری",
-    seoDesc: "به حساب کاربری کوک‌لاکچری وارد شوید یا ثبت‌نام کنید تا دستورهای پخت مورد علاقه‌تان را ذخیره کنید.",
+    seoDesc:
+      "به حساب کاربری کوک‌لاکچری وارد شوید یا ثبت‌نام کنید تا دستورهای پخت مورد علاقه‌تان را ذخیره کنید.",
   },
+
   profile: {
     title: "پروفایل من",
     favoritesCount: "{count} دستور پخت در علاقه‌مندی‌ها",
@@ -188,7 +222,8 @@ const fa = {
     logout: "خروج",
     myFavorites: "دستورهای مورد علاقه من",
     emptyTitle: "هنوز دستوری اضافه نکردید",
-    emptyBody: "با کلیک روی دکمه قلب، دستورهای مورد علاقه خود را ذخیره کنید",
+    emptyBody:
+      "با کلیک روی دکمه قلب، دستورهای مورد علاقه خود را ذخیره کنید",
     start: "شروع کنید",
     addedOn: "افزوده شده در:",
     delete: "حذف از علاقه‌مندی‌ها",
@@ -204,11 +239,14 @@ const fa = {
     uploadSuccessDesc: "عکس پروفایل با موفقیت به‌روزرسانی شد",
     uploadError: "مشکل در آپلود عکس پروفایل",
     seoTitle: "پروفایل من | کوک‌لاکچری",
-    seoDesc: "مدیریت حساب کاربری، عکس پروفایل و دستورهای پخت ذخیره‌شده در کوک‌لاکچری.",
+    seoDesc:
+      "مدیریت حساب کاربری، عکس پروفایل و دستورهای پخت ذخیره‌شده در کوک‌لاکچری.",
   },
+
   contact: {
     seoTitle: "تماس با ما | کوک‌لاکچری",
-    seoDesc: "راه‌های ارتباط با تیم کوک‌لاکچری: واتساپ و ایمیل پشتیبانی برای پرسش، پیشنهاد و گزارش مشکل.",
+    seoDesc:
+      "راه‌های ارتباط با تیم کوک‌لاکچری: واتساپ و ایمیل پشتیبانی برای پرسش، پیشنهاد و گزارش مشکل.",
     title: "تماس با ما",
     aboutTitle: "درباره پاسخگویی ما",
     aboutBody:
@@ -219,36 +257,58 @@ const fa = {
     note:
       "با کلیک روی شماره تماس، مستقیماً وارد واتساپ شوید و پیام خود را برای ما ارسال کنید. همچنین با کلیک روی ایمیل، برنامه ایمیل شما باز شده و می‌توانید پیام خود را ارسال کنید.",
   },
+
   privacy: {
     seoTitle: "حریم خصوصی | کوک‌لاکچری",
-    seoDesc: "سیاست حریم خصوصی کوک‌لاکچری: چه داده‌هایی جمع‌آوری می‌شود، چگونه نگهداری و محافظت می‌شود.",
+    seoDesc:
+      "سیاست حریم خصوصی کوک‌لاکچری: چه داده‌هایی جمع‌آوری می‌شود، چگونه نگهداری و محافظت می‌شود.",
     title: "حریم خصوصی",
     s1t: "۱. تعهد به حفظ حریم خصوصی",
-    s1b: "ما به اعتماد شما اهمیت می‌دهیم. اطلاعاتی که در سایت وارد می‌کنید فقط برای ارائه خدمات بهتر، بهبود تجربه کاربری و پاسخ‌گویی دقیق‌تر استفاده می‌شود. ما متعهد هستیم از اطلاعات شما محافظت کنیم و آن را بدون اجازه شما در اختیار شخص یا مجموعه دیگری قرار ندهیم.",
+    s1b:
+      "ما به اعتماد شما اهمیت می‌دهیم. اطلاعاتی که در سایت وارد می‌کنید فقط برای ارائه خدمات بهتر، بهبود تجربه کاربری و پاسخ‌گویی دقیق‌تر استفاده می‌شود. ما متعهد هستیم از اطلاعات شما محافظت کنیم و آن را بدون اجازه شما در اختیار شخص یا مجموعه دیگری قرار ندهیم.",
     s2t: "۲. استفاده از اطلاعات",
-    s2b: "استفاده شما از این سایت به معنی پذیرش قوانین حریم خصوصی و اعتماد به ما برای حفظ اطلاعات شماست. اطلاعات جمع‌آوری‌شده صرفاً برای بهبود عملکرد سایت، شخصی‌سازی تجربه کاربری و ارائه پشتیبانی مناسب مورد استفاده قرار می‌گیرد.",
+    s2b:
+      "استفاده شما از این سایت به معنی پذیرش قوانین حریم خصوصی و اعتماد به ما برای حفظ اطلاعات شماست. اطلاعات جمع‌آوری‌شده صرفاً برای بهبود عملکرد سایت، شخصی‌سازی تجربه کاربری و ارائه پشتیبانی مناسب مورد استفاده قرار می‌گیرد.",
     s3t: "۳. حفاظت از اطلاعات",
-    s3b: "ما از روش‌ها و استانداردهای امنیتی مناسب برای محافظت از اطلاعات شخصی کاربران استفاده می‌کنیم. اطلاعات شما در دسترس اشخاص ثالث قرار نخواهد گرفت، مگر آن‌که قانون یا مرجع صالحی این موضوع را الزامی کند.",
+    s3b:
+      "ما از روش‌ها و استانداردهای امنیتی مناسب برای محافظت از اطلاعات شخصی کاربران استفاده می‌کنیم. اطلاعات شما در دسترس اشخاص ثالث قرار نخواهد گرفت، مگر آن‌که قانون یا مرجع صالحی این موضوع را الزامی کند.",
     s4t: "۴. تغییرات در سیاست حریم خصوصی",
-    s4b: "ما حق داریم هر زمان این سیاست حریم خصوصی را به‌روزرسانی کنیم. تغییرات پس از انتشار در سایت لازم‌الاجرا خواهند بود و استفاده مداوم از خدمات به معنی پذیرش نسخهٔ به‌روزشده است.",
+    s4b:
+      "ما حق داریم هر زمان این سیاست حریم خصوصی را به‌روزرسانی کنیم. تغییرات پس از انتشار در سایت لازم‌الاجرا خواهند بود و استفاده مداوم از خدمات به معنی پذیرش نسخهٔ به‌روزشده است.",
     s5t: "۵. تماس با ما",
-    s5b_before: "در صورت داشتن هرگونه سوال دربارهٔ حریم خصوصی و نحوهٔ مدیریت اطلاعات، می‌توانید از طریق صفحه تماس با ما یا آدرس ایمیل ",
+    s5b_before:
+      "در صورت داشتن هرگونه سوال دربارهٔ حریم خصوصی و نحوهٔ مدیریت اطلاعات، می‌توانید از طریق صفحه تماس با ما یا آدرس ایمیل ",
     s5b_after: " با ما در ارتباط باشید.",
   },
+
   terms: {
     seoTitle: "قوانین و شرایط استفاده | کوک‌لاکچری",
-    seoDesc: "قوانین و شرایط استفاده از سرویس دستور پخت هوشمند کوک‌لاکچری را پیش از استفاده مطالعه کنید.",
+    seoDesc:
+      "قوانین و شرایط استفاده از سرویس دستور پخت هوشمند کوک‌لاکچری را پیش از استفاده مطالعه کنید.",
     title: "شرایط استفاده",
     intro:
       "لطفاً پیش از استفاده از خدمات سایت cookluxury این شرایط استفاده را با دقت مطالعه نمایید. استفاده شما از خدمات سایت به معنی پذیرش کامل این شرایط است.",
     s1t: "۱. مفاهیم و تعاریف",
-    s1lead: "در این سند، اصطلاحات زیر به معانی زیر به‌کار می‌روند مگر آن‌که صراحتاً ذکر شده باشد:",
+    s1lead:
+      "در این سند، اصطلاحات زیر به معانی زیر به‌کار می‌روند مگر آن‌که صراحتاً ذکر شده باشد:",
     s1items: [
       { label: "(کاربر):", text: "هر شخصی که از خدمات سایت استفاده می‌کند." },
-      { label: "(حساب کاربری):", text: "پروفایل کاربر در سایت که با شماره تلفن و مشخصات دیگر ثبت می‌شود." },
-      { label: "(دستور پخت):", text: "متن، تصویر و محتوای تولیدشده توسط هوش مصنوعی که برای پخت یک غذا ارائه می‌گردد." },
-      { label: "(خدمات رایگان):", text: "امکاناتی که بدون پرداخت هزینه در اختیار کاربر قرار می‌گیرد." },
-      { label: "(اشتراک):", text: "خرید بسته اشتراک که دسترسی‌های بیشتری نسبت به نسخهٔ رایگان فراهم می‌کند." },
+      {
+        label: "(حساب کاربری):",
+        text: "پروفایل کاربر در سایت که با شماره تلفن و مشخصات دیگر ثبت می‌شود.",
+      },
+      {
+        label: "(دستور پخت):",
+        text: "متن، تصویر و محتوای تولیدشده توسط هوش مصنوعی که برای پخت یک غذا ارائه می‌گردد.",
+      },
+      {
+        label: "(خدمات رایگان):",
+        text: "امکاناتی که بدون پرداخت هزینه در اختیار کاربر قرار می‌گیرد.",
+      },
+      {
+        label: "(اشتراک):",
+        text: "خرید بسته اشتراک که دسترسی‌های بیشتری نسبت به نسخهٔ رایگان فراهم می‌کند.",
+      },
     ],
     s2t: "۲. شرایط عضویت و دسترسی به دستور پخت‌ها",
     s2items: [
@@ -291,22 +351,27 @@ const fa = {
       "کاربر می‌تواند در هر زمان درخواست حذف حساب خود را ثبت کند؛ با این حال برخی اطلاعات ممکن است طبق قوانین و برای حفظ سوابق پرداخت یا مسائل حقوقی ذخیره شوند.",
     ],
     s9t: "۹. تغییر در شرایط استفاده",
-    s9b: "سایت می‌تواند این شرایط را در هر زمان به‌روزرسانی نماید. تغییرات بلافاصله پس از انتشار در سایت لازم‌الاجرا خواهند بود، مگر آن‌که در متن تغییر تاریخ اجرا مشخص شده باشد. استفاده مداوم کاربر پس از اعمال تغییرات به منزله پذیرش شرایط جدید است.",
+    s9b:
+      "سایت می‌تواند این شرایط را در هر زمان به‌روزرسانی نماید. تغییرات بلافاصله پس از انتشار در سایت لازم‌الاجرا خواهند بود، مگر آن‌که در متن تغییر تاریخ اجرا مشخص شده باشد. استفاده مداوم کاربر پس از اعمال تغییرات به منزله پذیرش شرایط جدید است.",
     s10t: "۱۰. تماس و پشتیبانی",
-    s10b_before: "در صورت پرسش یا نیاز به پشتیبانی لطفاً از طریق صفحه تماس با ما یا آدرس ایمیل ",
+    s10b_before:
+      "در صورت پرسش یا نیاز به پشتیبانی لطفاً از طریق صفحه تماس با ما یا آدرس ایمیل ",
     s10b_after: " با ما در تماس باشید.",
   },
+
   seo: {
-    homeTitle: "کوک‌لاکچری | دستور پخت فوری با هوش مصنوعی",
+    homeTitle: "Cook Luxury | آشپزی هوشمند با هوش مصنوعی",
     homeDesc:
-      "فقط بگو چی می‌خوای بپزی! کوک‌لاکچری در لحظه مواد لازم و مراحل پخت غذاهای ایرانی و بین‌المللی را برایت آماده می‌کند.",
+      "Cook Luxury یک پلتفرم هوشمند آشپزی است که با کمک هوش مصنوعی به شما برای پیدا کردن دستور غذا، ایده‌های آشپزی و تجربه‌ای بهتر در آشپزخانه کمک می‌کند.",
     keywords:
-      "دستور پخت, آشپزی, هوش مصنوعی, غذای ایرانی, دستور غذا, آشپزی آنلاین, قرمه سبزی, کباب کوبیده, فسنجان, کوکو سبزی, آشپز هوشمند",
-    whyUsTitle: "چرا کوک‌لاکچری؟ | مزیت‌های دستیار آشپزی هوشمند",
-    whyUsDesc: "با کوک‌لاکچری در چند ثانیه دستور پخت شخصی‌سازی‌شده، مواد لازم و مراحل دقیق آشپزی را دریافت کنید.",
+      "آشپزی با هوش مصنوعی, دستور غذا, دستور پخت, هوش مصنوعی آشپزی, غذای ایرانی, غذای بین‌المللی, ایده آشپزی, کوک لاکچری, Cook Luxury",
+    whyUsTitle: "چرا Cook Luxury؟ | مزایای آشپزی هوشمند با هوش مصنوعی",
+    whyUsDesc:
+      "با Cook Luxury دستور غذاهای شخصی‌سازی‌شده، ایده‌های جدید آشپزی، مواد لازم و مراحل دقیق پخت را در چند ثانیه دریافت کنید.",
     samplePreview: "نمونه دستور پخت",
-    smartSuggestions: "پیشنهادات هوشمند",
+    smartSuggestions: "پیشنهادهای هوشمند",
   },
+
   notFound: {
     title: "۴۰۴",
     message: "صفحه مورد نظر پیدا نشد",
@@ -323,6 +388,7 @@ const en: typeof fa = {
     brandName: "cookluxury",
     brandSub: "Smart Cooking",
   },
+
   nav: {
     home: "Home",
     recipes: "Popular Recipes",
@@ -337,6 +403,7 @@ const en: typeof fa = {
     language: "Language",
     changeLanguage: "Change language",
   },
+
   hero: {
     badge: "Your AI-powered cooking assistant",
     titleLine1: "Just tell us",
@@ -352,7 +419,12 @@ const en: typeof fa = {
     generating: "Creating...",
     generate: "Create my recipe",
     quickSuggestions: "Try:",
-    chips: ["Ghormeh Sabzi", "Koobideh Kebab", "Fesenjan", "Herb Frittata"],
+    chips: [
+      "Ghormeh Sabzi",
+      "Koobideh Kebab",
+      "Fesenjan",
+      "Herb Frittata",
+    ],
     imageLoading: "Generating image...",
     imageMissing: "No image available",
     imageAlt: "Photo of {name} — recipe generated by AI",
@@ -370,24 +442,40 @@ const en: typeof fa = {
     toastEmptyTitle: "Error",
     toastEmptyDesc: "Please enter a dish name or the ingredients you have",
     toastLoginTitle: "Sign in required",
-    toastLoginDesc: "You've used all your free recipes. Sign in to keep cooking.",
-    toastGenerateError: "Something went wrong while creating the recipe. Please try again.",
+    toastLoginDesc:
+      "You've used all your free recipes. Sign in to keep cooking.",
+    toastGenerateError:
+      "Something went wrong while creating the recipe. Please try again.",
     toastSaveDisabledTitle: "Unavailable",
     toastSaveDisabledDesc: "Saving recipes is temporarily disabled",
     toastSavedTitle: "Saved",
     toastSavedDesc: "The recipe was added to your favorites",
     toastSaveErrorDesc: "Something went wrong while saving the recipe",
   },
+
   suggestions: {
     title: "Inspiration from your AI chef",
     subtitle: "Not sure what to cook? Start with one of our smart ideas.",
     items: [
-      { title: "Quick dinner for two", description: "Recipes ready in under 30 minutes" },
-      { title: "Light & healthy Persian", description: "Balanced, lower-calorie dishes" },
-      { title: "Impress your guests", description: "Elegant recipes for special occasions" },
-      { title: "Easy fruit dessert", description: "Simple, delicious sweet treats" },
+      {
+        title: "Quick dinner for two",
+        description: "Recipes ready in under 30 minutes",
+      },
+      {
+        title: "Light & healthy Persian",
+        description: "Balanced, lower-calorie dishes",
+      },
+      {
+        title: "Impress your guests",
+        description: "Elegant recipes for special occasions",
+      },
+      {
+        title: "Easy fruit dessert",
+        description: "Simple, delicious sweet treats",
+      },
     ],
   },
+
   preview: {
     title: "See it in action",
     subtitle: "Here's an example of the recipes cookluxury creates for you",
@@ -408,6 +496,7 @@ const en: typeof fa = {
     toastSavedTitle: "Saved!",
     toastSavedDesc: "The recipe was added to your favorites",
   },
+
   about: {
     title: "Why cookluxury?",
     questionsTitle: "The questions every home cook asks",
@@ -415,7 +504,8 @@ const en: typeof fa = {
     q1: "🍲 \"What should I cook today?\"",
     q2: "⌛ \"I'm short on time — what can I make fast?\"",
     q3: "🏋️‍♀️ \"I want something healthy that still tastes great.\"",
-    q4: "👩‍🍳 Or maybe: \"I'm tired of the same meals — teach me something new!\"",
+    q4:
+      "👩‍🍳 Or maybe: \"I'm tired of the same meals — teach me something new!\"",
     howTitle: "How cookluxury helps",
     howLead: "That's exactly where cookluxury steps in.",
     howBody:
@@ -423,11 +513,15 @@ const en: typeof fa = {
     highlightTitle: "Never ask \"what's for dinner?\" again",
     highlightBody:
       "Tell us what's in your kitchen or what you're craving, and your personalised recipe is ready in seconds.",
-    closing1: "With cookluxury, cooking becomes simple, inspiring and genuinely personal —",
-    closing2: "made for people who care about quality, time and taste.",
+    closing1:
+      "With cookluxury, cooking becomes simple, inspiring and genuinely personal —",
+    closing2:
+      "made for people who care about quality, time and taste.",
   },
+
   footer: {
-    tagline: "The smart cooking assistant that makes every meal easier with AI.",
+    tagline:
+      "The smart cooking assistant that makes every meal easier with AI.",
     quickLinks: "Quick links",
     legal: "Legal",
     privacy: "Privacy Policy",
@@ -439,6 +533,7 @@ const en: typeof fa = {
     youtube: "cookluxury on YouTube",
     rights: "© 2025 cookluxury. All rights reserved.",
   },
+
   auth: {
     pageTitle: "cookluxury — Sign in & Sign up",
     login: "Sign in",
@@ -490,8 +585,10 @@ const en: typeof fa = {
     passwordMismatch: "Passwords do not match",
     invalidValue: "Invalid value",
     seoTitle: "Sign in & Sign up | cookluxury",
-    seoDesc: "Sign in to cookluxury or create an account to save your favorite AI-generated recipes.",
+    seoDesc:
+      "Sign in to cookluxury or create an account to save your favorite AI-generated recipes.",
   },
+
   profile: {
     title: "My profile",
     favoritesCount: "{count} saved recipes",
@@ -515,11 +612,14 @@ const en: typeof fa = {
     uploadSuccessDesc: "Your profile photo has been updated",
     uploadError: "Couldn't upload your profile photo",
     seoTitle: "My profile | cookluxury",
-    seoDesc: "Manage your cookluxury account, profile photo and saved recipes.",
+    seoDesc:
+      "Manage your cookluxury account, profile photo and saved recipes.",
   },
+
   contact: {
     seoTitle: "Contact us | cookluxury",
-    seoDesc: "Get in touch with the cookluxury team via WhatsApp or email for questions, feedback and support.",
+    seoDesc:
+      "Get in touch with the cookluxury team via WhatsApp or email for questions, feedback and support.",
     title: "Contact us",
     aboutTitle: "How we support you",
     aboutBody:
@@ -530,36 +630,61 @@ const en: typeof fa = {
     note:
       "Tap the phone number to open a WhatsApp chat with us, or tap the email address to start a message in your mail app.",
   },
+
   privacy: {
     seoTitle: "Privacy Policy | cookluxury",
-    seoDesc: "cookluxury's privacy policy: what data we collect, how we store it and how we keep it safe.",
+    seoDesc:
+      "cookluxury's privacy policy: what data we collect, how we store it and how we keep it safe.",
     title: "Privacy Policy",
     s1t: "1. Our commitment to your privacy",
-    s1b: "Your trust matters to us. The information you provide on this site is used solely to deliver a better service, improve your experience and respond to you accurately. We are committed to protecting your data and never share it with any third party without your permission.",
+    s1b:
+      "Your trust matters to us. The information you provide on this site is used solely to deliver a better service, improve your experience and respond to you accurately. We are committed to protecting your data and never share it with any third party without your permission.",
     s2t: "2. How we use your information",
-    s2b: "By using this site you accept this privacy policy and trust us with the safekeeping of your data. Collected information is used only to improve site performance, personalise your experience and provide proper support.",
+    s2b:
+      "By using this site you accept this privacy policy and trust us with the safekeeping of your data. Collected information is used only to improve site performance, personalise your experience and provide proper support.",
     s3t: "3. Data protection",
-    s3b: "We apply appropriate security practices and standards to protect users' personal information. Your data will not be made available to third parties unless required by law or a competent authority.",
+    s3b:
+      "We apply appropriate security practices and standards to protect users' personal information. Your data will not be made available to third parties unless required by law or a competent authority.",
     s4t: "4. Changes to this policy",
-    s4b: "We may update this privacy policy at any time. Changes take effect once published on the site, and continued use of our services means you accept the updated version.",
+    s4b:
+      "We may update this privacy policy at any time. Changes take effect once published on the site, and continued use of our services means you accept the updated version.",
     s5t: "5. Contact us",
-    s5b_before: "If you have any questions about privacy or how your data is handled, reach us via the contact page or by email at ",
+    s5b_before:
+      "If you have any questions about privacy or how your data is handled, reach us via the contact page or by email at ",
     s5b_after: ".",
   },
+
   terms: {
     seoTitle: "Terms of Service | cookluxury",
-    seoDesc: "Read the terms of service for cookluxury's AI-powered recipe assistant before using the site.",
+    seoDesc:
+      "Read the terms of service for cookluxury's AI-powered recipe assistant before using the site.",
     title: "Terms of Service",
     intro:
       "Please read these terms carefully before using cookluxury. By using our services you fully accept these terms.",
     s1t: "1. Definitions",
-    s1lead: "In this document, the following terms have the meanings below unless stated otherwise:",
+    s1lead:
+      "In this document, the following terms have the meanings below unless stated otherwise:",
     s1items: [
-      { label: "User:", text: "any person who uses the services of this site." },
-      { label: "Account:", text: "the user profile registered on the site with a phone number and other details." },
-      { label: "Recipe:", text: "the text, images and content generated by AI to help prepare a dish." },
-      { label: "Free services:", text: "features made available to the user at no cost." },
-      { label: "Subscription:", text: "a paid plan that unlocks more access than the free tier." },
+      {
+        label: "User:",
+        text: "any person who uses the services of this site.",
+      },
+      {
+        label: "Account:",
+        text: "the user profile registered on the site with a phone number and other details.",
+      },
+      {
+        label: "Recipe:",
+        text: "the text, images and content generated by AI to help prepare a dish.",
+      },
+      {
+        label: "Free services:",
+        text: "features made available to the user at no cost.",
+      },
+      {
+        label: "Subscription:",
+        text: "a paid plan that unlocks more access than the free tier.",
+      },
     ],
     s2t: "2. Membership and recipe access",
     s2items: [
@@ -602,22 +727,27 @@ const en: typeof fa = {
       "Users may request deletion of their account at any time; however, some data may be retained as required by law or to preserve payment and legal records.",
     ],
     s9t: "9. Changes to these terms",
-    s9b: "We may update these terms at any time. Changes take effect immediately upon publication unless a different effective date is stated. Continued use after changes means you accept the updated terms.",
+    s9b:
+      "We may update these terms at any time. Changes take effect immediately upon publication unless a different effective date is stated. Continued use after changes means you accept the updated terms.",
     s10t: "10. Contact and support",
-    s10b_before: "For questions or support, please use the contact page or email us at ",
+    s10b_before:
+      "For questions or support, please use the contact page or email us at ",
     s10b_after: ".",
   },
+
   seo: {
-    homeTitle: "cookluxury | Instant AI-Powered Recipes",
+    homeTitle: "Cook Luxury | Smart Cooking with AI",
     homeDesc:
-      "Just say what you'd like to cook. cookluxury instantly delivers ingredients and step-by-step instructions for Persian and international dishes.",
+      "Cook Luxury is an AI-powered cooking platform that helps you discover recipes, find cooking ideas and enjoy a smarter kitchen experience.",
     keywords:
-      "recipes, cooking, AI recipe generator, Persian food, meal ideas, easy recipes, ghormeh sabzi, kebab, fesenjan, smart cooking assistant",
-    whyUsTitle: "Why cookluxury? | Benefits of your smart cooking assistant",
-    whyUsDesc: "With cookluxury you get a personalised recipe, ingredient list and precise cooking steps in seconds.",
-    samplePreview: "Sample recipe",
-    smartSuggestions: "Smart suggestions",
+      "AI cooking, AI recipes, recipe generator, cooking ideas, Persian recipes, international recipes, smart cooking, Cook Luxury",
+    whyUsTitle: "Why Cook Luxury? | Smart AI Cooking Benefits",
+    whyUsDesc:
+      "Get personalised recipes, cooking ideas, ingredients and step-by-step instructions with Cook Luxury's AI-powered cooking assistant.",
+    samplePreview: "Sample Recipe",
+    smartSuggestions: "Smart Suggestions",
   },
+
   notFound: {
     title: "404",
     message: "This page could not be found",
