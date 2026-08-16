@@ -1,9 +1,7 @@
-import { Helmet } from 'react-helmet-async';
-import { useLanguage } from '@/i18n/LanguageContext';
-
-export const SITE_URL = "https://cookluxury.ir";
+import { Helmet } from "react-helmet-async";
+import { useLanguage } from "@/i18n/LanguageContext";
+export const SITE_URL = "https://www.cookluxury.ir";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
-
 interface SEOProps {
   title?: string;
   description?: string;
@@ -15,7 +13,6 @@ interface SEOProps {
   noindex?: boolean;
   jsonLd?: object;
 }
-
 const SEO = ({
   title,
   description,
@@ -27,19 +24,14 @@ const SEO = ({
   jsonLd,
 }: SEOProps) => {
   const { t, locale, dir } = useLanguage();
-
   const normalizedPath =
     path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}`;
-
   const url = `${SITE_URL}${normalizedPath}`;
-
   const resolvedTitle = title ?? t("seo.homeTitle");
   const resolvedDescription = description ?? t("seo.homeDesc");
   const resolvedKeywords = keywords ?? t("seo.keywords");
-
   const htmlLang = locale === "fa" ? "fa-IR" : "en-US";
   const ogLocale = locale === "fa" ? "fa_IR" : "en_US";
-
   const defaultJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -61,17 +53,14 @@ const SEO = ({
       "url": SITE_URL
     }
   };
-
   return (
     <Helmet>
       <html lang={htmlLang} dir={dir} />
-
       {/* Basic SEO */}
       <title>{resolvedTitle}</title>
       <meta name="description" content={resolvedDescription} />
       <meta name="keywords" content={resolvedKeywords} />
       <meta name="author" content="Cook Luxury" />
-
       <meta
         name="robots"
         content={
@@ -80,15 +69,12 @@ const SEO = ({
             : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
         }
       />
-
       <meta
         name="language"
         content={locale === "fa" ? "Persian" : "English"}
       />
-
       {/* Canonical */}
       <link rel="canonical" href={url} />
-
       {/* Open Graph */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
@@ -97,14 +83,12 @@ const SEO = ({
       <meta property="og:image" content={image} />
       <meta property="og:locale" content={ogLocale} />
       <meta property="og:site_name" content="Cook Luxury" />
-
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={url} />
       <meta name="twitter:title" content={resolvedTitle} />
       <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:image" content={image} />
-
       {/* JSON-LD */}
       <script type="application/ld+json">
         {JSON.stringify(jsonLd || defaultJsonLd)}
@@ -112,5 +96,4 @@ const SEO = ({
     </Helmet>
   );
 };
-
 export default SEO;
