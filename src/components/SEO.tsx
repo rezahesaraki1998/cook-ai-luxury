@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-export const SITE_URL = "https://cookluxury.lovable.app";
+export const SITE_URL = "https://cookluxury.ir";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 interface SEOProps {
@@ -27,22 +27,29 @@ const SEO = ({
   jsonLd,
 }: SEOProps) => {
   const { t, locale, dir } = useLanguage();
-  const url = `${SITE_URL}${path === "/" ? "/" : path}`;
+
+  const normalizedPath =
+    path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}`;
+
+  const url = `${SITE_URL}${normalizedPath}`;
 
   const resolvedTitle = title ?? t("seo.homeTitle");
   const resolvedDescription = description ?? t("seo.homeDesc");
   const resolvedKeywords = keywords ?? t("seo.keywords");
+
   const htmlLang = locale === "fa" ? "fa-IR" : "en-US";
   const ogLocale = locale === "fa" ? "fa_IR" : "en_US";
 
   const defaultJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "cookluxury",
+    "name": "Cook Luxury",
+    "alternateName": "کوک لاکچری",
     "description": resolvedDescription,
     "url": url,
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web",
+    "inLanguage": htmlLang,
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -50,31 +57,46 @@ const SEO = ({
     },
     "author": {
       "@type": "Organization",
-      "name": "cookluxury"
-    },
-    "inLanguage": htmlLang
+      "name": "Cook Luxury",
+      "url": SITE_URL
+    }
   };
 
   return (
     <Helmet>
-      <html lang={locale} dir={dir} />
-      {/* Basic Meta Tags */}
+      <html lang={htmlLang} dir={dir} />
+
+      {/* Basic SEO */}
       <title>{resolvedTitle}</title>
       <meta name="description" content={resolvedDescription} />
       <meta name="keywords" content={resolvedKeywords} />
-      <meta name="author" content="cookluxury" />
-      <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-      <meta name="language" content={locale === "fa" ? "Persian" : "English"} />
+      <meta name="author" content="Cook Luxury" />
+
+      <meta
+        name="robots"
+        content={
+          noindex
+            ? "noindex, nofollow"
+            : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        }
+      />
+
+      <meta
+        name="language"
+        content={locale === "fa" ? "Persian" : "English"}
+      />
+
+      {/* Canonical */}
       <link rel="canonical" href={url} />
 
-      {/* Open Graph / Facebook */}
+      {/* Open Graph */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />
       <meta property="og:title" content={resolvedTitle} />
       <meta property="og:description" content={resolvedDescription} />
       <meta property="og:image" content={image} />
       <meta property="og:locale" content={ogLocale} />
-      <meta property="og:site_name" content="cookluxury" />
+      <meta property="og:site_name" content="Cook Luxury" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -83,7 +105,7 @@ const SEO = ({
       <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:image" content={image} />
 
-      {/* JSON-LD Structured Data */}
+      {/* JSON-LD */}
       <script type="application/ld+json">
         {JSON.stringify(jsonLd || defaultJsonLd)}
       </script>
