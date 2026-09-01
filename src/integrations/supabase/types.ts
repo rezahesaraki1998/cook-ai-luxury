@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      discount_codes: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          plan_ids: string[]
+          starts_at: string | null
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          plan_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          plan_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
       email_verification_codes: {
         Row: {
           code: string
@@ -73,12 +118,64 @@ export type Database = {
           },
         ]
       }
+      plans: {
+        Row: {
+          ai_limit: number | null
+          created_at: string
+          currency: string
+          description: string | null
+          description_en: string | null
+          duration_days: number
+          features: Json
+          id: string
+          is_active: boolean
+          name: string
+          name_en: string | null
+          price: number
+          request_limit: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_limit?: number | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_en?: string | null
+          duration_days?: number
+          features?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          name_en?: string | null
+          price?: number
+          request_limit?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_limit?: number | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          description_en?: string | null
+          duration_days?: number
+          features?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_en?: string | null
+          price?: number
+          request_limit?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
           first_name: string | null
           id: string
+          is_active: boolean
           last_name: string | null
           phone: string | null
           updated_at: string
@@ -88,6 +185,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id: string
+          is_active?: boolean
           last_name?: string | null
           phone?: string | null
           updated_at?: string
@@ -97,6 +195,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id?: string
+          is_active?: boolean
           last_name?: string | null
           phone?: string | null
           updated_at?: string
@@ -129,6 +228,149 @@ export type Database = {
           window_start?: string
         }
         Relationships: []
+      }
+      search_logs: {
+        Row: {
+          created_at: string
+          id: string
+          locale: string | null
+          normalized_query: string
+          query: string
+          user_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          locale?: string | null
+          normalized_query: string
+          query: string
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          locale?: string | null
+          normalized_query?: string
+          query?: string
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          body_en: string | null
+          body_fa: string | null
+          created_at: string
+          extra: Json
+          id: string
+          image_url: string | null
+          page_key: string
+          title_en: string | null
+          title_fa: string | null
+          updated_at: string
+        }
+        Insert: {
+          body_en?: string | null
+          body_fa?: string | null
+          created_at?: string
+          extra?: Json
+          id?: string
+          image_url?: string | null
+          page_key: string
+          title_en?: string | null
+          title_fa?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body_en?: string | null
+          body_fa?: string | null
+          created_at?: string
+          extra?: Json
+          id?: string
+          image_url?: string | null
+          page_key?: string
+          title_en?: string | null
+          title_fa?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_visits: {
+        Row: {
+          created_at: string
+          id: string
+          locale: string | null
+          path: string
+          referrer: string | null
+          user_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          locale?: string | null
+          path?: string
+          referrer?: string | null
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          locale?: string | null
+          path?: string
+          referrer?: string | null
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          canceled_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan_id: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canceled_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canceled_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
