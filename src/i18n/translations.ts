@@ -1,3 +1,5 @@
+import { adminFa, adminEn } from "./adminTranslations";
+
 export type Locale = "fa" | "en";
 
 export const LOCALES: {
@@ -755,5 +757,8 @@ const en: typeof fa = {
   },
 };
 
-export const translations: Record<Locale, typeof fa> = { fa, en };
-export type Translation = typeof fa;
+const faFull = { ...fa, admin: adminFa };
+const enFull = { ...en, admin: adminEn };
+
+export const translations: Record<Locale, typeof faFull> = { fa: faFull, en: enFull };
+export type Translation = typeof faFull;
