@@ -100,10 +100,14 @@ const HeroSection = () => {
     }
 
 
+    // Real search analytics for the admin panel (never blocks the UX)
+    void logSearch(activePrompt, locale);
+
     setIsLoading(true);
     setFoodImage(null);
     setIsImageLoading(true);
     setNutritionInfo(null);
+    
     
     try {
       // Get session for auth token
