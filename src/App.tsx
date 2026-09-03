@@ -14,6 +14,15 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import WhyUs from "./pages/WhyUs";
+import VisitTracker from "@/components/VisitTracker";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
+import AdminPlans from "./pages/admin/AdminPlans";
+import AdminDiscounts from "./pages/admin/AdminDiscounts";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminContent from "./pages/admin/AdminContent";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
