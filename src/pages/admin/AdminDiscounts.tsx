@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { PageHeader, StatusBadge, EmptyState } from "@/components/admin/AdminShared";
-import { adminApi } from "@/hooks/useAdmin";
+import { adminApi, isAuthError } from "@/hooks/useAdmin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDate, formatNumber, isoDate } from "@/lib/adminUtils";
 import { toast } from "sonner";
@@ -69,7 +69,7 @@ const AdminDiscounts = () => {
         setItems(d.discounts);
         setPlans(p.plans);
       })
-      .catch(() => toast.error(t("admin.common.error")))
+      .catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); })
       .finally(() => setLoading(false));
   };
   useEffect(load, []);

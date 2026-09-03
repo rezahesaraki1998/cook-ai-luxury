@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { PageHeader } from "@/components/admin/AdminShared";
-import { adminApi } from "@/hooks/useAdmin";
+import { adminApi, isAuthError } from "@/hooks/useAdmin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { toast } from "sonner";
 
@@ -40,7 +40,7 @@ const AdminContent = () => {
         }
         setRows(map);
       })
-      .catch(() => toast.error(t("admin.common.error")))
+      .catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); })
       .finally(() => setLoading(false));
   }, [t]);
 

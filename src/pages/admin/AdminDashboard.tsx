@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { PageHeader, StatCard, RangeControls, EmptyState, type RangeState } from "@/components/admin/AdminShared";
-import { adminApi } from "@/hooks/useAdmin";
+import { adminApi, isAuthError } from "@/hooks/useAdmin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { resolveRange, formatNumber } from "@/lib/adminUtils";
 import { toast } from "sonner";
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
   const resolved = useMemo(() => resolveRange(range.key, range), [range]);
 
   useEffect(() => {
-    adminApi<Stats>("stats").then(setStats).catch(() => toast.error(t("admin.common.error")));
+    adminApi<Stats>("stats").then(setStats).catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); });
   }, [t]);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
         setSeries(v.series);
         setSearches(s.items);
       })
-      .catch(() => toast.error(t("admin.common.error")))
+      .catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); })
       .finally(() => setLoading(false));
   }, [resolved, granularity, t]);
 

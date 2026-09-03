@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { PageHeader, RangeControls, EmptyState, StatCard, type RangeState } from "@/components/admin/AdminShared";
-import { adminApi } from "@/hooks/useAdmin";
+import { adminApi, isAuthError } from "@/hooks/useAdmin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { resolveRange, formatNumber } from "@/lib/adminUtils";
 import { Eye, Search as SearchIcon } from "lucide-react";
@@ -30,7 +30,7 @@ const AdminAnalytics = () => {
         setSeries(v.series);
         setSearches(s.items);
       })
-      .catch(() => toast.error(t("admin.common.error")))
+      .catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); })
       .finally(() => setLoading(false));
   }, [resolved, granularity, t]);
 
