@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, Search, User, LogIn } from "lucide-react";
+import { ChefHat, Menu, Search, User, LogIn, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import ThemeToggle from "./ThemeToggle";
@@ -28,14 +28,30 @@ const Header = () => {
   const [openSearch, setOpenSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { t, tr, isRTL } = useLanguage();
 
   useEffect(() => {
+    const checkAdmin = async (userId?: string) => {
+      if (!userId) return setIsAdmin(false);
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!data);
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsAuthed(!!session);
+      void checkAdmin(session?.user?.id);
     });
-    supabase.auth.getSession().then(({ data: { session } }) => setIsAuthed(!!session));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthed(!!session);
+      void checkAdmin(session?.user?.id);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -168,14 +184,26 @@ const Header = () => {
 
                   <div className="pt-4 space-y-3">
                     {isAuthed ? (
-                      <Button
-                        variant="outline"
-                        className="w-full gap-2"
-                        onClick={() => handleNavigation("/profile")}
-                      >
-                        <User className="w-4 h-4" />
-                        {t("profile.title")}
-                      </Button>
+                      <>
+                        {isAdmin && (
+                          <Button
+                            variant="outline"
+                            className="w-full gap-2"
+                            onClick={() => handleNavigation("/admin")}
+                          >
+                            <Shield className="w-4 h-4" />
+                            {t("admin.title")}
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          className="w-full gap-2"
+                          onClick={() => handleNavigation("/profile")}
+                        >
+                          <User className="w-4 h-4" />
+                          {t("profile.title")}
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
