@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mic, Sparkles, ChefHat, Loader2, Heart, LogIn, ImageIcon, Flame, Beef, Wheat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { logSearch } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
 import { useLanguage } from "@/i18n/LanguageContext";
