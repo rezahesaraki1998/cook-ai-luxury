@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { PageHeader, StatusBadge, EmptyState } from "@/components/admin/AdminShared";
-import { adminApi } from "@/hooks/useAdmin";
+import { adminApi, isAuthError } from "@/hooks/useAdmin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatDate, formatNumber } from "@/lib/adminUtils";
 import { toast } from "sonner";
@@ -34,7 +34,7 @@ const AdminSubscriptions = () => {
   useEffect(() => {
     adminApi<{ subscriptions: Sub[] }>("subscriptions")
       .then((r) => setSubs(r.subscriptions))
-      .catch(() => toast.error(t("admin.common.error")))
+      .catch((e) => { if (!isAuthError(e)) toast.error(t("admin.common.error")); })
       .finally(() => setLoading(false));
   }, [t]);
 

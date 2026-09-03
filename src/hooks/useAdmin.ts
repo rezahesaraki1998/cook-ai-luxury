@@ -51,3 +51,9 @@ export const useAdminAccess = () => {
 
   return { access, user, recheck: check };
 };
+
+/** True when the failure is just a missing/insufficient session (no toast needed). */
+export const isAuthError = (e: unknown) => {
+  const msg = e instanceof Error ? e.message : String(e ?? "");
+  return /unauthorized|forbidden/i.test(msg);
+};
