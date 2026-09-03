@@ -83,15 +83,28 @@ const Header = () => {
             <ThemeToggle />
 
             {isAuthed ? (
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={() => navigate("/profile")}
-                aria-label={t("profile.title")}
-              >
-                <User className="w-4 h-4" />
-                {t("profile.title")}
-              </Button>
+              <>
+                {isAdmin && (
+                  <Button
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => navigate("/admin")}
+                    aria-label={t("admin.title")}
+                  >
+                    <Shield className="w-4 h-4" />
+                    {t("admin.title")}
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => navigate("/profile")}
+                  aria-label={t("profile.title")}
+                >
+                  <User className="w-4 h-4" />
+                  {t("profile.title")}
+                </Button>
+              </>
             ) : (
               <Button
                 className="gap-2 gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
