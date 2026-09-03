@@ -82,7 +82,7 @@ export const adminFa = {
     last3Months: "۳ ماه اخیر",
     custom: "بازه دلخواه",
   },
-  granularity: { daily: "روزانه", weekly: "هفتگی", monthly: "ماهانه" },
+  granularity: { label: "نمایش بر اساس", daily: "روزانه", weekly: "هفتگی", monthly: "ماهانه" },
   users: {
     title: "کاربران",
     subtitle: "مدیریت کاربران ثبت‌نام‌شده",
@@ -284,7 +284,7 @@ export const adminEn: typeof adminFa = {
     last3Months: "Last 3 months",
     custom: "Custom range",
   },
-  granularity: { daily: "Daily", weekly: "Weekly", monthly: "Monthly" },
+  granularity: { label: "Group by", daily: "Daily", weekly: "Weekly", monthly: "Monthly" },
   users: {
     title: "Users",
     subtitle: "Manage registered users",

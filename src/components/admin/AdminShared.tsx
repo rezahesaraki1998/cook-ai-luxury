@@ -136,7 +136,7 @@ export const RangeControls = ({
 
       {granularity && onGranularityChange && (
         <div className="w-[140px]">
-          <Label className="text-xs text-muted-foreground">{t("admin.granularity.daily")}</Label>
+          <Label className="text-xs text-muted-foreground">{t("admin.granularity.label")}</Label>
           <Select value={granularity} onValueChange={(g) => onGranularityChange(g as "day" | "week" | "month")}>
             <SelectTrigger className="border-black/15"><SelectValue /></SelectTrigger>
             <SelectContent>
