@@ -11,7 +11,7 @@ import {
   Settings,
   LogOut,
   Menu,
-  ChefHat,
+  
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAdminAccess } from "@/hooks/useAdmin";
+import logoAsset from "@/assets/cookluxury-logo.png.asset.json";
 
 const NAV = [
   { to: "/admin", key: "dashboard", icon: LayoutDashboard, end: true },
