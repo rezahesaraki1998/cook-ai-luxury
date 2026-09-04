@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, Search, User, LogIn, Shield } from "lucide-react";
+import { Menu, Search, User, LogIn, Shield } from "lucide-react";
+import logoAsset from "@/assets/cookluxury-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 import ThemeToggle from "./ThemeToggle";
