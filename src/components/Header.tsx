@@ -67,9 +67,11 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 md:gap-3 group cursor-pointer">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl gradient-gold flex items-center justify-center shadow-gold smooth-transition group-hover:scale-110">
-              <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
-            </div>
+            <img
+              src={logoAsset.url}
+              alt={t("common.brandName")}
+              className="w-8 h-8 md:w-10 md:h-10 rounded-xl object-cover shadow-gold smooth-transition group-hover:scale-110"
+            />
             <div className="flex flex-col">
               <span className="text-lg md:text-xl font-bold text-gradient-gold">{t("common.brandName")}</span>
               <span className="text-[10px] md:text-xs text-muted-foreground">{t("common.brandSub")}</span>
