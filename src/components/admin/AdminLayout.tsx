@@ -11,7 +11,7 @@ import {
   Settings,
   LogOut,
   Menu,
-  ChefHat,
+  
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useAdminAccess } from "@/hooks/useAdmin";
+import logoAsset from "@/assets/cookluxury-logo.png.asset.json";
 
 const NAV = [
   { to: "/admin", key: "dashboard", icon: LayoutDashboard, end: true },
@@ -111,18 +112,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               </SheetTrigger>
               <SheetContent side={isRTL ? "right" : "left"} className="w-[270px] glass-card p-4">
                 <div className="mb-6 flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center">
-                    <ChefHat className="w-5 h-5 text-primary-foreground" />
-                  </div>
+                  <img src={logoAsset.url} alt={t("admin.brand")} className="w-9 h-9 rounded-xl object-cover" />
                   <span className="font-bold text-gradient-gold">{t("admin.brand")}</span>
                 </div>
                 <NavItems onNavigate={() => setMobileOpen(false)} />
               </SheetContent>
             </Sheet>
             <Link to="/admin" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center shadow-gold">
-                <ChefHat className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <img src={logoAsset.url} alt={t("admin.brand")} className="w-9 h-9 rounded-xl object-cover shadow-gold" />
               <div className="flex flex-col leading-tight">
                 <span className="font-bold text-gradient-gold text-sm md:text-base">{t("admin.brand")}</span>
                 <span className="text-[10px] text-muted-foreground hidden sm:block">{t("admin.title")}</span>
