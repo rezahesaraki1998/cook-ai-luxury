@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ interface Plan {
   ai_limit: number | null;
   request_limit: number | null;
   is_active: boolean;
+  payment_link: string | null;
   user_count?: number;
 }
 
@@ -51,6 +52,7 @@ const blank: Plan = {
   ai_limit: null,
   request_limit: null,
   is_active: true,
+  payment_link: "",
 };
 
 const AdminPlans = () => {
@@ -87,6 +89,7 @@ const AdminPlans = () => {
           ai_limit: editing.ai_limit === null ? null : Number(editing.ai_limit),
           request_limit: editing.request_limit === null ? null : Number(editing.request_limit),
           is_active: editing.is_active,
+          payment_link: editing.payment_link?.trim() || null,
         },
       });
       toast.success(t("admin.common.saved"));
@@ -140,6 +143,7 @@ const AdminPlans = () => {
                   <TableHead>{t("admin.plans.duration")}</TableHead>
                   <TableHead>{t("admin.plans.aiLimit")}</TableHead>
                   <TableHead>{t("admin.plans.users")}</TableHead>
+                  <TableHead>{t("admin.plans.paymentLink")}</TableHead>
                   <TableHead>{t("admin.common.status")}</TableHead>
                   <TableHead>{t("admin.common.actions")}</TableHead>
                 </TableRow>
@@ -154,6 +158,21 @@ const AdminPlans = () => {
                     <TableCell>{formatNumber(p.duration_days, locale)}</TableCell>
                     <TableCell>{p.ai_limit === null ? "∞" : formatNumber(p.ai_limit, locale)}</TableCell>
                     <TableCell>{formatNumber(p.user_count ?? 0, locale)}</TableCell>
+                    <TableCell>
+                      {p.payment_link ? (
+                        <a
+                          href={p.payment_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-primary hover:underline"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span className="text-xs">{locale === "en" ? "Link" : "لینک"}</span>
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell><StatusBadge status={p.is_active ? "active" : "inactive"} /></TableCell>
                     <TableCell>
                       <div className="flex gap-2">
@@ -231,6 +250,17 @@ const AdminPlans = () => {
                   rows={4}
                   value={(editing.features ?? []).join("\n")}
                   onChange={(e) => setEditing({ ...editing, features: e.target.value.split("\n").filter(Boolean) })}
+                />
+              </div>
+              <div>
+                <Label>{t("admin.plans.paymentLink")}</Label>
+                <Input
+                  dir="ltr"
+                  type="url"
+                  placeholder={t("admin.plans.paymentLinkPlaceholder")}
+                  className="border-black/15"
+                  value={editing.payment_link ?? ""}
+                  onChange={(e) => setEditing({ ...editing, payment_link: e.target.value })}
                 />
               </div>
               <div className="flex items-center gap-3">

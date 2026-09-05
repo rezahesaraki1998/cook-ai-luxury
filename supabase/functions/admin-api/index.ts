@@ -99,6 +99,7 @@ serve(async (req) => {
           subscription_status: subStatus,
           subscription_start: sub?.started_at ?? null,
           subscription_end: sub?.expires_at ?? null,
+          plan_payment_link: (plan as { payment_link?: string | null })?.payment_link ?? null,
         };
       });
     };

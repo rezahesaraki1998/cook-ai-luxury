@@ -131,6 +131,7 @@ export type Database = {
           is_active: boolean
           name: string
           name_en: string | null
+          payment_link: string | null
           price: number
           request_limit: number | null
           updated_at: string
@@ -147,6 +148,7 @@ export type Database = {
           is_active?: boolean
           name: string
           name_en?: string | null
+          payment_link?: string | null
           price?: number
           request_limit?: number | null
           updated_at?: string
@@ -163,6 +165,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           name_en?: string | null
+          payment_link?: string | null
           price?: number
           request_limit?: number | null
           updated_at?: string
