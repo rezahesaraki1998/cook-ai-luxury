@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,6 +143,7 @@ const AdminPlans = () => {
                   <TableHead>{t("admin.plans.duration")}</TableHead>
                   <TableHead>{t("admin.plans.aiLimit")}</TableHead>
                   <TableHead>{t("admin.plans.users")}</TableHead>
+                  <TableHead>{t("admin.plans.paymentLink")}</TableHead>
                   <TableHead>{t("admin.common.status")}</TableHead>
                   <TableHead>{t("admin.common.actions")}</TableHead>
                 </TableRow>
@@ -157,6 +158,21 @@ const AdminPlans = () => {
                     <TableCell>{formatNumber(p.duration_days, locale)}</TableCell>
                     <TableCell>{p.ai_limit === null ? "∞" : formatNumber(p.ai_limit, locale)}</TableCell>
                     <TableCell>{formatNumber(p.user_count ?? 0, locale)}</TableCell>
+                    <TableCell>
+                      {p.payment_link ? (
+                        <a
+                          href={p.payment_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-primary hover:underline"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span className="text-xs">{locale === "en" ? "Link" : "لینک"}</span>
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell><StatusBadge status={p.is_active ? "active" : "inactive"} /></TableCell>
                     <TableCell>
                       <div className="flex gap-2">
