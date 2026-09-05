@@ -37,6 +37,7 @@ interface Plan {
   ai_limit: number | null;
   request_limit: number | null;
   is_active: boolean;
+  payment_link: string | null;
   user_count?: number;
 }
 
@@ -51,6 +52,7 @@ const blank: Plan = {
   ai_limit: null,
   request_limit: null,
   is_active: true,
+  payment_link: "",
 };
 
 const AdminPlans = () => {
@@ -87,6 +89,7 @@ const AdminPlans = () => {
           ai_limit: editing.ai_limit === null ? null : Number(editing.ai_limit),
           request_limit: editing.request_limit === null ? null : Number(editing.request_limit),
           is_active: editing.is_active,
+          payment_link: editing.payment_link?.trim() || null,
         },
       });
       toast.success(t("admin.common.saved"));

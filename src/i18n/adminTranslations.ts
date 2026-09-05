@@ -146,6 +146,8 @@ export const adminFa = {
     features: "امکانات (هر خط یک مورد)",
     aiLimit: "محدودیت استفاده از AI",
     requestLimit: "تعداد درخواست‌های مجاز",
+    paymentLink: "لینک درگاه پرداخت",
+    paymentLinkPlaceholder: "https://zarinpal.com/...",
     users: "تعداد کاربران",
     createdAt: "تاریخ ایجاد",
   },
