@@ -350,6 +350,8 @@ export const adminEn: typeof adminFa = {
     features: "Features (one per line)",
     aiLimit: "AI usage limit",
     requestLimit: "Allowed requests",
+    paymentLink: "Payment gateway link",
+    paymentLinkPlaceholder: "https://stripe.com/...",
     users: "Users",
     createdAt: "Created at",
   },
