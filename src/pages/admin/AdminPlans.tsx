@@ -236,6 +236,17 @@ const AdminPlans = () => {
                   onChange={(e) => setEditing({ ...editing, features: e.target.value.split("\n").filter(Boolean) })}
                 />
               </div>
+              <div>
+                <Label>{t("admin.plans.paymentLink")}</Label>
+                <Input
+                  dir="ltr"
+                  type="url"
+                  placeholder={t("admin.plans.paymentLinkPlaceholder")}
+                  className="border-black/15"
+                  value={editing.payment_link ?? ""}
+                  onChange={(e) => setEditing({ ...editing, payment_link: e.target.value })}
+                />
+              </div>
               <div className="flex items-center gap-3">
                 <Switch checked={editing.is_active} onCheckedChange={(v) => setEditing({ ...editing, is_active: v })} />
                 <span className="text-sm">{t("admin.common.active")}</span>
