@@ -74,7 +74,7 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
   };
 
   return (
-    <div id="plans" className={compact ? "space-y-6" : "container mx-auto px-4"}>
+    <div id={compact ? undefined : "plans"} className={compact ? "space-y-6" : "container mx-auto px-4"}>
       <div className={`mx-auto ${compact ? "" : "max-w-6xl"}`}>
         {!compact && (
           <div className="text-center mb-8 md:mb-12 space-y-2 md:space-y-4">
