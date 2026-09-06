@@ -115,7 +115,7 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
                 )}
                 <div className="mt-4 flex items-end gap-2">
                   <span className="text-2xl md:text-3xl font-bold text-gradient-gold">
-                    {Number(plan.price) > 0 ? n(Number(plan.price)) : t("pricing.free")}
+                    {Number(plan.price) > 0 ? n(Number(plan.price).toLocaleString("en-US")) : t("pricing.free")}
                   </span>
                   {Number(plan.price) > 0 && (
                     <span className="text-xs md:text-sm text-muted-foreground pb-1">
