@@ -1,4 +1,5 @@
 import { adminFa, adminEn } from "./adminTranslations";
+import { pricingFa, pricingEn } from "./pricingTranslations";
 
 export type Locale = "fa" | "en";
 
@@ -757,8 +758,8 @@ const en: typeof fa = {
   },
 };
 
-const faFull = { ...fa, admin: adminFa };
-const enFull = { ...en, admin: adminEn };
+const faFull = { ...fa, admin: adminFa, pricing: pricingFa };
+const enFull = { ...en, admin: adminEn, pricing: pricingEn };
 
 export const translations: Record<Locale, typeof faFull> = { fa: faFull, en: enFull };
 export type Translation = typeof faFull;

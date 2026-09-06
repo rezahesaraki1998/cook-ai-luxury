@@ -8,6 +8,7 @@ import { logSearch } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
 import { useLanguage } from "@/i18n/LanguageContext";
+import PricingPlans from "@/components/PricingPlans";
 
 const FREE_RECIPE_LIMIT = 2;
 const STORAGE_KEY = 'free_recipe_count';
@@ -251,6 +252,23 @@ const HeroSection = () => {
                   <span className="text-destructive">{t("hero.freeOver")}</span>
                 )}
               </span>
+            </div>
+          )}
+
+          {/* Paywall - free credits exhausted */}
+          {!hasUnlimitedAccess && !user && remainingFreeRecipes <= 0 && (
+            <div className="max-w-4xl mx-auto text-start glass-card rounded-2xl border-2 border-primary/30 shadow-gold p-5 md:p-8 space-y-4 animate-slide-up">
+              <h2 className="text-xl md:text-2xl font-bold text-gradient-gold">{t("pricing.limitTitle")}</h2>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{t("pricing.limitBody")}</p>
+              <ul className="grid sm:grid-cols-2 gap-2">
+                {tr.pricing.perks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-2 text-xs md:text-sm text-muted-foreground">
+                    <Sparkles className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{perk}</span>
+                  </li>
+                ))}
+              </ul>
+              <PricingPlans compact />
             </div>
           )}
 
