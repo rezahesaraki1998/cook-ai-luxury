@@ -88,6 +88,19 @@ const Header = () => {
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden md:flex items-center gap-3">
+            <a
+              href="https://trustseal.enamad.ir/?id=46356472&Code=46356472"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="e-namad"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary smooth-transition"
+            >
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold text-[10px]">
+                E
+              </span>
+              <span className="font-medium">اینماد</span>
+            </a>
+
             <Button
               variant="ghost"
               size="icon"
@@ -97,6 +110,7 @@ const Header = () => {
             >
               <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
             </Button>
+
 
             <LanguageSwitcher />
             <ThemeToggle />
