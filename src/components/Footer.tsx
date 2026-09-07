@@ -80,11 +80,24 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-6 md:pt-8 border-t border-border/50 text-center">
+        <div className="pt-6 md:pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+          <a
+            href="https://trustseal.enamad.ir/?id=46356472&Code=46356472"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="e-namad"
+            className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground hover:text-primary smooth-transition"
+          >
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold text-xs">
+              E
+            </span>
+            <span className="font-medium">نماد اعتماد الکترونیکی</span>
+          </a>
           <p className="text-xs md:text-sm text-muted-foreground">
             {t("footer.rights")}
           </p>
         </div>
+
       </div>
     </footer>
   );

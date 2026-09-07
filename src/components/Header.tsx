@@ -88,6 +88,19 @@ const Header = () => {
 
           {/* CTA Buttons - Desktop */}
           <div className="hidden md:flex items-center gap-3">
+            <a
+              href="https://trustseal.enamad.ir/?id=46356472&Code=46356472"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="e-namad"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary smooth-transition"
+            >
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold text-[10px]">
+                E
+              </span>
+              <span className="font-medium">اینماد</span>
+            </a>
+
             <Button
               variant="ghost"
               size="icon"
@@ -97,6 +110,7 @@ const Header = () => {
             >
               <Search className="h-5 w-5 text-foreground hover:text-primary smooth-transition" />
             </Button>
+
 
             <LanguageSwitcher />
             <ThemeToggle />
@@ -186,6 +200,18 @@ const Header = () => {
                   </button>
 
                   <div className="pt-4 space-y-3">
+                    <a
+                      href="https://trustseal.enamad.ir/?id=46356472&Code=46356472"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10 smooth-transition"
+                    >
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold text-[10px]">
+                        E
+                      </span>
+                      <span className="text-sm font-medium">نماد اعتماد الکترونیکی</span>
+                    </a>
+
                     {isAuthed ? (
                       <>
                         {isAdmin && (
@@ -226,6 +252,7 @@ const Header = () => {
                       </>
                     )}
                   </div>
+
                 </nav>
 
               </SheetContent>
