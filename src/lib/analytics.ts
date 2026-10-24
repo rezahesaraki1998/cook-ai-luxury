@@ -57,7 +57,10 @@ export const logSearch = async (query: string, locale?: string) => {
   const clean = query.trim();
   if (!clean) return;
   try {
+    if (typeof window === "undefined" || !isProductionHost(window.location.hostname)) return;
     const { data } = await supabase.auth.getSession();
+    const uid = data.session?.user?.id;
+    if (uid && (await isAdminUser(uid))) return;
     await supabase.from("search_logs").insert({
       query: clean.slice(0, 300),
       normalized_query: normalize(clean).slice(0, 300),
