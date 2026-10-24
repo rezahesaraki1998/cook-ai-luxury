@@ -26,6 +26,9 @@
     <meta name="enamad" content="46356472" />
     <!-- Canonical -->
     <link rel="canonical" href="https://www.cookluxury.ir/" />
+    <link rel="alternate" hreflang="fa" href="https://www.cookluxury.ir/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.cookluxury.ir/" />
+    <link rel="alternate" type="text/plain" title="LLM summary" href="/llms.txt" />
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -95,7 +98,10 @@
             "@id": "https://www.cookluxury.ir/#organization",
             "name": "Cook Luxury",
             "alternateName": "کوک لاکچری",
-            "url": "https://www.cookluxury.ir/"
+            "url": "https://www.cookluxury.ir/",
+            "logo": "https://www.cookluxury.ir/pwa-512x512.png",
+            "areaServed": "IR",
+            "knowsAbout": ["Persian cuisine","Iranian recipes","AI recipe generation","Nutrition"]
           },
           {
             "@type": "WebApplication",
@@ -107,13 +113,31 @@
             "operatingSystem": "Web",
             "inLanguage": "fa-IR",
             "description": "پلتفرم هوشمند آشپزی با کمک هوش مصنوعی برای پیدا کردن دستور غذا و ایده‌های آشپزی."
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://www.cookluxury.ir/#faq",
+            "mainEntity": [
+              {"@type":"Question","name":"کوک لاکچری چیست؟","acceptedAnswer":{"@type":"Answer","text":"کوک لاکچری (Cook Luxury) یک دستیار آشپزی هوشمند فارسی است که با هوش مصنوعی برای هر غذا دستور پخت کامل، مواد لازم، مراحل پخت، عکس غذا و ارزش غذایی ارائه می‌دهد."}},
+              {"@type":"Question","name":"چطور با هوش مصنوعی دستور غذا بگیرم؟","acceptedAnswer":{"@type":"Answer","text":"در سایت cookluxury.ir نام غذا مثل قورمه‌سبزی یا کباب کوبیده را در باکس جست‌وجو بنویسید تا دستور پخت کامل در چند ثانیه نمایش داده شود."}},
+              {"@type":"Question","name":"آیا کوک لاکچری رایگان است؟","acceptedAnswer":{"@type":"Answer","text":"بله، چند دستور غذای اول رایگان است و برای استفاده نامحدود، پلن‌های اشتراک یک‌ماهه، سه‌ماهه و یک‌ساله وجود دارد."}},
+              {"@type":"Question","name":"آیا کالری و ارزش غذایی هم نمایش داده می‌شود؟","acceptedAnswer":{"@type":"Answer","text":"بله، برای هر غذا مقدار کالری، پروتئین و کربوهیدرات همراه با عکس تولیدشده با هوش مصنوعی نمایش داده می‌شود."}},
+              {"@type":"Question","name":"What is Cook Luxury?","acceptedAnswer":{"@type":"Answer","text":"Cook Luxury is a Persian-first AI cooking assistant at cookluxury.ir that generates full recipes, AI food photos and nutrition facts for any dish, in Persian and English."}}
+            ]
           }
         ]
       }
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main>
+        <h1>کوک لاکچری | آشپزی هوشمند با هوش مصنوعی</h1>
+        <p>Cook Luxury یک دستیار آشپزی هوشمند فارسی است. نام هر غذا را جست‌وجو کنید و دستور پخت کامل، مواد لازم، مراحل پخت، عکس غذا و کالری، پروتئین و کربوهیدرات را دریافت کنید.</p>
+        <p>Cook Luxury is a Persian-first AI cooking assistant: search any dish to get ingredients, step-by-step instructions, an AI food photo and nutrition facts.</p>
+        <nav><a href="/why-us">چرا کوک لاکچری</a> · <a href="/contact">تماس با ما</a> · <a href="/privacy">حریم خصوصی</a> · <a href="/terms">قوانین</a></nav>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
