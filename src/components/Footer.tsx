@@ -76,7 +76,25 @@ const Footer = () => {
               </a>
 
             </div>
+
+            {/* e-namad trust seal */}
+            <a
+              referrerPolicy="origin"
+              target="_blank"
+              href="https://trustseal.enamad.ir/?id=7658158&Code=wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0"
+              aria-label="e-namad"
+              className="mt-4 inline-flex items-center justify-center w-[100px] h-[104px] rounded-xl bg-card border border-border/60 p-1.5 hover:border-primary/40 smooth-transition"
+            >
+              <img
+                referrerPolicy="origin"
+                src="https://trustseal.enamad.ir/logo.aspx?id=7658158&Code=wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0"
+                alt="نماد اعتماد الکترونیکی"
+                className="w-full h-full object-contain cursor-pointer"
+                {...({ code: "wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0" } as Record<string, string>)}
+              />
+            </a>
           </div>
+
         </div>
 
         {/* Bottom */}
@@ -84,21 +102,6 @@ const Footer = () => {
           <p className="text-xs md:text-sm text-muted-foreground text-center md:text-start">
             {t("footer.rights")}
           </p>
-          <a
-            referrerPolicy="origin"
-            target="_blank"
-            href="https://trustseal.enamad.ir/?id=7658158&Code=wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0"
-            aria-label="e-namad"
-            className="shrink-0 inline-flex items-center justify-center w-[100px] h-[104px] rounded-xl bg-card border border-border/60 p-1.5 hover:border-primary/40 smooth-transition"
-          >
-            <img
-              referrerPolicy="origin"
-              src="https://trustseal.enamad.ir/logo.aspx?id=7658158&Code=wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0"
-              alt="نماد اعتماد الکترونیکی"
-              className="w-full h-full object-contain cursor-pointer"
-              {...({ code: "wxuM2Xx9ZxLVHafitWANSATwIp5MraQ0" } as Record<string, string>)}
-            />
-          </a>
         </div>
 
       </div>
