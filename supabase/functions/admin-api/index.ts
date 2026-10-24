@@ -126,6 +126,17 @@ serve(async (req) => {
           const { count } = await q;
           return count ?? 0;
         };
+        const countUnique = async (from?: Date) => {
+          const ids = new Set<string>();
+          for (let off = 0; off < 500000; off += 1000) {
+            let q = supabase.from("site_visits").select("visitor_id").range(off, off + 999);
+            if (from) q = q.gte("created_at", from.toISOString());
+            const { data } = await q;
+            for (const r of data ?? []) if (r.visitor_id) ids.add(r.visitor_id);
+            if (!data || data.length < 1000) break;
+          }
+          return ids.size;
+        };
         const { count: searchCount } = await supabase
           .from("search_logs").select("id", { count: "exact", head: true });
         const { data: subs } = await supabase.from("subscriptions").select("status,expires_at");
@@ -147,6 +158,9 @@ serve(async (req) => {
           visitsToday: await countVisits(startOfDay),
           visitsWeek: await countVisits(startOfWeek),
           visitsMonth: await countVisits(startOfMonth),
+          uniqueTotal: await countUnique(),
+          uniqueToday: await countUnique(startOfDay),
+          uniqueMonth: await countUnique(startOfMonth),
           totalSearches: searchCount ?? 0,
           activeSubscriptions: activeSubs,
           expiredSubscriptions: expiredSubs,

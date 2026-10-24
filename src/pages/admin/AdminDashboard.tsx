@@ -31,6 +31,9 @@ interface Stats {
   visitsToday: number;
   visitsWeek: number;
   visitsMonth: number;
+  uniqueTotal: number;
+  uniqueToday: number;
+  uniqueMonth: number;
   totalSearches: number;
   activeSubscriptions: number;
   expiredSubscriptions: number;
@@ -76,6 +79,9 @@ const AdminDashboard = () => {
         <StatCard label={t("admin.dashboard.inactiveUsers")} value={stats?.inactiveUsers ?? 0} icon={UserX} />
         <StatCard label={t("admin.dashboard.premiumUsers")} value={stats?.premiumUsers ?? 0} icon={Crown} />
         <StatCard label={t("admin.dashboard.freeUsers")} value={stats?.freeUsers ?? 0} icon={Gift} />
+        <StatCard label={t("admin.dashboard.uniqueTotal")} value={stats?.uniqueTotal ?? 0} icon={UsersIcon} />
+        <StatCard label={t("admin.dashboard.uniqueToday")} value={stats?.uniqueToday ?? 0} icon={UserCheck} />
+        <StatCard label={t("admin.dashboard.uniqueMonth")} value={stats?.uniqueMonth ?? 0} icon={TrendingUp} />
         <StatCard label={t("admin.dashboard.totalVisits")} value={stats?.totalVisits ?? 0} icon={Eye} />
         <StatCard label={t("admin.dashboard.visitsToday")} value={stats?.visitsToday ?? 0} icon={CalendarDays} />
         <StatCard label={t("admin.dashboard.visitsMonth")} value={stats?.visitsMonth ?? 0} icon={CalendarClock} />
