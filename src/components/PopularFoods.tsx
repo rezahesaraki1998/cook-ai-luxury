@@ -43,7 +43,10 @@ const PopularFoods = () => {
 
   const unlock = () => {
     if (!loggedIn) return navigate("/auth");
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+    const el = document.getElementById("pricing");
+    if (el) return el.scrollIntoView({ behavior: "smooth" });
+    navigate("/");
+    setTimeout(() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }), 400);
   };
 
   const jsonLd = {
@@ -64,13 +67,13 @@ const PopularFoods = () => {
   };
 
   return (
-    <section id="popular-foods" className="py-12 md:py-20" aria-label={isFa ? "محبوب‌ترین غذاها" : "Most popular dishes"}>
+    <section id="popular-foods" className="py-6 md:py-12" aria-label={isFa ? "محبوب‌ترین دستورها" : "Most popular recipes"}>
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">{isFa ? "محبوب‌ترین غذاها" : "Most Popular Dishes"}</h2>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">{isFa ? "محبوب‌ترین دستورها" : "Most Popular Recipes"}</h1>
           <p className="text-muted-foreground">
-            {isFa ? "۲۰ غذای اصیل ایرانی و ۲۰ غذای محبوب فرنگی" : "20 classic Persian and 20 international favorites"}
+            {isFa ? "۲۰ دستور اصیل ایرانی و ۲۰ دستور محبوب فرنگی" : "20 classic Persian and 20 international favorites"}
           </p>
         </div>
 

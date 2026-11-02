@@ -373,6 +373,9 @@ const fa = {
       "با Cook Luxury دستور غذاهای شخصی‌سازی‌شده، ایده‌های جدید آشپزی، مواد لازم و مراحل دقیق پخت را در چند ثانیه دریافت کنید.",
     samplePreview: "نمونه دستور پخت",
     smartSuggestions: "پیشنهادهای هوشمند",
+    popularRecipesTitle: "محبوب‌ترین دستورهای آشپزی | ۲۰ غذای ایرانی و ۲۰ غذای فرنگی",
+    popularRecipesDesc:
+      "مجموعه‌ای از محبوب‌ترین دستورهای آشپزی ایرانی و فرنگی با مواد لازم، مراحل پخت، زمان آماده‌سازی و نکات طلایی سرآشپز در Cook Luxury.",
   },
 
   notFound: {
@@ -749,6 +752,9 @@ const en: typeof fa = {
       "Get personalised recipes, cooking ideas, ingredients and step-by-step instructions with Cook Luxury's AI-powered cooking assistant.",
     samplePreview: "Sample Recipe",
     smartSuggestions: "Smart Suggestions",
+    popularRecipesTitle: "Most Popular Recipes | 20 Persian & 20 International Dishes",
+    popularRecipesDesc:
+      "A curated collection of the most popular Persian and international recipes with ingredients, step-by-step instructions, timing and chef's golden tips at Cook Luxury.",
   },
 
   notFound: {

@@ -32,7 +32,7 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground mb-3 md:mb-4 text-sm md:text-base">{t("footer.quickLinks")}</h4>
             <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
               <li><a href="/" className="text-muted-foreground hover:text-primary smooth-transition">{t("nav.home")}</a></li>
-              <li><a href="/#recipes" className="text-muted-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a></li>
+              <li><a href="/popular-recipes" className="text-muted-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a></li>
             </ul>
           </div>
 
