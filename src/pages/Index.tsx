@@ -3,7 +3,6 @@ import HeroSection from "@/components/HeroSection";
 import RecipePreview from "@/components/RecipePreview";
 import SmartSuggestions from "@/components/SmartSuggestions";
 import PricingPlans from "@/components/PricingPlans";
-import PopularFoods from "@/components/PopularFoods";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { useLanguage } from "@/i18n/LanguageContext";
