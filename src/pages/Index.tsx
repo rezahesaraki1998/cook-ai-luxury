@@ -23,7 +23,6 @@ const Index = () => {
           <section aria-label={t("seo.smartSuggestions")}>
             <SmartSuggestions />
           </section>
-          <PopularFoods />
           <section id="pricing" aria-label={t("pricing.title")} className="py-12 md:py-20">
             <PricingPlans />
           </section>
