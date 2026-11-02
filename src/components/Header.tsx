@@ -247,7 +247,7 @@ const Header = () => {
             {tr.suggestions.items.map((item) => (
               <CommandItem
                 key={item.title}
-                onSelect={() => { setOpenSearch(false); navigate('/#recipes'); }}
+                onSelect={() => { setOpenSearch(false); navigate('/popular-recipes'); }}
               >
                 {item.title}
               </CommandItem>
