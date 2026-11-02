@@ -82,7 +82,7 @@ const Header = () => {
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center gap-8">
             <a href="/" className="text-foreground hover:text-primary smooth-transition">{t("nav.home")}</a>
-            <a href="/#recipes" className="text-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a>
+            <a href="/popular-recipes" className="text-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a>
             <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">{t("nav.whyUs")}</a>
           </nav>
 
@@ -175,7 +175,7 @@ const Header = () => {
                     {t("nav.home")}
                   </button>
                   <button
-                    onClick={() => handleNavigation("/#recipes")}
+                    onClick={() => handleNavigation("/popular-recipes")}
                     className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
                   >
                     {t("nav.recipes")}
