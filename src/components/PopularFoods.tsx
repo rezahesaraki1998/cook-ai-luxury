@@ -43,7 +43,10 @@ const PopularFoods = () => {
 
   const unlock = () => {
     if (!loggedIn) return navigate("/auth");
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+    const el = document.getElementById("pricing");
+    if (el) return el.scrollIntoView({ behavior: "smooth" });
+    navigate("/");
+    setTimeout(() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }), 400);
   };
 
   const jsonLd = {
