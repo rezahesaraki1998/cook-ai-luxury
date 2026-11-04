@@ -63,31 +63,32 @@ const Header = () => {
 
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
-      <div className="container mx-auto px-4 py-3 md:py-4">
-        <div className="flex items-center justify-between">
+    <header className="fixed top-0 inset-x-0 z-50 bg-background/95 backdrop-blur-xl border-b border-border/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 xl:h-20 items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 md:gap-3 group cursor-pointer">
+          <Link to="/" className="flex min-w-0 shrink-0 items-center gap-2.5 group" aria-label={t("nav.home")}>
             <img
               src={logoAsset.url}
               alt={t("common.brandName")}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-xl object-cover shadow-gold smooth-transition group-hover:scale-110"
+              onError={(event) => { if (!event.currentTarget.src.endsWith('/favicon.png')) event.currentTarget.src = '/favicon.png'; }}
+              className="w-8 h-8 xl:w-10 xl:h-10 shrink-0 rounded-md object-contain"
             />
-            <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold text-gradient-gold">{t("common.brandName")}</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground">{t("common.brandSub")}</span>
+            <div className="flex flex-col gap-0.5">
+              <span dir="ltr" className="text-base sm:text-lg xl:text-xl font-bold text-primary leading-tight whitespace-nowrap">{t("common.brandName")}</span>
+              <span className="hidden sm:block text-xs text-muted-foreground leading-tight">{t("common.brandSub")}</span>
             </div>
           </Link>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-foreground hover:text-primary smooth-transition">{t("nav.home")}</a>
-            <a href="/popular-recipes" className="text-foreground hover:text-primary smooth-transition">{t("nav.recipes")}</a>
-            <a href="/why-us" className="text-foreground hover:text-primary smooth-transition">{t("nav.whyUs")}</a>
+          <nav className="hidden xl:flex items-center justify-center gap-1" aria-label={t("nav.menu")}>
+            <Button asChild variant="ghost"><Link to="/">{t("nav.home")}</Link></Button>
+            <Button asChild variant="ghost"><Link to="/popular-recipes">{t("nav.recipes")}</Link></Button>
+            <Button asChild variant="ghost"><Link to="/why-us">{t("nav.whyUs")}</Link></Button>
           </nav>
 
           {/* CTA Buttons - Desktop */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden xl:flex shrink-0 items-center gap-1.5">
 
             <Button
               variant="ghost"
@@ -108,22 +109,24 @@ const Header = () => {
                 {isAdmin && (
                   <Button
                     variant="outline"
-                    className="gap-2"
+                    size="icon"
+                    className="shrink-0"
+                    title={t("admin.title")}
                     onClick={() => navigate("/admin")}
                     aria-label={t("admin.title")}
                   >
                     <Shield className="w-4 h-4" />
-                    {t("admin.title")}
                   </Button>
                 )}
                 <Button
                   variant="outline"
-                  className="gap-2"
+                  size="icon"
+                  className="shrink-0"
+                  title={t("profile.title")}
                   onClick={() => navigate("/profile")}
                   aria-label={t("profile.title")}
                 >
                   <User className="w-4 h-4" />
-                  {t("profile.title")}
                 </Button>
               </>
             ) : (
@@ -140,7 +143,7 @@ const Header = () => {
 
 
           {/* Mobile Buttons */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex xl:hidden shrink-0 items-center gap-0.5 sm:gap-1.5">
             <Button
               variant="ghost"
               size="icon"
@@ -151,43 +154,47 @@ const Header = () => {
               <Search className="w-5 h-5" />
             </Button>
 
-            <LanguageSwitcher />
+            <LanguageSwitcher className="hidden sm:inline-flex" />
             <ThemeToggle />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-9 h-9" aria-label={t("nav.menu")}>
+                <Button variant="ghost" size="icon" className="w-10 h-10" aria-label={t("nav.menu")}>
                   <Menu className="w-5 h-5" />
                 </Button>
 
               </SheetTrigger>
               <SheetContent
                 side={isRTL ? "right" : "left"}
-                className="w-[280px] glass-card border-primary/20"
+                className="w-[320px] max-w-[88vw] bg-background border-border px-5"
               >
                 <SheetHeader className="text-start mb-6">
                   <SheetTitle className="text-gradient-gold text-xl">{t("nav.menu")}</SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col gap-4">
-                  <button
+                <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+                  <LanguageSwitcher />
+                  <ThemeToggle />
+                </div>
+                <nav className="flex flex-col gap-1">
+                  <Button variant="ghost"
                     onClick={() => handleNavigation("/")}
-                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="justify-start h-12 text-foreground"
                   >
                     {t("nav.home")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="ghost"
                     onClick={() => handleNavigation("/popular-recipes")}
-                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="justify-start h-12 text-foreground"
                   >
                     {t("nav.recipes")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="ghost"
                     onClick={() => handleNavigation("/why-us")}
-                    className="text-start text-foreground hover:text-primary smooth-transition py-2 border-b border-border/30"
+                    className="justify-start h-12 text-foreground"
                   >
                     {t("nav.whyUs")}
-                  </button>
+                  </Button>
 
-                  <div className="pt-4 space-y-3">
+                  <div className="mt-4 pt-5 border-t border-border space-y-3">
 
                     {isAuthed ? (
                       <>
