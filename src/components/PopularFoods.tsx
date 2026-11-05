@@ -189,3 +189,11 @@ const FoodDetail = ({ food, isFa, premium, onUnlock, onClose }: {
 };
 
 export default PopularFoods;
+
+function toIsoDuration(t: string): string | null {
+  const s = t.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));
+  const h = s.match(/(\d+)\s*ساعت/);
+  const m = s.match(/(\d+)\s*دقیقه/);
+  if (!h && !m) return null;
+  return `PT${h ? `${h[1]}H` : ""}${m ? `${m[1]}M` : ""}`;
+}
