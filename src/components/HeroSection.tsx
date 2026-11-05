@@ -12,6 +12,7 @@ import PricingPlans from "@/components/PricingPlans";
 
 const FREE_RECIPE_LIMIT = 2;
 const STORAGE_KEY = 'free_recipe_count';
+const MEMBER_GIFT_KEY = 'member_gift_used';
 
 const HeroSection = () => {
   const [prompt, setPrompt] = useState("");
@@ -24,6 +25,8 @@ const HeroSection = () => {
   const [foodImage, setFoodImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSubscriber, setIsSubscriber] = useState(false);
+  const [memberGiftUsed, setMemberGiftUsed] = useState(false);
   const [nutritionInfo, setNutritionInfo] = useState<{calories: number; protein: number; carbs: number} | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -67,6 +70,13 @@ const HeroSection = () => {
         .maybeSingle();
       
       setIsAdmin(!!data);
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('id, expires_at')
+        .eq('user_id', userId)
+        .eq('status', 'active');
+      setIsSubscriber((subs ?? []).some((s) => !s.expires_at || new Date(s.expires_at) > new Date()));
+      setMemberGiftUsed(localStorage.getItem(`${MEMBER_GIFT_KEY}_${userId}`) === '1');
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
@@ -76,6 +86,9 @@ const HeroSection = () => {
   const remainingFreeRecipes = FREE_RECIPE_LIMIT - freeRecipesUsed;
 
   const hasUnlimitedAccess = user && isAdmin;
+  const isPaid = !!user && (isAdmin || isSubscriber);
+  const guestLocked = !user && remainingFreeRecipes <= 0;
+  const memberLocked = !!user && !isPaid && memberGiftUsed;
 
   const handleGenerateRecipe = async (overridePrompt?: string) => {
     const activePrompt = (overridePrompt ?? prompt).trim();
@@ -92,12 +105,11 @@ const HeroSection = () => {
     // Guests can generate while they still have free recipes left
     const { data: { session: currentSession } } = await supabase.auth.getSession();
     if (!currentSession && remainingFreeRecipes <= 0) {
-      toast({
-        title: t("hero.toastLoginTitle"),
-        description: t("hero.toastLoginDesc"),
-        variant: "destructive",
-      });
-      navigate("/auth");
+      document.getElementById('hero-funnel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (currentSession && memberLocked) {
+      document.getElementById('hero-funnel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -139,6 +151,9 @@ const HeroSection = () => {
           const newCount = freeRecipesUsed + 1;
           setFreeRecipesUsed(newCount);
           localStorage.setItem(STORAGE_KEY, newCount.toString());
+        } else if (!isPaid) {
+          setMemberGiftUsed(true);
+          localStorage.setItem(`${MEMBER_GIFT_KEY}_${user.id}`, '1');
         }
       } else {
         throw new Error('Failed to generate recipe');
@@ -256,7 +271,61 @@ const HeroSection = () => {
           )}
 
           {/* Paywall - free credits exhausted */}
-          {!hasUnlimitedAccess && !user && remainingFreeRecipes <= 0 && (
+          {/* Step 2: guest quota over -> free signup gift */}
+          {guestLocked && (
+            <div id="hero-funnel" className="max-w-2xl mx-auto text-center glass-card rounded-2xl border-2 border-primary/40 shadow-gold p-5 md:p-8 space-y-4 animate-slide-up">
+              <div className="text-4xl">🎁</div>
+              <h2 className="text-xl md:text-2xl font-bold text-gradient-gold">
+                {locale === 'fa' ? 'صبر کن! یک هدیه منتظر توست' : 'Wait! A gift is waiting for you'}
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                {locale === 'fa'
+                  ? 'دو دستور رایگان مهمان تمام شد، اما سرآشپز هوشمند هنوز کارش با تو تمام نشده. فقط با یک کلیک (ورود با گوگل) عضو شو و همین الان یک دستور کامل دیگر — با عکس، کالری و مراحل گام‌به‌گام — هدیه بگیر. هزاران آشپز خانگی همین حالا عضو شده‌اند؛ تو جا نمانی!'
+                  : "Your 2 guest recipes are used up — but the AI chef isn't done with you yet. Join in one click (Sign in with Google) and get one more full recipe — photo, calories and step-by-step — as a gift, right now."}
+              </p>
+              <Button size="lg" className="w-full gradient-gold text-primary-foreground shadow-gold" onClick={() => navigate('/auth')}>
+                <LogIn className="w-5 h-5 me-2" />
+                {locale === 'fa' ? 'عضویت رایگان و دریافت هدیه' : 'Join free & claim my gift'}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                {locale === 'fa' ? 'کمتر از ۳۰ ثانیه • بدون نیاز به پرداخت • هدیه فقط برای عضویت امروز' : 'Under 30 seconds • No payment • Gift for today\'s signup only'}
+              </p>
+            </div>
+          )}
+
+          {/* Step 3: signed-in, gift available */}
+          {user && !isPaid && !memberGiftUsed && (
+            <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-primary/30 bg-primary/5">
+              <span className="text-sm text-primary font-medium">
+                {locale === 'fa' ? '🎁 ۱ دستور هدیه عضویت آماده استفاده است' : '🎁 1 membership gift recipe is ready'}
+              </span>
+            </div>
+          )}
+
+          {/* Step 4: gift used -> subscription */}
+          {memberLocked && (
+            <div id="hero-funnel" className="max-w-4xl mx-auto text-start glass-card rounded-2xl border-2 border-primary/30 shadow-gold p-5 md:p-8 space-y-4 animate-slide-up">
+              <h2 className="text-xl md:text-2xl font-bold text-gradient-gold">
+                {locale === 'fa' ? 'مزه‌اش را چشیدی… حالا آشپزخانه‌ات را لاکچری کن 👑' : "You've had a taste… now make your kitchen luxury 👑"}
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                {locale === 'fa'
+                  ? 'دیدی سرآشپز هوشمند در چند ثانیه چه کرد؟ تصور کن هر روز، برای هر وعده، بدون فکرکردن به «امشب چی بپزم؟» یک دستور بی‌نقص داشته باشی. با هزینه‌ای کمتر از یک پیتزا در ماه، جستجوی نامحدود، جدول کامل کالری و پروتئین و فوت‌وفن‌های مخفی سرآشپزها مال توست. قیمت‌های فعلی ویژه دوره آغاز است و به‌زودی افزایش می‌یابد.'
+                  : "Saw what the AI chef did in seconds? Imagine a perfect recipe for every meal, every day — no more \"what's for dinner?\". For less than a pizza a month: unlimited searches, full nutrition and secret chef tips. Launch prices won't last."}
+              </p>
+              <ul className="grid sm:grid-cols-2 gap-2">
+                {tr.pricing.perks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-2 text-xs md:text-sm text-muted-foreground">
+                    <Sparkles className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{perk}</span>
+                  </li>
+                ))}
+              </ul>
+              <PricingPlans compact />
+            </div>
+          )}
+
+          {false && (
             <div className="max-w-4xl mx-auto text-start glass-card rounded-2xl border-2 border-primary/30 shadow-gold p-5 md:p-8 space-y-4 animate-slide-up">
               <h2 className="text-xl md:text-2xl font-bold text-gradient-gold">{t("pricing.limitTitle")}</h2>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{t("pricing.limitBody")}</p>
