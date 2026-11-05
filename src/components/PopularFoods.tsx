@@ -49,6 +49,7 @@ const PopularFoods = () => {
     setTimeout(() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }), 400);
   };
 
+  const SITE = "https://www.cookluxury.ir";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -62,6 +63,24 @@ const PopularFoods = () => {
         description: f.summary,
         recipeCuisine: f.category === "iranian" ? "Persian" : "International",
         recipeIngredient: f.ingredients.split("، "),
+        image: [new URL(f.image, SITE).href],
+        author: { "@type": "Organization", name: "CookLuxury", url: SITE },
+        recipeCategory: f.category === "iranian" ? "Main course (Persian)" : "Main course",
+        keywords: `${f.name}, ${f.nameEn}, طرز تهیه ${f.name}, دستور پخت`,
+        ...(toIsoDuration(f.time) ? { totalTime: toIsoDuration(f.time), cookTime: toIsoDuration(f.time), prepTime: "PT15M" } : {}),
+        recipeYield: "4",
+        nutrition: {
+          "@type": "NutritionInformation",
+          calories: `${f.nutrition.calories} calories`,
+          proteinContent: `${f.nutrition.protein} g`,
+          carbohydrateContent: `${f.nutrition.carbs} g`,
+          fatContent: `${f.nutrition.fat} g`,
+        },
+        recipeInstructions: [
+          { "@type": "HowToStep", text: `مواد لازم را آماده کنید: ${f.ingredients}.` },
+          ...f.tips.map((t) => ({ "@type": "HowToStep", text: t })),
+          { "@type": "HowToStep", text: `${f.name} را گرم سرو کنید.` },
+        ],
       },
     })),
   };
