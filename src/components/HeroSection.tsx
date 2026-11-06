@@ -12,7 +12,7 @@ import PricingPlans from "@/components/PricingPlans";
 
 const FREE_RECIPE_LIMIT = 2;
 const STORAGE_KEY = 'free_recipe_count';
-const MEMBER_GIFT_KEY = 'member_gift_used';
+
 
 const HeroSection = () => {
   const [prompt, setPrompt] = useState("");
@@ -27,70 +27,58 @@ const HeroSection = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSubscriber, setIsSubscriber] = useState(false);
   const [memberGiftUsed, setMemberGiftUsed] = useState(false);
+  const [quotaLoading, setQuotaLoading] = useState(true);
   const [nutritionInfo, setNutritionInfo] = useState<{calories: number; protein: number; carbs: number} | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { t, tr, locale, n } = useLanguage();
 
   useEffect(() => {
-    // Load free recipe count from localStorage
-    const storedCount = localStorage.getItem(STORAGE_KEY);
-    if (storedCount) {
-      setFreeRecipesUsed(parseInt(storedCount, 10));
-    }
-
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdminStatus(session.user.id);
-      }
+      void refreshQuota();
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        setTimeout(() => checkAdminStatus(session.user.id), 0);
-      } else {
-        setIsAdmin(false);
-      }
+      setQuotaLoading(true);
+      setTimeout(() => void refreshQuota(), 0);
     });
 
-    return () => subscription.unsubscribe();
+    const onFocus = () => { void refreshQuota(); };
+    window.addEventListener('focus', onFocus);
+    return () => { subscription.unsubscribe(); window.removeEventListener('focus', onFocus); };
   }, []);
 
-  const checkAdminStatus = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      setIsAdmin(!!data);
-      const { data: subs } = await supabase
-        .from('subscriptions')
-        .select('id, expires_at')
-        .eq('user_id', userId)
-        .eq('status', 'active');
-      setIsSubscriber((subs ?? []).some((s) => !s.expires_at || new Date(s.expires_at) > new Date()));
-      setMemberGiftUsed(localStorage.getItem(`${MEMBER_GIFT_KEY}_${userId}`) === '1');
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-      setIsAdmin(false);
+  const applyQuota = (quota: { tier: string; used: number; remaining: number | null }) => {
+    setIsAdmin(quota.tier === 'admin');
+    setIsSubscriber(quota.tier === 'paid');
+    setMemberGiftUsed(quota.tier === 'gift' && quota.remaining === 0);
+    if (quota.tier === 'guest') {
+      setFreeRecipesUsed(FREE_RECIPE_LIMIT - (quota.remaining ?? 0));
+      localStorage.setItem(STORAGE_KEY, String(quota.used));
     }
+    setQuotaLoading(false);
+  };
+
+  const refreshQuota = async () => {
+    const { data, error } = await supabase.functions.invoke('recipe-ai', { body: { action: 'status' } });
+    if (!error && data?.quota) applyQuota(data.quota);
+    // Fail closed: leave search disabled until account status is available.
+    return !error && !!data?.quota;
   };
 
   const remainingFreeRecipes = FREE_RECIPE_LIMIT - freeRecipesUsed;
 
   const hasUnlimitedAccess = user && isAdmin;
   const isPaid = !!user && (isAdmin || isSubscriber);
-  const guestLocked = !user && remainingFreeRecipes <= 0;
-  const memberLocked = !!user && !isPaid && memberGiftUsed;
+  const guestLocked = !quotaLoading && !user && remainingFreeRecipes <= 0;
+  const memberLocked = !quotaLoading && !!user && !isPaid && memberGiftUsed;
 
   const handleGenerateRecipe = async (overridePrompt?: string) => {
+    if (isLoading || quotaLoading) return;
     const activePrompt = (overridePrompt ?? prompt).trim();
 
     if (!activePrompt) {
@@ -130,34 +118,29 @@ const HeroSection = () => {
         ? { Authorization: `Bearer ${session.access_token}` } 
         : {};
 
-      // Start all requests in parallel
-      const [recipeResponse, imageResponse, nutritionResponse] = await Promise.allSettled([
-        supabase.functions.invoke('recipe-ai', { 
-          body: { prompt: activePrompt, language: locale },
-          headers: authHeaders
-        }),
-        supabase.functions.invoke('generate-food-image', { body: { foodName: activePrompt, language: locale }, headers: authHeaders }),
-        supabase.functions.invoke('get-nutrition-info', { body: { foodName: activePrompt, language: locale }, headers: authHeaders })
-
-      ]);
-
-      // Handle recipe response
-      if (recipeResponse.status === 'fulfilled' && !recipeResponse.value.error) {
-        setRecipe(recipeResponse.value.data.recipe);
-        setIsSaved(false);
-        
-        // Increment free recipe count for non-logged-in users
-        if (!user) {
-          const newCount = freeRecipesUsed + 1;
-          setFreeRecipesUsed(newCount);
-          localStorage.setItem(STORAGE_KEY, newCount.toString());
-        } else if (!isPaid) {
-          setMemberGiftUsed(true);
-          localStorage.setItem(`${MEMBER_GIFT_KEY}_${user.id}`, '1');
+      // Reserve and settle the recipe first; extras require its single-use receipt.
+      const result = await supabase.functions.invoke('recipe-ai', {
+        body: { prompt: activePrompt, language: locale }, headers: authHeaders,
+      });
+      if (result.error) {
+        const context = result.error.context;
+        const failure = context instanceof Response ? await context.json().catch(() => null) : null;
+        if (failure?.quota) {
+          applyQuota(failure.quota);
+          document.getElementById('hero-funnel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
         }
-      } else {
-        throw new Error('Failed to generate recipe');
+        throw result.error;
       }
+      if (!result.data?.recipe || !result.data?.requestId) throw new Error('Invalid recipe response');
+      setRecipe(result.data.recipe);
+      setIsSaved(false);
+      if (result.data.quota) applyQuota(result.data.quota);
+      const extraBody = { foodName: activePrompt, language: locale, requestId: result.data.requestId };
+      const [imageResponse, nutritionResponse] = await Promise.allSettled([
+        supabase.functions.invoke('generate-food-image', { body: extraBody, headers: authHeaders }),
+        supabase.functions.invoke('get-nutrition-info', { body: extraBody, headers: authHeaders }),
+      ]);
 
       // Handle image response
       if (imageResponse.status === 'fulfilled' && !imageResponse.value.error && imageResponse.value.data?.imageUrl) {
@@ -255,7 +238,7 @@ const HeroSection = () => {
           </p>
 
           {/* Free Recipe Counter - Only show for non-admin users */}
-          {!hasUnlimitedAccess && !user && (
+          {!quotaLoading && !hasUnlimitedAccess && !user && (
             <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-primary/30 bg-primary/5">
               <span className="text-sm text-muted-foreground">
                 {remainingFreeRecipes > 0 ? (
@@ -294,7 +277,7 @@ const HeroSection = () => {
           )}
 
           {/* Step 3: signed-in, gift available */}
-          {user && !isPaid && !memberGiftUsed && (
+          {!quotaLoading && user && !isPaid && !memberGiftUsed && (
             <div className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full border border-primary/30 bg-primary/5">
               <span className="text-sm text-primary font-medium">
                 {locale === 'fa' ? '🎁 ۱ دستور هدیه عضویت آماده استفاده است' : '🎁 1 membership gift recipe is ready'}
@@ -359,10 +342,11 @@ const HeroSection = () => {
                   placeholder={t("hero.inputPlaceholder")}
                   aria-label={t("hero.inputAria")}
                   className="flex-1 bg-transparent border-0 text-sm md:text-lg focus-visible:ring-0 placeholder:text-muted-foreground/60"
+                  maxLength={200}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleGenerateRecipe()}
-                  disabled={isLoading}
+                  disabled={isLoading || quotaLoading}
                 />
                 <Button
                   size="icon"
@@ -381,7 +365,7 @@ const HeroSection = () => {
               size="lg" 
               className="w-full gradient-gold text-primary-foreground text-base md:text-lg px-6 md:px-8 py-5 md:py-6 shadow-gold hover:shadow-warm smooth-transition hover:scale-105 group"
               onClick={() => handleGenerateRecipe()}
-              disabled={isLoading}
+              disabled={isLoading || quotaLoading}
             >
               {isLoading ? (
                 <>
@@ -408,7 +392,7 @@ const HeroSection = () => {
                   setPrompt(item);
                   handleGenerateRecipe(item);
                 }}
-                disabled={isLoading}
+                disabled={isLoading || quotaLoading}
               >
                 {item}
               </button>
