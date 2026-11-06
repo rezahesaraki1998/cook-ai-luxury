@@ -1,156 +1,47 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from 'https://esm.sh/zod@3.25.76';
+import { recipeIdentity } from '../_shared/recipe-access.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Rate limit settings
-const ANONYMOUS_LIMIT = 2; // Total requests for anonymous users
-const AUTHENTICATED_LIMIT = 50; // Requests per hour for authenticated users
-const ADMIN_UNLIMITED = true; // Admins have unlimited access
-
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+  let receipt: string | null = null;
+  let identity: Awaited<ReturnType<typeof recipeIdentity>> | null = null;
+  const json = (data: unknown, status = 200) => new Response(JSON.stringify(data), {
+    status, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Optional auth: guests get a small free lifetime quota, users get hourly limits
-    const authHeader = req.headers.get('authorization');
-    let userId: string | null = null;
-    let isAdmin = false;
-    let isAuthenticated = false;
-
-    if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.replace('Bearer ', '');
-      const { data: { user } } = await supabase.auth.getUser(token);
-
-      if (user) {
-        userId = user.id;
-        isAuthenticated = true;
-
-        // Check if user is admin
-        const { data: roleData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', userId)
-          .eq('role', 'admin')
-          .maybeSingle();
-
-        isAdmin = !!roleData;
-        console.log(`Authenticated user: ${userId}, isAdmin: ${isAdmin}`);
-      } else {
-        console.log('Guest request (no user session)');
-      }
+    if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+    const body = await req.json();
+    identity = await recipeIdentity(req);
+    const { client: supabase, userId, identifier } = identity;
+    if (body.action === 'status') {
+      const { data, error } = await supabase.rpc('recipe_access_status', { p_user_id: userId, p_identifier: identifier });
+      if (error) throw error;
+      return json({ quota: data });
     }
+    const parsed = z.object({ prompt: z.string().trim().min(1).max(200), language: z.enum(['fa','en']).default('fa') }).safeParse(body);
+    if (!parsed.success) return json({ error: 'Invalid prompt', code: 'INVALID_INPUT' }, 400);
+    const cleanPrompt = parsed.data.prompt;
+    const { data: reservation, error: reserveError } = await supabase.rpc('reserve_recipe_request', {
+      p_user_id: userId, p_identifier: identifier, p_prompt: cleanPrompt,
+    });
+    if (reserveError) throw reserveError;
+    if (!reservation?.allowed) return json({ code: reservation?.code, quota: reservation }, 429);
+    receipt = reservation.requestId;
 
-
-
-    // Get client IP for anonymous rate limiting
-    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
-                     req.headers.get('x-real-ip') || 
-                     'unknown';
-
-    const identifier = isAuthenticated ? userId! : `ip:${clientIP}`;
-    const endpoint = 'recipe-ai';
-
-    // Skip rate limiting for admins
-    if (!isAdmin) {
-      // Check rate limits
-      const now = new Date();
-      const hourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-
-      if (isAuthenticated) {
-        // For authenticated users: check requests in the last hour
-        const { data: rateLimitData, error: rlError } = await supabase
-          .from('rate_limits')
-          .select('request_count')
-          .eq('identifier', identifier)
-          .eq('endpoint', endpoint)
-          .gte('window_start', hourAgo.toISOString())
-          .order('window_start', { ascending: false })
-          .limit(1)
-          .single();
-
-        const currentCount = rateLimitData?.request_count || 0;
-
-        if (currentCount >= AUTHENTICATED_LIMIT) {
-          console.log(`Rate limit exceeded for authenticated user: ${identifier}`);
-          return new Response(
-            JSON.stringify({ error: 'محدودیت درخواست: لطفاً یک ساعت دیگر امتحان کنید.' }),
-            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Update or insert rate limit record
-        if (rateLimitData) {
-          await supabase
-            .from('rate_limits')
-            .update({ request_count: currentCount + 1 })
-            .eq('identifier', identifier)
-            .eq('endpoint', endpoint)
-            .gte('window_start', hourAgo.toISOString());
-        } else {
-          await supabase
-            .from('rate_limits')
-            .insert({ identifier, endpoint, request_count: 1, window_start: now.toISOString() });
-        }
-      } else {
-        // For anonymous users: check total requests ever (lifetime limit)
-        const { data: rateLimitData } = await supabase
-          .from('rate_limits')
-          .select('request_count')
-          .eq('identifier', identifier)
-          .eq('endpoint', endpoint);
-
-        const totalCount = rateLimitData?.reduce((sum, r) => sum + r.request_count, 0) || 0;
-
-        if (totalCount >= ANONYMOUS_LIMIT) {
-          console.log(`Rate limit exceeded for anonymous user: ${identifier}`);
-          return new Response(
-            JSON.stringify({ error: 'محدودیت رایگان: لطفاً برای ادامه ثبت‌نام کنید.' }),
-            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        // Insert new rate limit record
-        await supabase
-          .from('rate_limits')
-          .insert({ identifier, endpoint, request_count: 1, window_start: now.toISOString() });
-      }
-    }
-
-    const { prompt } = await req.json();
-    
-    // Input validation
-    if (!prompt || typeof prompt !== 'string') {
-      throw new Error('Invalid prompt');
-    }
-    
-    const cleanPrompt = prompt.trim();
-    
-    if (cleanPrompt.length === 0) {
-      throw new Error('Prompt cannot be empty');
-    }
-    
-    if (cleanPrompt.length > 500) {
-      throw new Error('Prompt is too long. Maximum 500 characters allowed.');
-    }
-    
     const apiKey = Deno.env.get('OPENROUTER_API_KEY');
 
     if (!apiKey) {
       throw new Error('OPENROUTER_API_KEY is not configured');
     }
 
-    console.log(`Calling OpenRouter API for ${isAuthenticated ? 'authenticated' : 'anonymous'} user`);
+    console.log('Calling recipe provider');
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -206,15 +97,26 @@ serve(async (req) => {
     const data = await response.json();
     console.log('OpenRouter API response received');
     
-    const recipe = data.choices[0].message.content;
+    const recipe = data.choices?.[0]?.message?.content;
+    if (typeof recipe !== 'string' || !recipe.trim()) throw new Error('Empty recipe response');
+    const { data: settled, error: settleError } = await supabase.rpc('finish_recipe_request', { p_request_id: receipt, p_success: true });
+    if (settleError || !settled) throw new Error('Unable to settle recipe quota');
+    const requestId = receipt;
+    receipt = null;
+    const { data: quota, error: quotaError } = await supabase.rpc('recipe_access_status', { p_user_id: userId, p_identifier: identifier });
+    if (quotaError) throw quotaError;
 
-    return new Response(JSON.stringify({ recipe }), {
+    return new Response(JSON.stringify({ recipe, requestId, quota }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error in recipe-ai function:', error);
+    if (receipt && identity) {
+      await identity.client.rpc('finish_recipe_request', { p_request_id: receipt, p_success: false });
+    }
+    console.error('Recipe request failed');
+    if (error instanceof Error && error.message === 'INVALID_SESSION') return json({ code: 'INVALID_SESSION' }, 401);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), 
+      JSON.stringify({ error: 'Unable to generate recipe' }), 
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

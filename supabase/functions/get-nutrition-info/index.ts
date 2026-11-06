@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from 'https://esm.sh/zod@3.25.76';
+import { claimExtra } from '../_shared/recipe-access.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,27 +13,10 @@ serve(async (req) => {
   }
 
   try {
-    // Optional auth: guests are allowed (matches the free-recipe experience)
-    const authHeader = req.headers.get('Authorization');
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-    );
-    if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.replace('Bearer ', '');
-      const { data: claimsData } = await supabase.auth.getClaims(token);
-      console.log('caller:', claimsData?.claims?.sub ?? 'guest');
-    }
-
-
-    const { foodName } = await req.json();
-
-    if (!foodName || typeof foodName !== 'string' || foodName.trim().length === 0 || foodName.length > 200) {
-      return new Response(JSON.stringify({ error: 'Invalid food name' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const parsed = z.object({ foodName: z.string().trim().min(1).max(200), requestId: z.string().uuid() }).safeParse(await req.json());
+    if (!parsed.success) return new Response(JSON.stringify({ error: 'Valid recipe receipt required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    const { foodName, requestId } = parsed.data;
+    if (!await claimExtra(req, requestId, foodName, 'nutrition')) return new Response(JSON.stringify({ error: 'Recipe receipt unavailable' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
