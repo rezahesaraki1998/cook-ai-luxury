@@ -232,6 +232,57 @@ export type Database = {
         }
         Relationships: []
       }
+      recipe_quotas: {
+        Row: {
+          identifier: string
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          identifier: string
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          identifier?: string
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
+      recipe_requests: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          image_claimed: boolean
+          nutrition_claimed: boolean
+          prompt: string
+          status: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          image_claimed?: boolean
+          nutrition_claimed?: boolean
+          prompt: string
+          status?: string
+          tier: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          image_claimed?: boolean
+          nutrition_claimed?: boolean
+          prompt?: string
+          status?: string
+          tier?: string
+        }
+        Relationships: []
+      }
       search_logs: {
         Row: {
           created_at: string
@@ -401,8 +452,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_recipe_extra: {
+        Args: {
+          p_identifier: string
+          p_kind: string
+          p_prompt: string
+          p_request_id: string
+        }
+        Returns: boolean
+      }
       cleanup_expired_verification_codes: { Args: never; Returns: undefined }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
+      finish_recipe_request: {
+        Args: { p_request_id: string; p_success: boolean }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -411,6 +475,14 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      recipe_access_status: {
+        Args: { p_identifier: string; p_user_id: string }
+        Returns: Json
+      }
+      reserve_recipe_request: {
+        Args: { p_identifier: string; p_prompt: string; p_user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user"
