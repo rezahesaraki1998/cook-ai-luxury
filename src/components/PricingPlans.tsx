@@ -22,6 +22,7 @@ interface Plan {
 
 const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
   const [plans, setPlans] = useState<Plan[] | null>(null);
+  const [buying, setBuying] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const { t, locale, n } = useLanguage();
   const { toast } = useToast();
@@ -53,7 +54,7 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
     return [];
   };
 
-  const handleBuy = (plan: Plan) => {
+  const handleBuy = async (plan: Plan) => {
     if (!user) {
       toast({
         title: t("pricing.loginRequiredTitle"),
@@ -62,15 +63,16 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
       navigate("/auth");
       return;
     }
-    if (!plan.payment_link) {
-      toast({
-        title: t("pricing.noLinkTitle"),
-        description: t("pricing.noLinkDesc"),
-        variant: "destructive",
-      });
+    setBuying(plan.id);
+    const { data, error } = await supabase.functions.invoke("zarinpal-payment", {
+      body: { planId: plan.id, returnOrigin: window.location.origin },
+    });
+    if (error || !data?.url) {
+      setBuying(null);
+      toast({ title: t("pricing.noLinkTitle"), description: t("pricing.noLinkDesc"), variant: "destructive" });
       return;
     }
-    window.open(plan.payment_link, "_blank", "noopener,noreferrer");
+    window.location.href = data.url;
   };
 
   return (
@@ -141,7 +143,9 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
                 <Button
                   className="w-full mt-5 gradient-gold text-primary-foreground shadow-gold hover:shadow-warm smooth-transition"
                   onClick={() => handleBuy(plan)}
+                  disabled={buying !== null}
                 >
+                  {buying === plan.id && <Loader2 className="w-4 h-4 animate-spin" />}
                   {user ? t("pricing.buy") : t("pricing.loginToBuy")}
                 </Button>
               </Card>

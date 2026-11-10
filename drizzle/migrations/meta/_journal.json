@@ -29,6 +29,13 @@
       "when": 1793955990877,
       "tag": "0003_durable_recipe_gift",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794334298686,
+      "tag": "0004_zarinpal_payments",
+      "breakpoints": true
     }
   ]
 }

@@ -15,6 +15,7 @@ import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import WhyUs from "./pages/WhyUs";
 import PopularRecipes from "./pages/PopularRecipes";
+import PaymentResult from "./pages/PaymentResult";
 import VisitTracker from "@/components/VisitTracker";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/why-us" element={<WhyUs />} />
             <Route path="/popular-recipes" element={<PopularRecipes />} />
+            <Route path="/payment/result" element={<PaymentResult />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/subscriptions" element={<AdminSubscriptions />} />

@@ -118,6 +118,81 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          authority: string | null
+          card_pan: string | null
+          created_at: string
+          currency: string
+          duration_days: number
+          id: string
+          paid_at: string | null
+          plan_id: string
+          provider: string
+          ref_id: string | null
+          return_origin: string | null
+          status: string
+          subscription_id: string | null
+          updated_at: string
+          user_id: string
+          verify_code: number | null
+        }
+        Insert: {
+          amount: number
+          authority?: string | null
+          card_pan?: string | null
+          created_at?: string
+          currency: string
+          duration_days: number
+          id?: string
+          paid_at?: string | null
+          plan_id: string
+          provider?: string
+          ref_id?: string | null
+          return_origin?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+          verify_code?: number | null
+        }
+        Update: {
+          amount?: number
+          authority?: string | null
+          card_pan?: string | null
+          created_at?: string
+          currency?: string
+          duration_days?: number
+          id?: string
+          paid_at?: string | null
+          plan_id?: string
+          provider?: string
+          ref_id?: string | null
+          return_origin?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+          verify_code?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           ai_limit: number | null
@@ -463,6 +538,19 @@ export type Database = {
       }
       cleanup_expired_verification_codes: { Args: never; Returns: undefined }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
+      complete_payment: {
+        Args: {
+          p_card_pan: string
+          p_code: number
+          p_payment_id: string
+          p_ref_id: string
+        }
+        Returns: Json
+      }
+      fail_payment: {
+        Args: { p_code: number; p_payment_id: string; p_status: string }
+        Returns: boolean
+      }
       finish_recipe_request: {
         Args: { p_request_id: string; p_success: boolean }
         Returns: boolean
