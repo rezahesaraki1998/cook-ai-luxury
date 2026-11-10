@@ -14,7 +14,7 @@ export function publicRoutes(source) {
     if ((ts.isJsxSelfClosingElement(node) || ts.isJsxOpeningElement(node)) && node.tagName.getText(file) === "Route") {
       const attribute = node.attributes.properties.find((item) => ts.isJsxAttribute(item) && item.name.getText(file) === "path");
       const path = attribute?.initializer && ts.isStringLiteral(attribute.initializer) ? attribute.initializer.text : undefined;
-      if (path?.startsWith("/") && !/[:*?]/.test(path) && !/^\/(auth|profile|admin|not-found|lovable)(\/|$)/.test(path)) routes.add(path);
+      if (path?.startsWith("/") && !/[:*?]/.test(path) && !/^\/(auth|profile|admin|payment|not-found|lovable)(\/|$)/.test(path)) routes.add(path);
     }
     ts.forEachChild(node, visit);
   }

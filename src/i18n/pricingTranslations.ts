@@ -23,7 +23,7 @@ export const pricingFa = {
   loginRequiredTitle: "ابتدا وارد حساب کاربری شوید",
   loginRequiredDesc: "برای خرید پلن باید وارد حساب کاربری خود شوید یا ثبت‌نام کنید.",
   noLinkTitle: "درگاه پرداخت آماده نیست",
-  noLinkDesc: "لینک پرداخت این پلن هنوز تنظیم نشده است. لطفاً با پشتیبانی تماس بگیرید.",
+  noLinkDesc: "اتصال به درگاه پرداخت انجام نشد. لطفاً چند لحظه بعد دوباره تلاش کنید.",
 };
 
 export const pricingEn = {
@@ -51,5 +51,5 @@ export const pricingEn = {
   loginRequiredTitle: "Sign in first",
   loginRequiredDesc: "You need an account to purchase a plan. Please sign in or register.",
   noLinkTitle: "Checkout not ready",
-  noLinkDesc: "This plan has no payment link yet. Please contact support.",
+  noLinkDesc: "Could not reach the payment gateway. Please try again shortly.",
 };
