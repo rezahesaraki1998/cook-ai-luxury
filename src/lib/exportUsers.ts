@@ -36,7 +36,12 @@ export interface ExportableUser {
   subscription_end?: string | null;
 }
 
-const cell = (u: ExportableUser, col: ExportColumn, labels: Record<string, string>): string => {
+const neutralize = (v: string): string => (/^[=+\-@\t\r]/.test(v) ? `'${v}` : v);
+
+const cell = (u: ExportableUser, col: ExportColumn, labels: Record<string, string>): string =>
+  neutralize(rawCell(u, col, labels));
+
+const rawCell = (u: ExportableUser, col: ExportColumn, labels: Record<string, string>): string => {
   switch (col) {
     case "name":
       return u.full_name ?? "";

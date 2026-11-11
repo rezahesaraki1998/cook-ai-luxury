@@ -14,6 +14,16 @@ const json = (body: unknown, status = 200) =>
 
 type Payload = Record<string, unknown>;
 
+const pick = (row: Payload, keys: string[]): Payload => {
+  const out: Payload = {};
+  for (const k of keys) if (row && Object.prototype.hasOwnProperty.call(row, k)) out[k] = row[k];
+  return out;
+};
+const PLAN_FIELDS = ["name","name_en","price","currency","duration_days","description","description_en","features","ai_limit","request_limit","is_active","payment_link"];
+const SUB_FIELDS = ["user_id","plan_id","status","started_at","expires_at","canceled_at"];
+const DISCOUNT_FIELDS = ["code","discount_type","discount_value","starts_at","ends_at","max_uses","plan_ids","is_active"];
+const CONTENT_FIELDS = ["title_fa","title_en","body_fa","body_en","image_url","extra"];
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -247,8 +257,8 @@ serve(async (req) => {
       case "plan_save": {
         const row = p.row as Payload;
         const res = row.id
-          ? await supabase.from("plans").update({ ...row, id: undefined }).eq("id", String(row.id))
-          : await supabase.from("plans").insert(row);
+          ? await supabase.from("plans").update(pick(row, PLAN_FIELDS)).eq("id", String(row.id))
+          : await supabase.from("plans").insert(pick(row, PLAN_FIELDS));
         if (res.error) throw res.error;
         return json({ ok: true });
       }
@@ -290,8 +300,8 @@ serve(async (req) => {
       case "subscription_save": {
         const row = p.row as Payload;
         const res = row.id
-          ? await supabase.from("subscriptions").update({ ...row, id: undefined }).eq("id", String(row.id))
-          : await supabase.from("subscriptions").insert(row);
+          ? await supabase.from("subscriptions").update(pick(row, SUB_FIELDS)).eq("id", String(row.id))
+          : await supabase.from("subscriptions").insert(pick(row, SUB_FIELDS));
         if (res.error) throw res.error;
         return json({ ok: true });
       }
@@ -305,8 +315,8 @@ serve(async (req) => {
       case "discount_save": {
         const row = p.row as Payload;
         const res = row.id
-          ? await supabase.from("discount_codes").update({ ...row, id: undefined }).eq("id", String(row.id))
-          : await supabase.from("discount_codes").insert(row);
+          ? await supabase.from("discount_codes").update(pick(row, DISCOUNT_FIELDS)).eq("id", String(row.id))
+          : await supabase.from("discount_codes").insert(pick(row, DISCOUNT_FIELDS));
         if (res.error) throw res.error;
         return json({ ok: true });
       }
@@ -326,7 +336,7 @@ serve(async (req) => {
         const row = p.row as Payload;
         const { error } = await supabase
           .from("site_content")
-          .update({ ...row, id: undefined, page_key: undefined })
+          .update(pick(row, CONTENT_FIELDS))
           .eq("page_key", String(row.page_key));
         if (error) throw error;
         return json({ ok: true });
