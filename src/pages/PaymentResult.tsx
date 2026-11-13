@@ -1,10 +1,12 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { CheckCircle2, XCircle, AlertTriangle, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { paymentVerificationUrl } from "@/lib/payment-callback";
 
 const TEXT = {
   fa: {
@@ -13,6 +15,7 @@ const TEXT = {
     failed: ["پرداخت ناموفق بود", "تراکنش تأیید نشد. اگر مبلغی کسر شده، طی ۷۲ ساعت توسط بانک به حسابت برمی‌گردد."],
     invalid: ["تراکنش نامعتبر است", "اطلاعات این تراکنش پیدا نشد. اگر مشکلی داری با پشتیبانی تماس بگیر."],
     ref: "کد پیگیری", home: "بازگشت به صفحه اصلی", retry: "مشاهده پلن‌ها",
+    verifying: "در حال بررسی پرداخت…",
   },
   en: {
     success: ["Payment successful 🎉", "Your premium subscription is now active."],
@@ -20,11 +23,20 @@ const TEXT = {
     failed: ["Payment failed", "The transaction was not verified. Any deducted amount is refunded by your bank within 72 hours."],
     invalid: ["Invalid transaction", "We could not find this transaction. Please contact support if needed."],
     ref: "Reference", home: "Back to home", retry: "View plans",
+    verifying: "Verifying payment…",
   },
 };
 
 const PaymentResult = () => {
   const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const isCallback = params.has("Authority") || params.has("Status");
+  useEffect(() => {
+    if (!isCallback) return;
+    const target = paymentVerificationUrl(import.meta.env.VITE_SUPABASE_URL, params);
+    if (target) window.location.replace(target);
+    else navigate("/payment/result?status=invalid", { replace: true });
+  }, [isCallback, params, navigate]);
   const { locale, n } = useLanguage();
   const tx = TEXT[locale === "en" ? "en" : "fa"];
   const raw = params.get("status");
@@ -38,6 +50,12 @@ const PaymentResult = () => {
       <Header />
       <main className="pt-28 pb-16 container mx-auto px-4">
         <Card className="glass-card max-w-lg mx-auto p-8 text-center border-2 border-black/25 dark:border-border/60 space-y-4">
+          {isCallback ? (
+            <div role="status" className="space-y-4">
+              <Loader2 className="w-14 h-14 mx-auto animate-spin text-primary" />
+              <p className="text-muted-foreground">{tx.verifying}</p>
+            </div>
+          ) : <>
           <Icon className={`w-14 h-14 mx-auto ${status === "success" ? "text-primary" : "text-destructive"}`} />
           <h1 className="text-2xl font-bold text-foreground">{title}</h1>
           <p className="text-muted-foreground">{body}</p>
@@ -52,6 +70,7 @@ const PaymentResult = () => {
               <Button asChild variant="outline"><Link to="/#pricing">{tx.retry}</Link></Button>
             )}
           </div>
+          </>}
         </Card>
       </main>
       <Footer />

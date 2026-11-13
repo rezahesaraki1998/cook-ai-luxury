@@ -64,15 +64,24 @@ const PricingPlans = ({ compact = false }: { compact?: boolean }) => {
       return;
     }
     setBuying(plan.id);
+    try {
     const { data, error } = await supabase.functions.invoke("zarinpal-payment", {
       body: { planId: plan.id, returnOrigin: window.location.origin },
     });
     if (error || !data?.url) {
-      setBuying(null);
-      toast({ title: t("pricing.noLinkTitle"), description: t("pricing.noLinkDesc"), variant: "destructive" });
+      const details = error?.context instanceof Response ? await error.context.json().catch(() => null) : data;
+      const description = details?.code === "CALLBACK_DOMAIN_MISMATCH"
+        ? (locale === "en" ? "The payment return address needs to be approved in ZarinPal. Please try again after it is corrected." : "دامنه بازگشت پرداخت باید در زرین‌پال تأیید شود. پس از اصلاح تنظیمات دوباره تلاش کنید.")
+        : t("pricing.noLinkDesc");
+      toast({ title: t("pricing.noLinkTitle"), description, variant: "destructive" });
       return;
     }
     window.location.href = data.url;
+    } catch {
+      toast({ title: t("pricing.noLinkTitle"), description: t("pricing.noLinkDesc"), variant: "destructive" });
+    } finally {
+      setBuying(null);
+    }
   };
 
   return (

@@ -1,5 +1,6 @@
 import { assertEquals } from 'jsr:@std/assert@1';
-import { chargeFromPlan, handleCallback, safeOrigin, type CallbackDeps, type Payment } from './logic.ts';
+import { chargeFromPlan, handleCallback, safeOrigin, ZP_CALLBACK_URL, type CallbackDeps, type Payment } from './logic.ts';
+import { paymentVerificationUrl } from '../../../src/lib/payment-callback.ts';
 
 const AUTH = 'A0000000000000000000000000000wwOGYpd';
 function deps(pay: Payment | null, verifyCode: number | null) {
@@ -8,8 +9,8 @@ function deps(pay: Payment | null, verifyCode: number | null) {
   const d: CallbackDeps = {
     loadByAuthority: async () => state.pay && { ...state.pay },
     verify: async (amount) => { calls.verify.push(amount); return verifyCode === null ? null : { code: verifyCode, ref_id: 123, card_pan: '6037**1234' }; },
-    complete: async () => { calls.complete++; const already = state.pay!.status === 'paid'; state.pay!.status = 'paid'; return { ok: true, already, ref_id: '123' }; },
-    fail: async (_id, s) => { calls.fail.push(s); state.pay!.status = s; },
+    complete: async () => { if (!state.pay) throw new Error('Missing payment'); calls.complete++; const already = state.pay.status === 'paid'; state.pay.status = 'paid'; return { ok: true, already, ref_id: '123' }; },
+    fail: async (_id, s) => { if (!state.pay) throw new Error('Missing payment'); calls.fail.push(s); state.pay.status = s; },
   };
   return { d, calls, state };
 }
@@ -43,7 +44,7 @@ Deno.test('wrong amount / failed verification (-50) never activates', async () =
 Deno.test('verify network error keeps payment pending', async () => {
   const { d, calls, state } = deps(pending(), null);
   assertEquals((await handleCallback(AUTH, 'OK', d)).result, 'failed');
-  assertEquals(calls.complete, 0); assertEquals(state.pay!.status, 'pending');
+  assertEquals(calls.complete, 0); assertEquals(state.pay?.status, 'pending');
 });
 Deno.test('unknown or malformed authority is rejected', async () => {
   assertEquals((await handleCallback(AUTH, 'OK', deps(null, 100).d)).result, 'invalid');
@@ -60,4 +61,15 @@ Deno.test('charge comes only from active integer plan price', () => {
 Deno.test('return origin is allowlisted', () => {
   assertEquals(safeOrigin('https://evil.com'), 'https://www.cookluxury.ir');
   assertEquals(safeOrigin('https://cookluxury.ir'), 'https://cookluxury.ir');
+});
+Deno.test('gateway callback uses the merchant website, not the function host or payment CNAME', () => {
+  assertEquals(ZP_CALLBACK_URL, 'https://www.cookluxury.ir/payment/result');
+});
+Deno.test('browser forwards only valid callback fields to server verification', () => {
+  for (const status of ['OK', 'NOK']) {
+    const target = paymentVerificationUrl('https://backend.example', new URLSearchParams({ Authority: AUTH, Status: status, status: 'success', amount: '1', redirect: 'https://evil.com' }));
+    assertEquals(target, `https://backend.example/functions/v1/zarinpal-payment?action=callback&Authority=${AUTH}&Status=${status}`);
+  }
+  assertEquals(paymentVerificationUrl('https://backend.example', new URLSearchParams({ Authority: 'bad!', Status: 'OK' })), null);
+  assertEquals(paymentVerificationUrl('https://backend.example', new URLSearchParams({ Authority: AUTH, Status: 'success' })), null);
 });

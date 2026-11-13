@@ -1,10 +1,12 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { z } from 'npm:zod@3.25.76';
-import { chargeFromPlan, handleCallback, safeOrigin, DEFAULT_GATEWAY_BASE, DEFAULT_MERCHANT_ID, ZP_REQUEST_URL, ZP_VERIFY_URL } from './logic.ts';
+import { chargeFromPlan, handleCallback, safeOrigin, DEFAULT_GATEWAY_BASE, DEFAULT_MERCHANT_ID, ZP_REQUEST_URL, ZP_VERIFY_URL, ZP_CALLBACK_URL } from './logic.ts';
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const admin = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+if (!SUPABASE_URL || !SERVICE_KEY) throw new Error('Payment service configuration is missing');
+const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 const MERCHANT = Deno.env.get('ZARINPAL_MERCHANT_ID') || DEFAULT_MERCHANT_ID;
 const GATEWAY = Deno.env.get('ZARINPAL_GATEWAY_BASE') || DEFAULT_GATEWAY_BASE;
 const json = (d: unknown, status = 200) => new Response(JSON.stringify(d), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -68,7 +70,7 @@ Deno.serve(async (req) => {
 
   const res = await zp(ZP_REQUEST_URL, {
     merchant_id: MERCHANT, amount: charge.amount, currency: charge.currency,
-    callback_url: `${SUPABASE_URL}/functions/v1/zarinpal-payment?action=callback`,
+    callback_url: ZP_CALLBACK_URL,
     description: `اشتراک ${plan.name} - cookluxury`,
     metadata: { email: u.user.email ?? undefined, order_id: pay.id },
   }).catch((e) => { console.error('request network', e); return null; });
@@ -76,6 +78,9 @@ Deno.serve(async (req) => {
   if (res?.data?.code !== 100 || typeof authority !== 'string') {
     console.error('zarinpal request failed', JSON.stringify(res?.errors ?? res));
     await admin.rpc('fail_payment', { p_payment_id: pay.id, p_status: 'failed', p_code: res?.errors?.code ?? null });
+    if (res?.errors?.code === -14) {
+      return json({ error: 'Payment return domain does not match the registered merchant domain', code: 'CALLBACK_DOMAIN_MISMATCH' }, 503);
+    }
     return json({ error: 'Gateway unavailable', code: 'GATEWAY_ERROR' }, 502);
   }
   await admin.from('payments').update({ authority }).eq('id', pay.id).eq('status', 'pending');

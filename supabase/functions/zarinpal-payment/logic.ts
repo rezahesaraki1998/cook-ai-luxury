@@ -3,6 +3,8 @@ export const ZP_REQUEST_URL = 'https://api.zarinpal.com/pg/v4/payment/request.js
 export const ZP_VERIFY_URL = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
 export const DEFAULT_MERCHANT_ID = '0ba3ec43-ccb9-4dfd-8e93-71e39e1cc598'; // public merchant id, not a secret
 export const DEFAULT_GATEWAY_BASE = 'https://www.zarinpal.com/pg/StartPay/';
+// Fixed merchant-domain return address, never derived from a buyer's origin.
+export const ZP_CALLBACK_URL = 'https://www.cookluxury.ir/payment/result';
 
 const ALLOWED_ORIGINS = [
   /^https:\/\/(www\.)?cookluxury\.ir$/,
